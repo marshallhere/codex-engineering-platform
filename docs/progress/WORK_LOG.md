@@ -560,3 +560,12 @@ The independent review caught a malformed-diagnostic edge case: a non-string ite
 reported error list could make JSON formatting raise `TypeError`. Reporting now filters
 to bounded strings, and a focused test verifies malformed diagnostics still fail closed
 without releasing the journal record.
+
+Final disposable macOS CI run `38604442175` on source `1c09c2e` passed all 17 staged
+root UID journal/interruption tests and all three fixed UID probes. Each probe case
+recorded cleaner status 0, no inventory errors, zero survivors, and released its
+reservation only after verified empty inventories. The downloaded JSON and verbose test
+log are preserved with SHA-256 digests in `docs/evidence/native-uid-quarantine.json`.
+The run leaves `production_qualified=false`; this does not qualify the general runtime
+sandbox or stale UID recovery. The earlier transient inventory failure remains in the
+GitHub run history and the strict failure behavior remains in place.
