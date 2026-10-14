@@ -369,3 +369,10 @@ messages and unknown final membership while completing bounded diagnostic/FD fin
 Current source remains experimentally scoped; repaired actual CI execution next.
 Added native qualification matrix and independent CI zero-finding Bandit gate. No
 shipping runtime bytes or fork policy changed. Rejected reviews/failing CI retained.
+
+Third actual CI run38586940156 at4c81976 fails closed with clearer evidence:
+detached worker/cleaner bothexit3, OSError EINVAL during privilege setup/restoration,
+finalobservedUIDmembershipempty. No descendantsafetyclaim. Added operation-specific
+errorlabels around unchanged rlimits/group/UIDsetup and unexpected restoration errors;
+no deniedoperation is ignored and all numeric limits/identitychecks remain unchanged.
+18 targetedtests/Banditzero PASS. Need rerun to identify exact macOS syscallprerequisite.

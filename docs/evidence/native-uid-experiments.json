@@ -9,7 +9,7 @@
   },
   "files": {
     "native/uid_domain.py": "0e342aa4a0b80db655c264f29c4338051d39276586d3d2c6a7d2878086963a92",
-    "native/uid_probe.py": "1449e760b2956a8c0138eaec13eaffe91c3f7cc0879e23532193242bd0570e96",
+    "native/uid_probe.py": "74d36e7ff134ee2bc8dc732724001651dec379afbcfd78690c012a4c6e46adcd",
     "tests/test_uid_probe.py": "9dfd96936df1a5545fba93e4e81e0816c17bcee3b19dc322be1775ea51e3b4de",
     "tests/test_uid_domain.py": "a47ccbdd651610437ada9ba5364b74fa5c9079c3929580f08bbdfafe269133ba",
     ".github/workflows/native-uid-experiments.yml": "6782d83a20641df572bfe8d95e5f6dc5d07ca96d445ab8efe63ff19e100b14ac",
@@ -21,7 +21,7 @@
     "experimental_subset": 18
   },
   "current_user_inventory": "blocked by unreadable zombie birth metadata; never assumed empty",
-  "privileged_ci": "repaired revision pending",
+  "privileged_ci": "blocked: exact syscall EINVAL under investigation",
   "eventu_integration": "private reconciled patch; original unchanged; branch-policy decision pending",
   "workflow_fix_review": {
     "verdict": "PASS",
@@ -43,6 +43,11 @@
       "run": 38584608922,
       "result": "UID execution failed closed; failure artifact retained",
       "source": "1fd108df30fbabf96a667411b4d6b259cb0ef607"
+    },
+    {
+      "run": 38586940156,
+      "result": "worker and cleaner EINVAL; failed before readiness, empty final domain",
+      "source": "4c81976d0972aca97079e0aa8c641ff4cd589d59"
     }
   ],
   "repair_review": {
@@ -51,5 +56,10 @@
     "unchanged": true,
     "targeted_tests": 18,
     "prior_false_passes_fixed": true
+  },
+  "operation_label_review": {
+    "verdict": "PASS",
+    "restricted": true,
+    "unchanged": true
   }
 }

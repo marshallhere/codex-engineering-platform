@@ -64,12 +64,18 @@ def guard() -> None:
 def drop(uid: int) -> None:
     if not 62000 <= uid < 65000 or os.getuid() != 0 or os.geteuid() != 0:
         raise RuntimeError("refusing unsafe fixture identity")
-    resource.setrlimit(resource.RLIMIT_NPROC, (32, 32))
-    resource.setrlimit(resource.RLIMIT_NOFILE, (64, 64))
-    resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
-    os.setgroups([])
-    os.setgid(uid)
-    os.setuid(uid)
+    def setup(name, function, *arguments):
+        try:
+            function(*arguments)
+        except OSError as exc:
+            raise RuntimeError(f"privilege setup {name}: {exc}") from exc
+
+    setup("RLIMIT_NPROC", resource.setrlimit, resource.RLIMIT_NPROC, (32, 32))
+    setup("RLIMIT_NOFILE", resource.setrlimit, resource.RLIMIT_NOFILE, (64, 64))
+    setup("RLIMIT_CORE", resource.setrlimit, resource.RLIMIT_CORE, (0, 0))
+    setup("setgroups", os.setgroups, [])
+    setup("setgid", os.setgid, uid)
+    setup("setuid", os.setuid, uid)
     # Darwin includes the effective GID in getgroups(); reject every foreign
     # group rather than incorrectly requiring an impossible empty primary list.
     if (
@@ -84,11 +90,14 @@ def drop(uid: int) -> None:
             f"euid={os.geteuid()} gid={os.getgid()} "
             f"egid={os.getegid()} groups={os.getgroups()}"
         )
-    for restore in (os.setuid, os.seteuid, os.setgid, os.setegid):
+    for name, restore in (("setuid", os.setuid), ("seteuid", os.seteuid),
+                          ("setgid", os.setgid), ("setegid", os.setegid)):
         try:
             restore(0)
         except PermissionError:
             continue
+        except OSError as exc:
+            raise RuntimeError(f"root restoration {name} returned unexpected error: {exc}") from exc
         raise RuntimeError("fixture retained root identity")
 
 
