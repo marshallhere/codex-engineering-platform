@@ -12,7 +12,7 @@ import unittest
 
 from cep.lifecycle import process_identity
 from native import uid_probe
-from native.uid_journal import JournalError, reserve, reserved_uids
+from native.uid_journal import JournalError, Reservation, reserve, reserved_uids
 from unittest.mock import patch
 
 
@@ -26,6 +26,23 @@ class UIDQuarantineTests(unittest.TestCase):
             patch.object(uid_probe, "inventory_uid", return_value=[]),
         ):
             self.assertEqual(uid_probe.choose_uid(), 62018)
+
+    def test_inventory_error_diagnostic_preserves_quarantine(self):
+        reservation = Reservation(62017, "a" * 32)
+        result = {
+            "error_count": 1,
+            "inventory_errors": 1,
+            "cleaner_status": 0,
+            "survivors": 0,
+            "worker_status": 0,
+            "errors": ["inventory:InventoryError:temporary churn"],
+        }
+        with patch.object(uid_probe.uid_journal, "release") as release:
+            with self.assertRaisesRegex(
+                RuntimeError, "inventory:InventoryError:temporary churn"
+            ):
+                uid_probe.release_verified(62017, reservation, result)
+        release.assert_not_called()
 
     def test_orchestrator_death_after_fork_keeps_uid_reserved(self):
         uid = 62017

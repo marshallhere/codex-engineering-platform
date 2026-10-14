@@ -545,3 +545,18 @@ Independent workflow review noted staging must visibly fail closed if any setup 
 fails. GitHub's Bash shell already injects `-e -o pipefail`, but the step now states
 `set -euo pipefail` explicitly so this security property is clear and remains robust if
 the workflow shell configuration changes. The expanded macOS test run remains pending.
+Expanded root macOS CI run: both UID test modules passed, then the actual fixed UID probe
+observed one inventory error during `posix-spawn`. The process inventory later found no
+survivors, but the release gate correctly retained quarantine and failed closed. The
+report exposed the count but omitted the underlying bounded diagnostic. `run_case`
+results now preserve up to eight existing diagnostics, and the quarantine error includes
+them; this is observability only and does not relax the release gate. A fresh disposable
+macOS run is needed to classify the host error and establish the final result.
+A follow-up test now proves that the retained inventory diagnostic appears in the
+failure and the release routine is never called when inventory error counters are
+nonzero. This confirms the observability change cannot turn a transient scan into a
+successful release.
+The independent review caught a malformed-diagnostic edge case: a non-string item in a
+reported error list could make JSON formatting raise `TypeError`. Reporting now filters
+to bounded strings, and a focused test verifies malformed diagnostics still fail closed
+without releasing the journal record.

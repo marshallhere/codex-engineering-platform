@@ -187,7 +187,17 @@ def release_verified(uid, reservation, result):
         or type(result.get("worker_status")) is not int
         or result.get("worker_status") not in {0, int(signal.SIGKILL)}
     ):
-        raise RuntimeError("UID reservation remains quarantined after ambiguous cleanup")
+        details = {"error_count": None, "inventory_errors": None, "errors": []}
+        if isinstance(result, dict):
+            details["error_count"] = result.get("error_count")
+            details["inventory_errors"] = result.get("inventory_errors")
+            errors = result.get("errors", [])
+            if isinstance(errors, list):
+                details["errors"] = [error for error in errors[:8] if type(error) is str]
+        raise RuntimeError(
+            "UID reservation remains quarantined after ambiguous cleanup: "
+            + json.dumps(details, sort_keys=True)
+        )
     snapshots = []
     for _ in range(2):
         processes = inventory_uid(uid)
@@ -495,6 +505,7 @@ def run_case(uid: int, mode: str) -> dict:
         "cleaner_status": cleaner_status,
         "error_count": error_count,
         "inventory_errors": inventory_errors,
+        "errors": errors[:8],
         "survivors": 0,
         "elapsed_seconds": round(time.monotonic() - started, 3),
     }
