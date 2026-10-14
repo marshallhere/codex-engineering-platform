@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "component_roots": [
+    "src/components/ui/",
+    "components/ui/",
+    "frontend/src/components/ui/"
+  ],
+  "ui_roots": [
+    "src/",
+    "app/",
+    "components/",
+    "frontend/src/",
+    "frontend/app/",
+    "frontend/components/"
+  ],
+  "ignored_paths": [
+    "src/generated/",
+    "frontend/src/generated/"
+  ],
+  "token_files": [
+    "src/styles/tokens.css",
+    "src/app/globals.css",
+    "app/globals.css",
+    "frontend/src/styles/tokens.css",
+    "frontend/src/app/globals.css"
+  ],
+  "component_catalog": "docs/design/component-catalog.json",
+  "require_catalog_entry_for_changed_components": true,
+  "require_story_for_changed_components": true,
+  "reject_literal_colors_in_changed_ui": true,
+  "prohibited_baseline_roots": [
+    "tests/visual/snapshots/",
+    "frontend/tests/visual/snapshots/"
+  ],
+  "baseline_authorization": "deny_by_default"
+}

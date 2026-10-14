@@ -1,0 +1,7 @@
+# Advisory extra boundaries for commands requested OUTSIDE the Codex sandbox.
+# Validate with `codex execpolicy check` after installing. These are not a whole-shell firewall.
+prefix_rule(pattern = ["git", "push", "--force"], decision = "forbidden", justification = "Force pushing is not delegated to agents.")
+prefix_rule(pattern = ["git", "reset", "--hard"], decision = "forbidden", justification = "Potential data loss; perform this manually outside Codex.")
+prefix_rule(pattern = ["terraform", "destroy"], decision = "forbidden", justification = "Infrastructure destruction requires a separate human-controlled workflow.")
+prefix_rule(pattern = ["kubectl", "delete"], decision = "prompt", justification = "Cluster resource deletion requires human confirmation.")
+prefix_rule(pattern = ["docker", "system", "prune"], decision = "prompt", justification = "Pruning Docker artifacts may destroy local development state.")

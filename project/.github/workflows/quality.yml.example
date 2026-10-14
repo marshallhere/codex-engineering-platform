@@ -1,0 +1,20 @@
+# Activate as .github/workflows/quality.yml only after adapting dependency installs
+# and filling quality/gates.json. Protect the PR with this status check.
+name: Engineering quality gates
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      # Add your pinned Python, Node, Java, uv, gitleaks, semgrep and trivy
+      # setup actions/install steps here. Use exact versions or commit SHAs.
+      - name: Run repository-defined quality gates
+        run: python3 scripts/quality_gate.py --stage pr

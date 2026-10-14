@@ -1,0 +1,12 @@
+{
+  "max_iterations": 10,
+  "max_minutes": 180,
+  "max_stagnant": 3,
+  "codex_timeout_seconds": 1800,
+  "checks": [
+    {"id": "spec-structure", "kind": "spec", "argv": ["openspec", "validate", "REPLACE_WITH_CHANGE_ID", "--strict", "--no-interactive"], "timeout_seconds": 120},
+    {"id": "test-suite", "kind": "tests", "argv": ["python3", "-m", "pytest", "-q"], "timeout_seconds": 900},
+    {"id": "security-scan", "kind": "security", "argv": ["semgrep", "scan", "--config", "auto", "--error"], "timeout_seconds": 600},
+    {"id": "quality", "kind": "quality", "argv": ["ruff", "check", "."], "timeout_seconds": 120}
+  ]
+}

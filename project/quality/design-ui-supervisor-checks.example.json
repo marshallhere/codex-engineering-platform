@@ -1,0 +1,54 @@
+{
+  "note": "Merge into TRUSTED external supervisor policy for UI. All commands must be installed and validated in real repo; no-op scripts are unacceptable. Configure Storybook Vitest + addon-a11y and Playwright E2E/visual/a11y files before enforcement.",
+  "require_ui_gate": true,
+  "checks": [
+    {
+      "id": "ui-static-guard",
+      "kind": "design",
+      "argv": [
+        "python3",
+        "scripts/design_gate.py",
+        "--config",
+        "quality/design-policy.json",
+        "--changed-from",
+        "origin/main"
+      ],
+      "timeout_seconds": 120
+    },
+    {
+      "id": "ui-storybook-component-tests",
+      "kind": "storybook",
+      "cwd": "frontend",
+      "argv": [
+        "npm",
+        "run",
+        "test:storybook"
+      ],
+      "timeout_seconds": 900
+    },
+    {
+      "id": "ui-playwright-responsive-visual",
+      "kind": "browser",
+      "cwd": "frontend",
+      "argv": [
+        "npx",
+        "playwright",
+        "test",
+        "tests/visual"
+      ],
+      "timeout_seconds": 900
+    },
+    {
+      "id": "ui-accessibility",
+      "kind": "accessibility",
+      "cwd": "frontend",
+      "argv": [
+        "npx",
+        "playwright",
+        "test",
+        "tests/accessibility"
+      ],
+      "timeout_seconds": 900
+    }
+  ]
+}

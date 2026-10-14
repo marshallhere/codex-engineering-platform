@@ -1,0 +1,10 @@
+# After filling in a real team/user, rename to .github/CODEOWNERS
+# and enable required CODEOWNERS review with branch protection.
+/AGENTS.md @REPLACE_WITH_OWNER
+/.codex/ @REPLACE_WITH_OWNER
+/.agents/ @REPLACE_WITH_OWNER
+/docs/engineering/ @REPLACE_WITH_OWNER
+/scripts/ @REPLACE_WITH_OWNER
+/quality/ @REPLACE_WITH_OWNER
+/.github/workflows/ @REPLACE_WITH_OWNER
+/.pre-commit-config.yaml @REPLACE_WITH_OWNER

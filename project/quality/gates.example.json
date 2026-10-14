@@ -1,0 +1,137 @@
+{
+  "_note": "EXAMPLE ONLY. Copy to gates.json, adjust paths and test commands, and install tools. This file is not considered authoritative by the default gate runner.",
+  "stages": {
+    "precommit": [
+      {
+        "id": "git-staged-whitespace",
+        "argv": [
+          "git",
+          "diff",
+          "--cached",
+          "--check"
+        ]
+      },
+      {
+        "id": "secrets",
+        "argv": [
+          "gitleaks",
+          "dir",
+          "--no-banner",
+          "--redact",
+          "."
+        ],
+        "timeout_seconds": 180
+      }
+    ],
+    "pr": [
+      {
+        "id": "python-ruff",
+        "cwd": "backend",
+        "argv": [
+          "uv",
+          "run",
+          "ruff",
+          "check",
+          "."
+        ]
+      },
+      {
+        "id": "python-pytest",
+        "cwd": "backend",
+        "argv": [
+          "uv",
+          "run",
+          "pytest",
+          "-q"
+        ],
+        "timeout_seconds": 600
+      },
+      {
+        "id": "typescript-typecheck",
+        "cwd": "frontend",
+        "argv": [
+          "npm",
+          "run",
+          "typecheck"
+        ]
+      },
+      {
+        "id": "typescript-lint",
+        "cwd": "frontend",
+        "argv": [
+          "npm",
+          "run",
+          "lint"
+        ]
+      },
+      {
+        "id": "typescript-unit",
+        "cwd": "frontend",
+        "argv": [
+          "npm",
+          "run",
+          "test",
+          "--",
+          "--run"
+        ]
+      },
+      {
+        "id": "spring-tests",
+        "cwd": "java-service",
+        "argv": [
+          "./mvnw",
+          "verify"
+        ],
+        "timeout_seconds": 1200
+      },
+      {
+        "id": "secrets",
+        "argv": [
+          "gitleaks",
+          "dir",
+          "--no-banner",
+          "--redact",
+          "."
+        ]
+      },
+      {
+        "id": "sast",
+        "argv": [
+          "semgrep",
+          "scan",
+          "--config",
+          "auto",
+          "--error",
+          "."
+        ],
+        "timeout_seconds": 1200
+      },
+      {
+        "id": "image-iac-vulnerabilities",
+        "argv": [
+          "trivy",
+          "fs",
+          "--scanners",
+          "vuln,misconfig,secret",
+          "--exit-code",
+          "1",
+          "--severity",
+          "HIGH,CRITICAL",
+          "."
+        ]
+      }
+    ],
+    "release": [
+      {
+        "id": "playwright-e2e",
+        "cwd": "frontend",
+        "argv": [
+          "npx",
+          "playwright",
+          "test"
+        ],
+        "timeout_seconds": 1800
+      }
+    ]
+  }
+}

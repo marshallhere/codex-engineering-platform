@@ -1,0 +1,7 @@
+# Project-layer customization. Codex must trust project config first.
+[agents]
+max_concurrent_threads_per_session = 5
+
+[features]
+multi_agent = true
+hooks = true

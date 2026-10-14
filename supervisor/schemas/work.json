@@ -1,0 +1,10 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["phase", "summary", "remaining_work"],
+  "properties": {
+    "phase": {"type": "string", "enum": ["implement", "polish"]},
+    "summary": {"type": "string"},
+    "remaining_work": {"type": "array", "items": {"type": "string"}}
+  }
+}

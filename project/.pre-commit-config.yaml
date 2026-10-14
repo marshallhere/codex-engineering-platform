@@ -1,0 +1,14 @@
+# Install `pre-commit` and `gitleaks` before enabling; update versions/tools with normal review.
+repos:
+  - repo: local
+    hooks:
+      - id: staged-policy
+        name: Reject sensitive paths; flag policy changes
+        entry: python3 scripts/staged_policy.py
+        language: system
+        pass_filenames: false
+      - id: secret-scan
+        name: Gitleaks whole-working-tree scan
+        entry: gitleaks dir --no-banner --redact .
+        language: system
+        pass_filenames: false

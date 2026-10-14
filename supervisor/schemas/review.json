@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["phase", "verdict", "summary", "blocking_findings"],
+  "properties": {
+    "phase": {"type": "string", "enum": ["review"]},
+    "verdict": {"type": "string", "enum": ["PASS", "FAIL"]},
+    "summary": {"type": "string"},
+    "blocking_findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["severity", "file", "reason"],
+        "properties": {
+          "severity": {"type": "string", "enum": ["critical", "high", "medium"]},
+          "file": {"type": "string"},
+          "reason": {"type": "string"}
+        }
+      }
+    }
+  }
+}
