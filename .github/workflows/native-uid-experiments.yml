@@ -21,6 +21,7 @@ jobs:
           echo "CEP_UID_STAGE=$stage" >> "$GITHUB_ENV"
           sudo /bin/chmod 700 "$stage"
           sudo /bin/mkdir -p "$stage/native" "$stage/cep" "$stage/tests"
+          sudo /bin/chmod 700 "$stage/native" "$stage/cep" "$stage/tests"
           sudo /bin/cp native/uid_domain.py native/uid_probe.py native/uid_journal.py "$stage/native/"
           sudo /bin/cp src/cep/__init__.py src/cep/lifecycle.py "$stage/cep/"
           sudo /bin/cp tests/test_uid_quarantine.py "$stage/tests/"

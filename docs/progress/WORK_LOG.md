@@ -526,3 +526,8 @@ isolated test imports. The controller-interruption regression passed its step; t
 fixed probe step failed to open the former root-level path before executing. The
 workflow now points at the staged `native/uid_probe.py`. No test or guard was changed
 to mask the failure; a new macOS run is required to verify the repair.
+A second macOS CI iteration passed the new root-run controller-interruption regression
+and reached the UID probe. The root probe guard rejected the newly nested `native/`
+staging directory because `mkdir` left it at mode 0755; the probe failed closed before
+running any fixture. The workflow now explicitly makes all staged subdirectories 0700.
+This preserves the guard and tightens staging; another disposable macOS run is required.
