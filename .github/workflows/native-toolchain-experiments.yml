@@ -1,0 +1,329 @@
+name: native-toolchain-experiments
+on:
+  workflow_dispatch:
+  push:
+    branches: [feat/native-toolchain-build-probes]
+    paths: ["native/**", "tests/test_uid_*.py", "tests/test_build_probe.py", ".github/workflows/native-toolchain-experiments.yml"]
+permissions:
+  contents: read
+concurrency:
+  group: native-toolchain-build-probes-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  disposable-builds:
+    if: github.repository == 'marshallhere/codex-engineering-platform' && github.ref == 'refs/heads/feat/native-toolchain-build-probes'
+    runs-on: macos-14
+    timeout-minutes: 10
+    steps:
+      - name: Initialize incomplete evidence before checkout or downloads
+        shell: bash
+        run: |
+          evidence=$(mktemp -d "$RUNNER_TEMP/cep-build-artifacts.XXXXXX")
+          echo "CEP_BUILD_ARTIFACTS=$evidence" >> "$GITHUB_ENV"
+          printf '%s\n' '{"experiment":"not_run","production_qualified":false,"error":"staging or probe did not finish"}' > "$evidence/build-experiment.json"
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # official releases-v4 commit
+        with:
+          persist-credentials: false
+      - name: Create separate protected code, SDK and work roots
+        shell: bash
+        run: |
+          code=$(sudo /usr/bin/mktemp -d /private/tmp/cep-build-code.XXXXXX)
+          echo "CEP_BUILD_CODE=$code" >> "$GITHUB_ENV"
+          sdk=$(sudo /usr/bin/mktemp -d /private/tmp/cep-build-sdk.XXXXXX)
+          echo "CEP_BUILD_SDK=$sdk" >> "$GITHUB_ENV"
+          work=$(sudo /usr/bin/mktemp -d /private/tmp/cep-build-work.XXXXXX)
+          echo "CEP_BUILD_WORK=$work" >> "$GITHUB_ENV"
+          sudo /bin/chmod 700 "$code" "$sdk" "$work"
+          sudo /bin/cp -P native/uid_domain.py native/uid_probe.py native/build_probe.py "$code/"
+          sudo /usr/bin/env -i PATH=/usr/bin:/bin /usr/bin/python3 -B -I - "$code" <<'PY'
+          import os
+          from pathlib import Path
+          import stat
+          import sys
+          root = Path(sys.argv[1])
+          for name in ("uid_domain.py", "uid_probe.py", "build_probe.py"):
+              path = root / name
+              descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW)
+              try:
+                  info = os.fstat(descriptor)
+                  if not stat.S_ISREG(info.st_mode) or info.st_uid != 0 or info.st_nlink != 1:
+                      raise RuntimeError("experiment source must be an independent root-owned regular file")
+                  os.fchmod(descriptor, 0o600)
+              finally:
+                  os.close(descriptor)
+          PY
+      - name: Verify pinned archives and stage immutable SDK files
+        shell: bash
+        run: |
+          sudo /usr/bin/env -i PATH=/usr/bin:/bin GITHUB_ACTIONS=true RUNNER_ENVIRONMENT=github-hosted CEP_UID_EXPERIMENT=disposable-v1 /usr/bin/python3 -B -I - "$CEP_BUILD_CODE" "$CEP_BUILD_SDK" "$CEP_BUILD_WORK" <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path, PurePosixPath
+          import platform
+          import posixpath
+          import shutil
+          import stat
+          import subprocess
+          import sys
+          import tarfile
+          import unicodedata
+
+          if (sys.platform != "darwin" or os.getuid() != 0 or os.geteuid() != 0
+                  or os.environ.get("GITHUB_ACTIONS") != "true"
+                  or os.environ.get("RUNNER_ENVIRONMENT") != "github-hosted"
+                  or os.environ.get("CEP_UID_EXPERIMENT") != "disposable-v1"):
+              raise RuntimeError("disposable hosted macOS root staging required")
+          code, sdk, work = (Path(value) for value in sys.argv[1:])
+          for directory, prefix in ((code, "cep-build-code."), (sdk, "cep-build-sdk."), (work, "cep-build-work.")):
+              info = directory.lstat()
+              if (directory.parent != Path("/private/tmp") or not directory.name.startswith(prefix)
+                      or directory.resolve() != directory or not stat.S_ISDIR(info.st_mode)
+                      or info.st_uid != 0 or stat.S_IMODE(info.st_mode) != 0o700):
+                  raise RuntimeError("unsafe experiment staging directory")
+          for name in ("uid_domain.py", "uid_probe.py", "build_probe.py"):
+              info = (code / name).lstat()
+              if (not stat.S_ISREG(info.st_mode) or info.st_uid != 0
+                      or info.st_nlink != 1 or stat.S_IMODE(info.st_mode) != 0o600):
+                  raise RuntimeError("unsafe experiment source")
+          sys.path.insert(0, str(code))
+          from build_probe import sdk_tree_digest
+
+          # Official primary release metadata, checked before introducing these pins:
+          # https://api.github.com/repos/astral-sh/uv/releases/tags/0.9.9
+          # https://api.github.com/repos/astral-sh/python-build-standalone/releases/tags/20251014
+          # https://nodejs.org/dist/v24.11.1/SHASUMS256.txt
+          # https://go.dev/dl/?mode=json&include=all
+          pins = {
+              "arm64": {
+                  "triple": "aarch64-apple-darwin", "node_arch": "arm64", "go_arch": "arm64",
+                  "uv": "737e1c2c4f97577aa7764141846e27de915eebb3b2a0f467451089a64824d2f7",
+                  "python": "52721745b0fa3196e4d0381fa5c06dda1d54343b90d49d90c3bba52d1171bd98",
+                  "node": "b05aa3a66efe680023f930bd5af3fdbbd542794da5644ca2ad711d68cbd4dc35",
+                  "go": "76812b213b1b2302c978d28fa52fa92d541704b9e7d9d5db8002c50e4018c4c5",
+              },
+              "x86_64": {
+                  "triple": "x86_64-apple-darwin", "node_arch": "x64", "go_arch": "amd64",
+                  "uv": "8a755971dbf0b394cb61607c3d21e81affd62a22cfd306351eb518be7a3f0a89",
+                  "python": "7c33b153a69c6255e6f2659cf39738f316b03969d6230d7bc47c73b7fde9a0d4",
+                  "node": "096081b6d6fcdd3f5ba0f5f1d44a47e83037ad2e78eada26671c252fe64dd111",
+                  "go": "587b59182488b23aa6e5fc25110405a3e0e5b38ed2f5b2f46ed13c32aee356fe",
+              },
+          }
+          architecture = platform.machine()
+          if architecture not in pins:
+              raise RuntimeError("unreviewed runner architecture")
+          pin = pins[architecture]
+          triple, node_arch, go_arch = pin["triple"], pin["node_arch"], pin["go_arch"]
+          archives = {
+              "uv": ("0.9.9", "https://github.com/astral-sh/uv/releases/download/0.9.9/uv-" + triple + ".tar.gz", "uv-" + triple, "uv"),
+              "python": ("3.13.9", "https://github.com/astral-sh/python-build-standalone/releases/download/20251014/cpython-3.13.9%2B20251014-" + triple + "-install_only_stripped.tar.gz", "python", "bin/python3.13"),
+              "node": ("24.11.1", "https://nodejs.org/dist/v24.11.1/node-v24.11.1-darwin-" + node_arch + ".tar.gz", "node-v24.11.1-darwin-" + node_arch, "bin/node"),
+              "go": ("1.27.2", "https://go.dev/dl/go1.27.2.darwin-" + go_arch + ".tar.gz", "go", "bin/go"),
+          }
+          archive_root = code / "archives"
+          archive_root.mkdir(mode=0o700)
+          provenance = {"production_qualified": False, "architecture": architecture, "archives": {}, "aliases": []}
+          manifest = {"schema_version": 1, "sdks": {}}
+
+          def name_checked(name):
+              path = PurePosixPath(name)
+              if (not name or path.is_absolute() or ".." in path.parts
+                      or "\\" in name or "\x00" in name):
+                  raise RuntimeError("unsafe archive member path")
+              return str(path)
+
+          for name, (version, url, prefix, executable) in archives.items():
+              archive = archive_root / (name + ".tar.gz")
+              subprocess.run(["/usr/bin/curl", "--disable", "--fail", "--location", "--silent", "--show-error",
+                              "--proto", "=https", "--proto-redir", "=https", "--tlsv1.2", "--connect-timeout", "15",
+                              "--max-time", "90", "--max-filesize", "150000000", "--output", str(archive), url], check=True, timeout=95)
+              with archive.open("rb") as source:
+                  archive_digest = hashlib.sha256()
+                  for chunk in iter(lambda: source.read(1024 * 1024), b""):
+                      archive_digest.update(chunk)
+              actual = archive_digest.hexdigest()
+              if actual != pin[name]:
+                  raise RuntimeError("pinned SDK archive digest mismatch: " + name)
+              provenance["archives"][name] = {"version": version, "url": url, "sha256": actual}
+              target = sdk / name
+              with tarfile.open(archive, "r:gz") as bundle:
+                  members = {}
+                  paths = {}
+                  total = 0
+                  for member in bundle.getmembers():
+                      member_name = name_checked(member.name)
+                      if member_name != prefix and not member_name.startswith(prefix + "/"):
+                          raise RuntimeError("archive escapes declared SDK prefix")
+                      if member_name in members:
+                          raise RuntimeError("duplicate archive path")
+                      if member.mode & 0o7000 or member.size < 0 or not (member.isfile() or member.isdir() or member.issym() or member.islnk()):
+                          raise RuntimeError("special or privileged SDK archive member")
+                      if member_name == prefix and not member.isdir():
+                          raise RuntimeError("SDK archive prefix must be a directory")
+                      # Register implicit parents too: case/Unicode aliases and file-directory
+                      # collisions must fail during preflight, before any destination writes.
+                      components = PurePosixPath(member_name).parts
+                      for length in range(1, len(components) + 1):
+                          component_path = PurePosixPath(*components[:length]).as_posix()
+                          kind = "directory" if length < len(components) or member.isdir() else "file"
+                          key = unicodedata.normalize("NFD", component_path.casefold())
+                          prior = paths.get(key)
+                          if prior is not None and prior != (component_path, kind):
+                              raise RuntimeError("case/Unicode alias or file-directory archive conflict")
+                          paths[key] = (component_path, kind)
+                      members[member_name] = member
+                      total += member.size
+                      if len(members) > 40000 or len(paths) > 40000 or total > 1500000000:
+                          raise RuntimeError("SDK archive exceeds bounded size")
+
+                  def resolve_file(member_name, seen=()):
+                      if member_name in seen or len(seen) > 20 or member_name not in members:
+                          raise RuntimeError("unresolved or cyclic archive alias")
+                      member = members[member_name]
+                      if member.isfile():
+                          return member_name, member
+                      if not (member.issym() or member.islnk()) or PurePosixPath(member.linkname).is_absolute():
+                          raise RuntimeError("SDK aliases must resolve to in-archive regular files")
+                      linked = member.linkname if member.islnk() else posixpath.join(posixpath.dirname(member_name), member.linkname)
+                      linked = name_checked(posixpath.normpath(linked))
+                      if not linked.startswith(prefix + "/"):
+                          raise RuntimeError("SDK alias escapes archive prefix")
+                      return resolve_file(linked, (*seen, member_name))
+
+                  planned = []
+                  expanded_bytes = 0
+                  for member_name, member in members.items():
+                      relative = PurePosixPath(member_name).relative_to(prefix)
+                      if str(relative) == ".":
+                          continue
+                      # These experiments need Node itself, not npm/npx or package scripts.
+                      if name == "node" and str(relative) != "bin/node":
+                          continue
+                      if member.isdir():
+                          planned.append((relative, member_name, None, None))
+                          continue
+                      resolved_name, resolved = resolve_file(member_name)
+                      # Alias headers have size zero, but each alias becomes an independent
+                      # regular file. Count its resolved bytes before materializing any file.
+                      expanded_bytes += resolved.size
+                      if expanded_bytes > 1500000000:
+                          raise RuntimeError("materialized SDK exceeds bounded size")
+                      planned.append((relative, member_name, resolved_name, resolved))
+                  target.mkdir(mode=0o700)
+                  for relative, member_name, resolved_name, resolved in planned:
+                      destination = target.joinpath(*relative.parts)
+                      if resolved is None:
+                          destination.mkdir(parents=True, exist_ok=True, mode=0o700)
+                          continue
+                      destination.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+                      with bundle.extractfile(resolved) as source, destination.open("xb") as output:
+                          shutil.copyfileobj(source, output)
+                      destination.chmod(0o555 if resolved.mode & 0o111 else 0o444)
+                      if member_name != resolved_name:
+                          provenance["aliases"].append({"sdk": name, "path": str(relative),
+                                                        "source": str(PurePosixPath(resolved_name).relative_to(prefix)),
+                                                        "sha256": hashlib.sha256(destination.read_bytes()).hexdigest()})
+              for directory in sorted((path for path in target.rglob("*") if path.is_dir()), reverse=True):
+                  directory.chmod(0o555)
+              target.chmod(0o555)
+              manifest["sdks"][name] = {"root": str(target), "executable": executable, "version": version,
+                                        "tree_sha256": sdk_tree_digest(target)}
+          sdk.chmod(0o711)
+          work.chmod(0o755)
+          (code / "evidence").mkdir(mode=0o700)
+          for name, data in (("sdk-manifest.json", manifest), ("sdk-provenance.json", provenance)):
+              destination = code / name
+              destination.write_text(json.dumps(data, indent=2) + "\n")
+              destination.chmod(0o600)
+          PY
+      - name: Run fixed offline builds under disposable UIDs
+        shell: bash
+        run: |
+          set +e
+          sudo /usr/bin/env -i PATH=/usr/bin:/bin GITHUB_ACTIONS=true RUNNER_ENVIRONMENT=github-hosted CEP_UID_EXPERIMENT=disposable-v1 /usr/bin/python3 -B -I "$CEP_BUILD_CODE/build_probe.py" --qualify --manifest "$CEP_BUILD_CODE/sdk-manifest.json" --work-root "$CEP_BUILD_WORK" --evidence-root "$CEP_BUILD_CODE/evidence" > "$CEP_BUILD_ARTIFACTS/probe-stdout.json" 2> "$CEP_BUILD_ARTIFACTS/probe-stderr.txt"
+          probe_status=$?
+          set -e
+          /usr/bin/python3 -I - "$CEP_BUILD_ARTIFACTS" "$probe_status" <<'PY'
+          import json
+          from pathlib import Path
+          import sys
+          root, status = Path(sys.argv[1]), int(sys.argv[2])
+          invalid_report = False
+          try:
+              result = json.loads((root / "probe-stdout.json").read_text())
+              if not isinstance(result, dict) or result.get("production_qualified") is not False:
+                  raise ValueError("missing explicit experimental boundary")
+              result["driver_exit_code"] = status
+          except (OSError, ValueError):
+              invalid_report = True
+              result = {"experiment": "failed", "production_qualified": False,
+                        "driver_exit_code": status, "error": "probe did not produce a valid experimental report"}
+          (root / "build-experiment.json").write_text(json.dumps(result, indent=2) + "\n")
+          if invalid_report:
+              raise SystemExit(2)
+          PY
+          exit "$probe_status"
+      - name: Collect private probe evidence and remove only this run's roots
+        if: always()
+        shell: bash
+        run: |
+          sudo /usr/bin/env -i PATH=/usr/bin:/bin /usr/bin/python3 -I - "${CEP_BUILD_CODE:-}" "${CEP_BUILD_SDK:-}" "${CEP_BUILD_WORK:-}" "$CEP_BUILD_ARTIFACTS" "$(id -u)" "$(id -g)" <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          import shutil
+          import stat
+          import sys
+          code_arg, sdk_arg, work_arg, artifact_arg, uid_arg, gid_arg = sys.argv[1:]
+          artifacts = Path(artifact_arg)
+          if not artifacts.is_dir() or artifacts.is_symlink():
+              raise RuntimeError("missing artifact directory")
+          errors = []
+          for argument, prefix in ((code_arg, "cep-build-code."), (sdk_arg, "cep-build-sdk."), (work_arg, "cep-build-work.")):
+              if not argument:
+                  continue
+              root = Path(argument)
+              info = root.lstat()
+              if (root.parent != Path("/private/tmp") or not root.name.startswith(prefix)
+                      or root.resolve() != root or not stat.S_ISDIR(info.st_mode) or info.st_uid != 0):
+                  raise RuntimeError("refusing unrelated cleanup path")
+              if argument == code_arg:
+                  try:
+                      for name in ("sdk-manifest.json", "sdk-provenance.json", "evidence"):
+                          source = root / name
+                          if not source.exists() and not source.is_symlink():
+                              continue
+                          entries = (source, *source.rglob("*")) if source.is_dir() and not source.is_symlink() else (source,)
+                          for entry in entries:
+                              metadata = entry.lstat()
+                              if (metadata.st_uid != 0 or not (stat.S_ISREG(metadata.st_mode) or stat.S_ISDIR(metadata.st_mode))
+                                      or (stat.S_ISREG(metadata.st_mode) and metadata.st_nlink != 1)):
+                                  raise RuntimeError("unsafe probe evidence entry")
+                          if source.is_file():
+                              shutil.copyfile(source, artifacts / name)
+                          else:
+                              shutil.copytree(source, artifacts / name)
+                  except (OSError, RuntimeError) as error:
+                      errors.append({"root": prefix, "operation": "collect", "error": type(error).__name__})
+              try:
+                  shutil.rmtree(root)
+              except OSError as error:
+                  errors.append({"root": prefix, "error": type(error).__name__})
+          (artifacts / "cleanup.json").write_text(json.dumps({"ok": not errors, "errors": errors,
+                                                               "production_qualified": False}, indent=2) + "\n")
+          for path in (artifacts, *artifacts.rglob("*")):
+              if path.is_symlink():
+                  raise RuntimeError("unexpected symlink in retained probe evidence")
+              os.chown(path, int(uid_arg), int(gid_arg))
+              path.chmod(0o700 if path.is_dir() else 0o600)
+          if errors:
+              raise RuntimeError("experiment cleanup incomplete")
+          PY
+      - name: Retain failed and incomplete experiments
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # official v4.6.2 commit
+        with:
+          name: native-toolchain-experiment
+          path: ${{ env.CEP_BUILD_ARTIFACTS }}
+          if-no-files-found: error

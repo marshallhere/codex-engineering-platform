@@ -33,3 +33,11 @@ fails for anonymous numeric UIDs. Actual credential verification uses the bounde
 POSIX `getgroups` symbol from libSystem. Apple's
 [extension implementation](https://raw.githubusercontent.com/apple-oss-distributions/Libc/main/sys/getgroups.c)
 shows why account lookup is unsuitable. UID allocation also rejects existing GIDs.
+
+
+`build_probe.py --inspect` describes the separate fixed offline build experiments.
+The dedicated `native-toolchain-experiments` workflow verifies pinned SDK archives,
+materializes safe internal aliases, freezes root-owned SDK trees and executes fixed
+uv/Python, Node and Go recipes after dropping authority. Results establish only
+compatibility for those recipes; no experiment changes the shipping no-fork profile.
+See [build inputs, receipts and limits](../docs/TOOLCHAIN_EXPERIMENTS.md).
