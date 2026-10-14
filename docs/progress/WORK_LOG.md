@@ -531,3 +531,8 @@ and reached the UID probe. The root probe guard rejected the newly nested `nativ
 staging directory because `mkdir` left it at mode 0755; the probe failed closed before
 running any fixture. The workflow now explicitly makes all staged subdirectories 0700.
 This preserves the guard and tightens staging; another disposable macOS run is required.
+The next macOS run passed both the root interruption test and all fixed probes. Review of
+the uploaded artifact showed that `unittest` writes its verbose report to stderr, so the
+step log was retained only in Actions while the tee artifact was empty. The workflow now
+merges stderr into the retained log; a final run will verify the downloadable evidence
+is substantive before recording its digest.

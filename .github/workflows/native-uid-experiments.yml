@@ -31,7 +31,7 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          sudo /usr/bin/env -i PATH=/usr/bin:/bin PYTHONPATH="$CEP_UID_STAGE" /usr/bin/python3 -m unittest discover -s "$CEP_UID_STAGE/tests" -p test_uid_quarantine.py -v | tee uid-quarantine.log
+          sudo /usr/bin/env -i PATH=/usr/bin:/bin PYTHONPATH="$CEP_UID_STAGE" /usr/bin/python3 -m unittest discover -s "$CEP_UID_STAGE/tests" -p test_uid_quarantine.py -v 2>&1 | tee uid-quarantine.log
       - name: Run fixed synthetic experiments; production stays blocked
         shell: bash
         run: |
