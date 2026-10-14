@@ -49,9 +49,9 @@ without launching Codex.
 For your own clean Git repository, create an OpenSpec change with stable requirement
 IDs and an external policy mapping each requirement to real checks:
 
-The commands below expose the job interface. Live acceptance currently allows
-only the shipped Python demo contract and its protected grader; other projects
-block until their grading adapter is qualified.
+The commands below expose the job interface. Live acceptance supports the shipped Python demo and externally owned declarative
+JSON CLI cases for qualified in-process project work. See [real-project contracts](docs/REAL_PROJECTS.md).
+Fork-dependent builds, providers and rendered UI adapters remain blocked.
 
 ```sh
 cep run --repo /path/to/project --spec change-name --policy /path/to/private/policy.json --budget-minutes 30 --background
@@ -72,6 +72,7 @@ Simulation results never become live acceptance. Merge and deployment are separa
 [Technology packs](packs/README.md) declare detection, toolchains, commands,
 specialist roles and capabilities. Python and Go ship with the plugin; external
 packs need no core edits. Detection does not grant execution permission.
+`cep qualify-toolchains` verifies installed in-process recipes without granting forks.
 Fork-dependent commands, browser, providers and unknown stacks require qualification.
 
 UI work requires design, Storybook, browser and accessibility gates, component

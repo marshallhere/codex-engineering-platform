@@ -60,7 +60,14 @@ TOOLS = [
 
 class WorkerTools:
     def __init__(
-        self, repo: Path, scratch: Path, *, writable=False, sandbox=None, registry=None
+        self,
+        repo: Path,
+        scratch: Path,
+        *,
+        writable=False,
+        sandbox=None,
+        registry=None,
+        readable_tools=(),
     ):
         from .sandbox import NativeSandbox
 
@@ -69,6 +76,9 @@ class WorkerTools:
             raise ValueError("repository must be a directory")
         self.scratch = Path(scratch).resolve()
         self.scratch.mkdir(parents=True, exist_ok=True, mode=0o700)
+        self.readable_tools = tuple(
+            Path(p).resolve(strict=True) for p in readable_tools
+        )
         self.writable = writable is True
         self.registry = Path(registry).resolve() if registry else None
         self.sandbox = sandbox or NativeSandbox()
@@ -168,6 +178,8 @@ class WorkerTools:
                     "timeout_seconds must be finite, positive and at most 30"
                 )
             options = {"writable": self.writable}
+            if self.readable_tools:
+                options["readable"] = self.readable_tools
             if self.registry is not None:
                 options["registry"] = self.registry
             return self.sandbox.run(argv, self.repo, self.scratch, timeout, **options)
@@ -286,11 +298,16 @@ def main(argv=None):
     parser.add_argument("--writable", action="store_true")
     parser.add_argument("--readonly", action="store_true")
     parser.add_argument("--registry", type=Path)
+    parser.add_argument("--readable-tool", action="append", type=Path, default=[])
     args = parser.parse_args(argv)
     if args.writable and args.readonly:
         parser.error("choose one access mode")
     broker = WorkerTools(
-        args.repo, args.scratch, writable=args.writable, registry=args.registry
+        args.repo,
+        args.scratch,
+        writable=args.writable,
+        registry=args.registry,
+        readable_tools=args.readable_tool,
     )
     stream = sys.stdin.buffer
     while True:

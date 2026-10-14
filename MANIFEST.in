@@ -4,7 +4,7 @@ recursive-include packaging *.json *.py
 recursive-include config *.json
 recursive-include scripts *.py
 recursive-include packs *.md
-recursive-include docs *.md
+recursive-include docs *.md *.json
 recursive-include openspec *.md
 recursive-include tests *.py
 global-exclude __pycache__ *.py[cod] .DS_Store
@@ -85,3 +85,4 @@ include examples/python-task-cli/openspec/changes/list-unfinished/proposal.md
 include examples/python-task-cli/openspec/changes/list-unfinished/specs/task-cli/spec.md
 include examples/python-task-cli/openspec/changes/list-unfinished/tasks.md
 include examples/python-task-cli/task_cli.py
+

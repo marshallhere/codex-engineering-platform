@@ -17,7 +17,7 @@ acceptance.
 | Reviewed long-term memory | Workflows and historical utilities; automated promotion pending |
 | Storybook, visual QA and accessibility | Required policy categories and skills; live UI adapter pending |
 | Existing provider MCPs | Inventory only; project/account qualification required |
-| Go autonomous workers | Pack and fixture tested; fork-dependent execution unqualified |
+| Go autonomous workers | Pack, fixture and native version discovery tested; fork-dependent execution unqualified |
 | Linux/Windows live workers | Unsupported; fail closed |
 
 Worker project configuration accepts only the installer-owned CEP activation
@@ -28,9 +28,9 @@ detached-process probe against the broader Codex sandbox; failed evidence remain
 private. The complete native Codex tool surface requires adversarial live probes.
 
 Generic candidate-run tests are not an independent grader: untrusted code can
-exit before assertions or alter imported test behavior. Live acceptance therefore
-allows only the shipped demo contract with its external black-box grader. Other
-project adapters fail closed until qualified. Existing test namespaces are frozen,
+exit before assertions or alter imported test behavior. Live acceptance supports the shipped demo contract and externally owned declarative
+JSON CLI cases. Broader project execution and grading protocols fail closed until
+qualified; see [real-project contracts](REAL_PROJECTS.md). Existing test namespaces are frozen,
 including added package initializers and runner plugins.
 
 OpenSpec is pinned to 0.17.2. The inspected 1.14.1 dependency tree had high-severity
@@ -50,3 +50,9 @@ Administrative, test and instruction protections compare path names without case
 sensitivity. Native qualification covers case aliases of configuration, repository
 and parent directories on macOS, including paths with spaces. Project agent roles
 accept instruction/model fields only; authority overrides require qualification.
+
+Exact-file executable bindings and external packs are content-bound to jobs. Python
+and Node in-process work is verified; uv/Go version discovery does not authorize
+subprocesses. Raw security output is checked before evidence redaction; truncated
+or missing execution-limit outcomes fail protected cases. Full SDK/dependency
+attestation and general native descendant containment remain pending.

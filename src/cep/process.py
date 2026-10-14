@@ -49,7 +49,12 @@ def run_process(
     record_argv: list[str] | None = None,
     output_limit: int = 2_000_000,
     registry: Path | None = None,
+    redact_output: bool = True,
 ) -> dict:
+    if type(output_limit) is not int or not 1 <= output_limit <= 2_000_000:
+        raise ValueError("Positive bounded output limit required")
+    if type(redact_output) is not bool:
+        raise ValueError("Output redaction flag must be boolean")
     if not argv or not all(isinstance(a, str) and a and "\0" not in a for a in argv):
         raise ValueError("Process requires nonempty string argv")
     if isinstance(timeout, bool) or not math.isfinite(timeout) or timeout <= 0:
@@ -72,6 +77,7 @@ def run_process(
     timed_out, output_exceeded = False, False
     output = {"stdout": bytearray(), "stderr": bytearray()}
     count = 0
+    output_truncated = False
     selector = selectors.DefaultSelector()
     for name, pipe in (("stdout", proc.stdout), ("stderr", proc.stderr)):
         os.set_blocking(pipe.fileno(), False)
@@ -99,6 +105,7 @@ def run_process(
                 count += len(data)
                 output[key.data].extend(data)
                 if len(output[key.data]) > 200000:
+                    output_truncated = True
                     del output[key.data][:-200000]
                 if count > output_limit:
                     output_exceeded = True
@@ -119,12 +126,18 @@ def run_process(
             from .lifecycle import finish
 
             finish(proc.registration)
+    output_text = {
+        name: data.decode("utf-8", errors="replace") for name, data in output.items()
+    }
+    if redact_output:
+        output_text = {name: redact(value) for name, value in output_text.items()}
     return {
         "argv": [redact(a) for a in (record_argv or argv)],
         "exit_code": proc.returncode,
         "timed_out": timed_out,
         "output_exceeded": output_exceeded,
+        "output_truncated": output_truncated,
         "elapsed_seconds": time.monotonic() - start,
-        "stdout": redact(output["stdout"].decode("utf-8", errors="replace")),
-        "stderr": redact(output["stderr"].decode("utf-8", errors="replace")),
+        "stdout": output_text["stdout"],
+        "stderr": output_text["stderr"],
     }

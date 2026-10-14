@@ -240,6 +240,111 @@ class ControllerTests(unittest.TestCase):
         self.assertEqual(final["status"], "BLOCKED")
         self.assertEqual(self.transport.phases, [])
 
+    def test_json_grader_repairs_real_response_without_trusting_candidate_tests(self):
+        for check in self.policy["checks"]:
+            check["adapter"] = "protected-json-cli"
+            check["cases"] = [
+                {
+                    "id": check["id"],
+                    "kind": check["kind"],
+                    "requirements": ["DEMO-ANSWER"],
+                    "argv": [
+                        sys.executable,
+                        "-c",
+                        "import json; from feature import answer; print(json.dumps({'answer':answer()}))",
+                    ],
+                    "fixtures": {},
+                    "exit_code": 0,
+                    "stdout_json": {"answer": 42},
+                }
+            ]
+        write_json(self.policy_path, self.policy)
+        job = self.controller.submit(self.repo, "answer", self.policy_path, 60)
+        result = self.controller.run(job["id"])
+        self.assertEqual(result["status"], "WAITING_INPUT")
+        self.assertEqual(
+            self.transport.phases,
+            ["implement", "implement", "review", "polish", "review"],
+        )
+        proof = self.controller.evidence(job["id"])
+        self.assertTrue(all(c["passed"] for c in proof["checks"]))
+        self.assertTrue(all(c["gate"]["checks"] for c in proof["checks"]))
+
+    def test_json_case_cannot_claim_wrong_category_or_requirement_coverage(self):
+        check = self.policy["checks"][0]
+        check["adapter"] = "protected-json-cli"
+        check["cases"] = [
+            {
+                "id": "case",
+                "kind": "security",
+                "requirements": ["DEMO-ANSWER"],
+                "argv": [sys.executable, "-c", "print('no proof')"],
+                "fixtures": {},
+                "exit_code": 0,
+            }
+        ]
+        write_json(self.policy_path, self.policy)
+        with self.assertRaisesRegex(ValueError, "kind/requirements"):
+            load_policy(self.policy_path, self.repo, ["DEMO-ANSWER"])
+
+    def test_changed_selected_external_pack_invalidates_job(self):
+        pack = {
+            "schema_version": 1,
+            "id": "example",
+            "version": "1.0.0",
+            "description": "Frozen pack",
+            "detect": {"any_files": ["feature.py"]},
+            "toolchains": [
+                {
+                    "name": "python",
+                    "version_command": ["python", "--version"],
+                    "version_constraint": ">=3.11",
+                }
+            ],
+            "commands": [
+                {
+                    "id": "tests",
+                    "action": "test",
+                    "argv": ["python", "-m", "unittest"],
+                    "cwd": ".",
+                    "timeout_seconds": 30,
+                    "required": True,
+                }
+            ],
+            "roles": [],
+            "required_capabilities": [],
+        }
+        manifest = self.root / "pack.json"
+        write_json(manifest, pack)
+        self.policy["pack_manifest"] = str(manifest)
+        write_json(self.policy_path, self.policy)
+        job = self.controller.submit(self.repo, "answer", self.policy_path, 60)
+        pack["description"] = "Changed pack"
+        write_json(manifest, pack)
+        self.assertEqual(self.controller.run(job["id"])["status"], "BLOCKED")
+        self.assertEqual(self.transport.phases, [])
+
+    def test_duplicate_policy_keys_are_rejected_before_submission(self):
+        self.policy_path.write_text(
+            '{"schema_version":1,"schema_version":1,"checks":[]}'
+        )
+        with self.assertRaisesRegex(ValueError, "duplicate"):
+            load_policy(self.policy_path, self.repo, ["DEMO-ANSWER"])
+
+    def test_live_transport_type_with_simulated_boundary_cannot_accept(self):
+        from cep.transport import CodexTransport
+
+        class TransportDouble(CodexTransport):
+            __init__ = SimulatedTransport.__init__
+            invoke = SimulatedTransport.invoke
+
+        self.controller.transport = TransportDouble()
+        result = self.controller.run(self.job["id"])
+        self.assertEqual(result["status"], "WAITING_INPUT")
+        self.assertEqual(
+            self.controller.evidence(self.job["id"])["execution_mode"], "simulation"
+        )
+
 
 class ProtectedInstructionTests(unittest.TestCase):
     def test_added_and_case_aliased_instructions_are_frozen(self):

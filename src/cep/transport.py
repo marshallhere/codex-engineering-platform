@@ -35,12 +35,18 @@ def configured_model() -> str | None:
 
 
 class CodexTransport:
-    def __init__(self, sandbox: NativeSandbox, model: str | None = None):
+    def __init__(
+        self, sandbox: NativeSandbox, model: str | None = None, *, tool_bindings=None
+    ):
         self.sandbox, self.model = sandbox, model
+        self.tool_bindings = [] if tool_bindings is None else tool_bindings
 
     def invoke(
         self, repo: Path, artifact: Path, phase: str, prompt: str, timeout: float
     ) -> dict:
+        from .toolchains import validate_bindings
+
+        tools = validate_bindings(self.tool_bindings, repo)
         config = repo / ".codex/config.toml"
         if config.exists():
             allowed = {
@@ -96,7 +102,9 @@ class CodexTransport:
             raise ValueError("Attempt output must be unique")
         scratch = artifact / "scratch"
         scratch.mkdir()
-        profile = self.sandbox.permissions(repo, scratch, writable=phase != "review")
+        profile = self.sandbox.permissions(
+            repo, scratch, writable=phase != "review", readable=tools
+        )
         code_root = Path(__file__).resolve().parents[1]
         broker_args = [
             str(Path(sys.executable).resolve()),
@@ -113,6 +121,8 @@ class CodexTransport:
             str(artifact / "registrations"),
             "--readonly" if phase == "review" else "--writable",
         ]
+        for tool in tools:
+            broker_args.extend(["--readable-tool", str(tool)])
         broker = (
             "mcp_servers.cep_worker={command="
             + json.dumps(broker_args[0])

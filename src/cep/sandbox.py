@@ -150,6 +150,8 @@ class NativeSandbox:
         writable: bool = False,
         readable: tuple[Path, ...] = (),
         registry: Path | None = None,
+        raw_output: bool = False,
+        output_limit: int = 2_000_000,
     ) -> dict:
         return run_process(
             self.command(argv, repo, scratch, writable=writable, readable=readable),
@@ -157,6 +159,8 @@ class NativeSandbox:
             timeout,
             env=clean_env(scratch),
             registry=registry or scratch.parent / "registrations",
+            redact_output=not raw_output,
+            output_limit=output_limit,
         )
 
     def qualify(
