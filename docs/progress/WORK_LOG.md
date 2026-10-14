@@ -465,3 +465,19 @@ pass, npm audit is clean, and publication scans of history/index/worktree pass.
 Distribution verification now passes 174 checks, including all 21 archive controls
 from the extracted sdist outside this checkout. Portable Ubuntu CI remains pending;
 OpenSpec final review/check task remains open until that exact revision passes.
+
+
+Final portable source `a007f0da390c06e48d4698c7b5506deed6c6af3c` passes push CI
+`38597609994` and PR CI `38597617265`, including Ubuntu's full 213-test suite,
+57 historical tests, zero experimental security findings, package build and all 174
+outside-checkout verification checks. macOS shipping native-boundary tests also pass.
+The actual SDK probe/workflow bytes are unchanged from successful source `a9ef861`.
+Only the four narrowly scoped experimental OpenSpec tasks are marked complete.
+A stale pending label in the older UID evidence mapping is corrected to its already
+verified run; no evidence is discarded. No shipping runtime code changed.
+
+Next required boundary work remains independently enforced inherited sandbox rules,
+privileged executable exclusion, durable independent watchdog/recovery and UID
+quarantine/reuse, followed by adversarial resource and real framework/UI verification.
+Positive fixed SDK builds do not satisfy these requirements. No fork-enabled CEP job,
+Slice C, host installation, project merge or deployment is claimed complete.
