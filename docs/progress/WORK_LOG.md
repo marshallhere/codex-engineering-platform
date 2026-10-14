@@ -481,3 +481,41 @@ privileged executable exclusion, durable independent watchdog/recovery and UID
 quarantine/reuse, followed by adversarial resource and real framework/UI verification.
 Positive fixed SDK builds do not satisfy these requirements. No fork-enabled CEP job,
 Slice C, host installation, project merge or deployment is claimed complete.
+
+### Next qualification slice: UID quarantine after controller interruption
+
+Branch `feat/native-uid-quarantine` starts at the reviewed native build milestone
+`a5247d1`. Read-only audit found a concrete gap in both privileged experiments: the
+root orchestrator forks a worker before privilege drop and only starts UID cleanup in
+its own `finally` block. SIGKILL between those points releases the flock and can leave
+an unobserved worker; process inventory may therefore let a later invocation choose
+the same numeric UID. The ordinary runtime already has a separate launch barrier and
+watchdog for its single process-group commands, but detached UID fixture descendants
+need a durable domain reservation of their own.
+
+The scoped implementation adds a private persistent UID reservation journal, records
+its entry before every worker fork, skips stale records on allocation, and releases only
+after verified child/cleaner success and two distinct empty inventories. It does not
+claim automatic orphan termination or release stale records. A disposable macOS fault
+injection will kill an orchestrator around its fork/drop boundary and prove a subsequent
+allocation cannot reuse its reserved UID. Shipping runtime behavior remains unchanged.
+
+Implementation checkpoint: durable UID quarantine
+
+The first implementation pass adds `native/uid_journal.py`, root-owned journal
+validation, reservation before both privileged probe paths, stale reservation
+exclusion, and nonce-bound release after child/cleaner receipts and two distinct
+fresh empty inventories. The journal never auto-recovers a stale reservation.
+The controller interruption regression leaves a detached child alive after SIGKILL
+and confirms its UID remains reserved. The native macOS workflow now stages that
+regression with the privileged probe code and runs it under root before the fixed
+UID experiment, retaining both outputs. This protected macOS CI run has not yet
+executed for this branch and remains mandatory before marking the change complete.
+
+Local evidence so far: 229 platform tests and 38 UID-focused tests pass; Ruff 0.13.3
+passes; strict OpenSpec validation passes all five changes; npm audit reports zero
+high-severity vulnerabilities; Bandit reports zero native findings; source/wheel
+build and isolated packaging verification pass all 174 checks; publication scan
+passes with no findings. The separate restricted Codex review returns PASS with no
+blocking findings and confirms the remaining limit: general sandbox/runtime and
+production recovery are still unqualified. No root probe was run locally.

@@ -9,10 +9,10 @@ its tests or CI cannot authorize arbitrary workloads or produce live job accepta
 | Boundary | Required adversarial evidence | Current status |
 | --- | --- | --- |
 | Process membership | Dedicated UID/GID absent from accounts and live processes; real/effective/saved identities stay fixed through fork/exec | Read-only ABI/empty-UID checks pass; full execution experimental |
-| Launch registration | Root-owned lease and independent watchdog exist before releasing untrusted code; controller failure before/after release cannot orphan it | Not implemented |
+| Launch registration | Root-owned lease, durable UID reservation and independent watchdog exist before releasing untrusted code; controller failure before/after release cannot orphan it | Durable pre-fork UID reservations and stale-UID exclusion are implemented for fixed CI probes; no independent orphan cleanup watchdog |
 | Teardown | Session/group changes, closed pipes, parent exit, posix_spawn, continuing forks and in-flight fork race; verified zero survivors before reuse | Three fixed CI probes pass; atomic fork barrier unproved |
 | PID reuse | Cleanup cannot signal a different identity after PID reuse; ambiguous observations block | Same-UID signal authorization designed; synthetic only |
-| UID reuse | Durable quarantine after uncertain cleanup; independent recovery before reuse | Invocation-local exclusion only |
+| UID reuse | Durable quarantine after uncertain cleanup; independent recovery before reuse | Fixed probes persist before-fork reservations, skip stale/malformed entries, and release only after successful child/cleaner status plus two empty inventories; stale entries remain quarantined without recovery |
 | Filesystem | Inherited no-follow/case-aware protected policy; project writable, control/acceptance/auth/toolchain immutable; hardlinks and aliases blocked | Shipping no-fork backend qualified; UID backend unproved |
 | Network/credentials | Descendants cannot access network, keychains, SSH/password-manager agents, provider secrets or personal configuration | Shipping no-fork backend qualified; UID backend unproved |
 | Executable authority | Exact or immutable reviewed SDK bindings; privileged executables, identity changes and toolchain tampering rejected | Shipping exact-file bindings exist; fork/SDK authority unproved |
