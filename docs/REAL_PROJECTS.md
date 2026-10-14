@@ -103,5 +103,6 @@ A separate fixed-fixture UID experiment now lives outside the runtime. Its sourc
 failed attempts and remaining qualification contracts are tracked in
 [native containment](NATIVE_CONTAINMENT.md). It neither grants forks to jobs nor
 qualifies SDK builds. Newer Eventu working changes were reconciled privately with
-additional scope-declaration regressions; original integration remains pending the
-source branch-policy decision. The older accepted pilot does not cover those changes.
+additional scope-declaration regressions; the owner-selected existing branch now contains only the verified patch additions,
+with106tests passing on both installed supported Python versions. Unrelated changes
+and the index remain preserved. The older accepted pilot does not cover those changes.

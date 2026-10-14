@@ -21,8 +21,49 @@
     "experimental_subset": 22
   },
   "current_user_inventory": "blocked by unreadable zombie birth metadata; never assumed empty",
-  "privileged_ci": "pre-discovery direct-parent reap revision pending",
-  "eventu_integration": "owner chose current branch; verified two-file patch applied; original unrelated changes preserved; checks running",
+  "privileged_ci": {
+    "status": "passed fixed synthetic scope",
+    "run": 38591031224,
+    "url": "https://github.com/marshallhere/codex-engineering-platform/actions/runs/38591031224",
+    "source": "cfdea117fdcbf812aab584e4010262aa4aa729fd",
+    "cases": [
+      {
+        "case": "detached",
+        "cleaner_status": 0,
+        "discovered": 1,
+        "elapsed_seconds": 0.171,
+        "error_count": 0,
+        "inventory_errors": 0,
+        "ready": true,
+        "survivors": 0,
+        "worker_status": 0
+      },
+      {
+        "case": "posix-spawn",
+        "cleaner_status": 0,
+        "discovered": 2,
+        "elapsed_seconds": 0.228,
+        "error_count": 0,
+        "inventory_errors": 0,
+        "ready": true,
+        "survivors": 0,
+        "worker_status": 9
+      },
+      {
+        "case": "concurrent-forks",
+        "cleaner_status": 0,
+        "discovered": 10,
+        "elapsed_seconds": 0.475,
+        "error_count": 0,
+        "inventory_errors": 0,
+        "ready": true,
+        "survivors": 0,
+        "worker_status": 9
+      }
+    ],
+    "artifact_sha256": "874ec629855f7b073867ff5873b96c2c83255d151e06b056e528e107e5730ce7"
+  },
+  "eventu_integration": "verified two-file patch applied on owner-selected existing branch;106tests both installedsupportedPythons,22skills andfullverifyPASS;bootstrapall/no drift;unrelated changes/indexpreserved",
   "workflow_fix_review": {
     "verdict": "PASS",
     "restricted": true,
@@ -107,5 +148,10 @@
     "verdict": "PASS",
     "restricted": true,
     "unchanged": true
+  },
+  "standard_ci": {
+    "push": 38591031006,
+    "pull_request": 38591037219,
+    "status": "passed"
   }
 }

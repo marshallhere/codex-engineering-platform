@@ -410,3 +410,25 @@ Main report now appendspercase incrementally so a laterfailure preserves earlier
 passingcase evidence; listcomprehension previouslydiscarded partialresults. Final
 local179tests PASS,22targeted PASS; prereapdistribution171packagingchecks PASS.
 No native backend activation; actualCI rerun stillrequired.
+
+## Native UID fixed-fixture milestone — actual evidence
+
+Atcfdea117, disposable CI38591031224 PASS: detached(1member),posix_spawn(2),continuing
+boundedforks(10). Eachcleanerexit0,expectedworkerexit,0diagnostic/inventoryerrors and0
+survivors. Rawartifactdownloaded/hashbound; publicsanitizedcases in native-uid-experiments
+JSON. Standardpush38591031006/PR38591037219contracts/native-boundary allPASS. Scoped
+OpenSpectasks checkedonlyfortheseexperiments. This doesNOTqualifyarbitraryfork-dependent
+builds, inheritedsandbox/watchdog/reuse/resourcecontrols orinstallednativebackend.
+
+OwneransweredkeepEventu'scurrentbranch. Preapply254originalsourcehashes/modesstillmatched
+snapshot. Appliedexactreviewed2-filepatch; Python3.14.7+3.13.9 full106testsPASS,22skill
+bundle/fullverifyPASS,bootstrapcheckscopeall/nochanges/conflicts. Afterhashchecks:only
+setup.pychanged among254priorfiles;addedtest_scope_validation.py matchesreviewedcandidate;
+unrelatedsource/index/branchpreserved. InitialsecondPythoncommandnotonPATH wascorrected
+to uv-managed3.13.9 andrerun. No mixedcommit: earlieruncommittedsetupoverlay/defaultwork
+isnotours;guardpatchcannotapplytoindexHEADalonewithoutincludingprerequisites. Nothing
+pushedordeployedinEventu. StandaloneCI'sunrelatedsiblingfixturegapremainsdisclosed.
+
+Continuewithfixedofflineuv/Python,NodechildbuildandGostdlibbuildexperiments in a new
+featurebranch, usingprotectedpinnedSDKs anddisposableUIDs. Positivebuildcompatibility
+willnotgrantforkstoruntimejobsorfulfillSliceCsecurityqualification.

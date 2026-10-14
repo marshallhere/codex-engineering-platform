@@ -10,7 +10,7 @@ its tests or CI cannot authorize arbitrary workloads or produce live job accepta
 | --- | --- | --- |
 | Process membership | Dedicated UID/GID absent from accounts and live processes; real/effective/saved identities stay fixed through fork/exec | Read-only ABI/empty-UID checks pass; full execution experimental |
 | Launch registration | Root-owned lease and independent watchdog exist before releasing untrusted code; controller failure before/after release cannot orphan it | Not implemented |
-| Teardown | Session/group changes, closed pipes, parent exit, posix_spawn, continuing forks and in-flight fork race; verified zero survivors before reuse | Fixed CI probes under repair; atomic fork barrier unproved |
+| Teardown | Session/group changes, closed pipes, parent exit, posix_spawn, continuing forks and in-flight fork race; verified zero survivors before reuse | Three fixed CI probes pass; atomic fork barrier unproved |
 | PID reuse | Cleanup cannot signal a different identity after PID reuse; ambiguous observations block | Same-UID signal authorization designed; synthetic only |
 | UID reuse | Durable quarantine after uncertain cleanup; independent recovery before reuse | Invocation-local exclusion only |
 | Filesystem | Inherited no-follow/case-aware protected policy; project writable, control/acceptance/auth/toolchain immutable; hardlinks and aliases blocked | Shipping no-fork backend qualified; UID backend unproved |
@@ -33,7 +33,9 @@ still need independent lifecycle and reuse proofs.
 ## Eventu integration
 
 The accepted older-source pilot is distinct from the newer dirty-source reconciliation.
-The reconciled scope guard and regression tests remain private; defaults and local
-provider overlays are preserved. The original source branch differs from its `develop`
-instruction, so integration location must be resolved before applying or switching.
+The owner selected the existing branch despite its `develop` instruction. The verified
+scope guard and regression tests are applied there; defaults, local overlays and all
+unrelated working changes are preserved. Its106tests pass on both installed supported
+Python versions,22skills/fullverify pass and bootstrap check reports all/no drift.
+No mixed commit was created: the existing dirty setup changes predate this patch.
 No readiness, provider-access or production claim follows from tooling unit tests.
