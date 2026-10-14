@@ -1,0 +1,157 @@
+{
+  "schema_version": 1,
+  "scope": "experimental fixed disposable UID fixtures; not installed runtime",
+  "production_qualified": false,
+  "review": {
+    "verdict": "PASS",
+    "restricted": true,
+    "unchanged": true
+  },
+  "files": {
+    "native/uid_domain.py": "919c1440b8b0aa25e6ac70c30c3b4a5ce1609d0a2aa1a5a474455cf2fa9fd706",
+    "native/uid_probe.py": "724f40d58e158a18677cb4fca3ff1ae0080b623c63e578340c8b38f040318046",
+    "tests/test_uid_probe.py": "02ddb1e7aed4ad9116e94977c2beac7348465a7f1006fcc679f301ca2eb7bbfe",
+    "tests/test_uid_domain.py": "ea96509746d5e221a36a217dd0fd1a5b1272393f94c4085770a8fae9eb576e19",
+    ".github/workflows/native-uid-experiments.yml": "6782d83a20641df572bfe8d95e5f6dc5d07ca96d445ab8efe63ff19e100b14ac",
+    ".github/workflows/verify.yml": "6327c43d485dadf3a3b270371dda814df0b6925382363c993ad6562d0a3076a0"
+  },
+  "local_tests": {
+    "platform": 179,
+    "prototype": 57,
+    "experimental_subset": 22
+  },
+  "current_user_inventory": "blocked by unreadable zombie birth metadata; never assumed empty",
+  "privileged_ci": {
+    "status": "passed fixed synthetic scope",
+    "run": 38591031224,
+    "url": "https://github.com/marshallhere/codex-engineering-platform/actions/runs/38591031224",
+    "source": "cfdea117fdcbf812aab584e4010262aa4aa729fd",
+    "cases": [
+      {
+        "case": "detached",
+        "cleaner_status": 0,
+        "discovered": 1,
+        "elapsed_seconds": 0.171,
+        "error_count": 0,
+        "inventory_errors": 0,
+        "ready": true,
+        "survivors": 0,
+        "worker_status": 0
+      },
+      {
+        "case": "posix-spawn",
+        "cleaner_status": 0,
+        "discovered": 2,
+        "elapsed_seconds": 0.228,
+        "error_count": 0,
+        "inventory_errors": 0,
+        "ready": true,
+        "survivors": 0,
+        "worker_status": 9
+      },
+      {
+        "case": "concurrent-forks",
+        "cleaner_status": 0,
+        "discovered": 10,
+        "elapsed_seconds": 0.475,
+        "error_count": 0,
+        "inventory_errors": 0,
+        "ready": true,
+        "survivors": 0,
+        "worker_status": 9
+      }
+    ],
+    "artifact_sha256": "874ec629855f7b073867ff5873b96c2c83255d151e06b056e528e107e5730ce7"
+  },
+  "eventu_integration": "verified two-file patch applied on owner-selected existing branch;106tests both installedsupportedPythons,22skills andfullverifyPASS;bootstrapall/no drift;unrelated changes/indexpreserved",
+  "workflow_fix_review": {
+    "verdict": "PASS",
+    "restricted": true,
+    "unchanged": true
+  },
+  "ci_attempts": [
+    {
+      "run": 38584212113,
+      "result": "staging failed before fixtures; retained failed log",
+      "source": "14d23c52b19aaed100e67e73a9a1a26f24538eaa"
+    },
+    {
+      "run": 38584211963,
+      "result": "standard contracts/native-boundary passed",
+      "source": "14d23c52b19aaed100e67e73a9a1a26f24538eaa"
+    },
+    {
+      "run": 38584608922,
+      "result": "UID execution failed closed; failure artifact retained",
+      "source": "1fd108df30fbabf96a667411b4d6b259cb0ef607"
+    },
+    {
+      "run": 38586940156,
+      "result": "worker and cleaner EINVAL; failed before readiness, empty final domain",
+      "source": "4c81976d0972aca97079e0aa8c641ff4cd589d59"
+    },
+    {
+      "run": 38587469091,
+      "result": "anonymous-UID account-directory getgroups EINVAL; kernel query implemented next",
+      "source": "a8476e4be3085125175e9e7dbba9d009d86901b8"
+    },
+    {
+      "run": 38588737261,
+      "result": "credential drop/cleanup succeeded, initial inventory blocked by held direct-parent zombie; final membership empty",
+      "source": "2781867df784e21aa4862469710af532eb4dd9cf"
+    },
+    {
+      "run": 38589828765,
+      "result": "detached fixture completed; posix-spawn rejected incorrect executable path; zero observed survivors",
+      "source": "0b0b05d7d9b80a702caf2cf3132fceed8e3009ee"
+    }
+  ],
+  "repair_review": {
+    "verdict": "PASS",
+    "restricted": true,
+    "unchanged": true,
+    "targeted_tests": 18,
+    "prior_false_passes_fixed": true
+  },
+  "operation_label_review": {
+    "verdict": "PASS",
+    "restricted": true,
+    "unchanged": true
+  },
+  "kernel_credential_review": {
+    "verdict": "PASS",
+    "restricted": true,
+    "unchanged": true,
+    "targeted_tests": 21
+  },
+  "requirement_evidence": {
+    "CEP-UID-EXPERIMENT": [
+      "tests/test_uid_probe.py:UIDProbeGuardTests"
+    ],
+    "CEP-UID-INVENTORY": [
+      "tests/test_uid_domain.py:UIDInventoryTests"
+    ],
+    "CEP-UID-EVIDENCE": [
+      "disposable CI fixed detached/posix-spawn/concurrent-forks; pending"
+    ],
+    "CEP-UID-NO-PROMOTION": [
+      "shipping src/cep unchanged; production_qualified false"
+    ]
+  },
+  "prereap_review": {
+    "verdict": "PASS",
+    "restricted": true,
+    "unchanged": true,
+    "scope": "five-line direct-child reaping fix"
+  },
+  "fixed_executable_review": {
+    "verdict": "PASS",
+    "restricted": true,
+    "unchanged": true
+  },
+  "standard_ci": {
+    "push": 38591031006,
+    "pull_request": 38591037219,
+    "status": "passed"
+  }
+}

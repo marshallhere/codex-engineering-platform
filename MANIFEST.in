@@ -7,6 +7,7 @@ recursive-include packs *.md
 recursive-include docs *.md *.json
 recursive-include openspec *.md
 recursive-include tests *.py
+recursive-include native *.py *.md
 global-exclude __pycache__ *.py[cod] .DS_Store
 
 # Explicit asset list; tests verify agreement with packaging/assets.json.

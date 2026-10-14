@@ -280,3 +280,155 @@ promotion, remote integration and rendered UI acceptance. See `docs/LIMITATIONS.
 - Scoped real-project tasks checked. General descendant-safe native subprocesses,
   full framework builds, broader SDK attestation, UI/Storybook, reviewed-memory
   automation and remote integration still require separate qualification.
+
+## 2026-10-14 — native UID experiment implementation started
+
+Branch `feat/native-uid-containment` starts from published `5f2d44e`. The shipping
+runtime and no-fork profile remain unchanged. Added OpenSpec `native-uid-experiments`,
+read-only checked libproc inventory, fixed bounded detached/concurrent-fork fixtures,
+irreversible per-fixture UID/group drop, low-privilege cleanup and root-owned exclusive
+CI lease. Experimental code stays outside `src/cep`; developer-host qualification
+refuses before any privileged action. No host helper/account/permission installation.
+
+Executed local guard tests: 4 PASS. `uid_probe.py --inspect` reports nonroot,
+non-disposable and production qualification false. Local `--qualify` correctly exits1
+with explicit disposable-CI prerequisite. Ruff PASS, all3 strict OpenSpec changes PASS,
+npm audit0 vulnerabilities. Complete regression and restricted review running.
+
+A real current-user libproc sweep encountered existing zombie processes whose BSD
+birth metadata cannot be read. Inventory fails closed; this is retained as a native
+qualification limitation rather than treated as empty membership. Actual own-process
+ABI and genuinely unused-UID scans will be verified separately. Snapshot membership
+cannot prove an atomic fork barrier.
+
+Eventu reconciliation remains private: newer dirty-source snapshot preserved;
+106 tests PASS on Python3.13/3.14,22 skills PASS,18 added regression methods. Independent
+review prompted malformed scope-declaration rejection (present-null/string/wrong
+containers/invalid members), and negative controls reproduced the defect. Existing
+assertions unchanged. Original254 files/modes,branch,HEAD,status preserved. Integration
+still awaits resolution of actual feature branch versus AGENTS `develop` policy; no
+original patch application or branch switch. Updated private patch SHA256
+`33a970faabcd053ef268f0e793c0283fa60dab5770fc7a345a3e2692205eb769`.
+
+Independent restricted Codex review `review-native-uid-final/summary.json`: PASS,
+13 targeted tests, reviewed hashes unchanged. Earlier attempt returned a wrong phase
+label and was rejected by the transport; another review overlapped specialist test
+edits and its unchanged check failed. Neither was used as final review evidence.
+Final review ran after all specialist edits. Concurrent fixture readiness now requires
+8 actual forked children and inventory9 processes; a fixed posix_spawn case was added.
+Static scan initially reported a medium insecure-temp-path finding for the exclusive
+lease. Moved the lease beneath root-owned `/private/var/run`, retaining no-follow,
+mode/owner/link checks. Final native Bandit:0 findings/errors. Full local suite170 PASS
+(157 shipping tests +13 experimental); original14+43 PASS; packaging171 checks PASS
+on the intermediate source. Final-revision tests/artifact verification are rerunning
+before the disposable CI experiment. No privileged probe ran on this Mac.
+
+First disposable CI run `38584212113` failed during staging before fixture execution:
+ordinary-shell glob expansion cannot traverse the root-only0700 staging directory.
+Failure log retained privately as native-uid-ci-01-failed.log. Fixed explicit filenames,
+registered staging for cleanup immediately after creation, and seeded a failed/not-run
+artifact before staging. Directory permissions remain0700; no control was weakened.
+Standard CI run `38584211963` passed contracts/native-boundary at14d23c5. PR#2 is draft
+and stacked on#1; no merge/deployment. Final-revision local170 tests/171 packagingchecks
+passed. Native static findings/errors0. Disposable descendant execution still pending.
+
+Second disposable run `38584608922` reached fixed UID execution and failed closed:
+`UID cleanup failed; domain quarantined, no reuse permitted`. Failed JSON artifact
+was successfully retained/downloaded. No acceptance or UID reuse claim. The report
+lacked a precise child-failure reason; added bounded dedicated error pipes, explicit
+worker/cleaner exit statuses and survivor count. Success additionally requires expected
+worker exit status (detached parent0; other fixturesSIGKILL), so unexpected fixture
+errors cannot look successful. Privilege/group checks remain unchanged. Diagnostic
+revision is under restricted independent review before rerunning the experiment.
+
+Diagnostic independent review rejected the first revision: worker errors shared the
+readiness pipe, so post-readiness failures could lose details. Fixed separate bounded
+worker diagnostic pipe retained through cleanup; cleaner pipe remains separate.
+Also verified Apple kern_prot.c primary source: Darwin getgroups returns effectiveGID
+as first group. Empty-list-only verification was incorrect after setgid. Replaced it
+with exact UID/GID checks, reject every foreign group, and verify all four root UID/GID
+restoration calls fail. New regression tests allow only own primary group or emptylist
+and reject root/foreign groups without changing any real credentials. Existing test
+assertions preserved. Added mocked regression initially exposed an exhausted mock
+iterator in diagnostic formatting; corrected the mock to repeat fixtureidentity.
+
+Second restricted diagnostic/drop review FAIL, retained unchanged-hash evidence:
+nonempty detached-worker diagnostics could be ignored despite expected direct-parent
+status, and final inventory failure could bypass diagnostic-reader closure/reaping.
+No passing final-review claim for this revision. Delegated bounded repair of exactly
+uid_probe.py/test_uid_probe.py to the process specialist: reject any worker diagnostic,
+continue bounded cleanup/reaping despite inventory exceptions, always collect/close
+readers, retain unknown membership as failure. New regression reproducers required.
+No native backend activation, local privileged installation, merge or deployment.
+
+Final restricted repair review `review-native-uid-repair-final/summary.json`: PASS,
+reviewed code hashes unchanged,18 targeted tests plus7 supplemental mocked probes.
+Full175 platform tests PASS; original14+43 PASS. Native Bandit0findings/errors; Ruff
+and strict3OpenSpec changes PASS. Repair explicitly blocks all worker/cleaner diagnostic
+messages and unknown final membership while completing bounded diagnostic/FD finalization.
+Current source remains experimentally scoped; repaired actual CI execution next.
+Added native qualification matrix and independent CI zero-finding Bandit gate. No
+shipping runtime bytes or fork policy changed. Rejected reviews/failing CI retained.
+
+Third actual CI run38586940156 at4c81976 fails closed with clearer evidence:
+detached worker/cleaner bothexit3, OSError EINVAL during privilege setup/restoration,
+finalobservedUIDmembershipempty. No descendantsafetyclaim. Added operation-specific
+errorlabels around unchanged rlimits/group/UIDsetup and unexpected restoration errors;
+no deniedoperation is ignored and all numeric limits/identitychecks remain unchanged.
+18 targetedtests/Banditzero PASS. Need rerun to identify exact macOS syscallprerequisite.
+
+Fourth CI run38587469091 still reported unlabelled OSErrorEINVAL after all wrappedsetup
+operations. Apple Libc/sys/getgroups.c primary source confirms Darwinextensioncalls
+getpwuid(getuid) andreturnsEINVAL for unregisteredUID. SystemPython3.9 binds that
+extension; actualkernelcredentials must instead use libSystemPOSIXgetgroups symbol.
+Read-only currentMac rawsymbolprobe:15groups,primaryEGIDpresent; no mutations. Added
+bounded nativegroupquery under specialistownership, preserving foreigngroup/rootrestore
+checks. UIDallocation now additionally rejects existingDirectoryServicesGIDs. No user
+accountcreation workaround or skippedgroupverification. ActualUIDCI rerun required.
+
+Kernelcredential revision: exact libSystemPOSIXgetgroups, bounded128groups/ABI/count/error
+checks, preservesGID0 ratherthanfilteringauthority. Droprequires exactly[fixtureGID];
+empty/duplicate/foreign groups rejected. DSUID/GIDabsencebothchecked. Full178platform
+PASS;21targeted PASS includingactualcurrentMacgroupinspection; nativeBandit0findings/
+errors; Ruff/OpenSpecPASS. Restrictedreview-native-uid-kernel-groups PASS with all
+reviewedfilehashesunchanged. No src/cep changes. ActualanonymousUIDCI rerun next.
+
+Fifth CI38588737261 at2781867 proves privilege drop and UIDcleanup operations succeeded
+for the detached fixture (bothstatuses0,no diagnosticmessages,finalmembers0), but initial
+inventoryfailed because its deliberatelyexited directparent wasnotyetreaped bysupervisor.
+Do notcount as passingcase. Added nonblocking waitpid ofour directchild before initial
+inventory; preservesrealexitstatus anddoesnotsignal orfilterunknownmetadata. Restricted
+prereapreviewPASS,sourcehashunchanged. Added genuine zombie-observer regression;22tests
+PASS. Negativecontrolremovingthefive-linefixfromprivatecopy yields1errorbeforefix; kept
+failurelog. Firstnegativecontrolcommand usedwrongcwd anddidnotexecute; correctedrunis
+recordedseparately. Fullfinaltests/Bandit runningbeforeactualCIrerun.
+
+Sixth CI38589828765 at0b0b05d completed detachedfixture, then blockedposix_spawn:
+fixture mistakenly used /usr/bin/sleep; macOS binary is /bin/sleep. Verified local
+rootowned755file and corrected fixedpath, without changing checks or authority.
+Main report now appendspercase incrementally so a laterfailure preserves earlier
+passingcase evidence; listcomprehension previouslydiscarded partialresults. Final
+local179tests PASS,22targeted PASS; prereapdistribution171packagingchecks PASS.
+No native backend activation; actualCI rerun stillrequired.
+
+## Native UID fixed-fixture milestone — actual evidence
+
+Atcfdea117, disposable CI38591031224 PASS: detached(1member),posix_spawn(2),continuing
+boundedforks(10). Eachcleanerexit0,expectedworkerexit,0diagnostic/inventoryerrors and0
+survivors. Rawartifactdownloaded/hashbound; publicsanitizedcases in native-uid-experiments
+JSON. Standardpush38591031006/PR38591037219contracts/native-boundary allPASS. Scoped
+OpenSpectasks checkedonlyfortheseexperiments. This doesNOTqualifyarbitraryfork-dependent
+builds, inheritedsandbox/watchdog/reuse/resourcecontrols orinstallednativebackend.
+
+OwneransweredkeepEventu'scurrentbranch. Preapply254originalsourcehashes/modesstillmatched
+snapshot. Appliedexactreviewed2-filepatch; Python3.14.7+3.13.9 full106testsPASS,22skill
+bundle/fullverifyPASS,bootstrapcheckscopeall/nochanges/conflicts. Afterhashchecks:only
+setup.pychanged among254priorfiles;addedtest_scope_validation.py matchesreviewedcandidate;
+unrelatedsource/index/branchpreserved. InitialsecondPythoncommandnotonPATH wascorrected
+to uv-managed3.13.9 andrerun. No mixedcommit: earlieruncommittedsetupoverlay/defaultwork
+isnotours;guardpatchcannotapplytoindexHEADalonewithoutincludingprerequisites. Nothing
+pushedordeployedinEventu. StandaloneCI'sunrelatedsiblingfixturegapremainsdisclosed.
+
+Continuewithfixedofflineuv/Python,NodechildbuildandGostdlibbuildexperiments in a new
+featurebranch, usingprotectedpinnedSDKs anddisposableUIDs. Positivebuildcompatibility
+willnotgrantforkstoruntimejobsorfulfillSliceCsecurityqualification.

@@ -98,3 +98,11 @@ nonmutation, generic errors, canary leakage and compatibility with minimal legac
 configuration. The original checkout's dirty files are preserved. Any resulting
 patch covers the archived source revision only and requires reconciliation and
 reverification before integration with later uncommitted work.
+
+A separate fixed-fixture UID experiment now lives outside the runtime. Its source,
+failed attempts and remaining qualification contracts are tracked in
+[native containment](NATIVE_CONTAINMENT.md). It neither grants forks to jobs nor
+qualifies SDK builds. Newer Eventu working changes were reconciled privately with
+additional scope-declaration regressions; the owner-selected existing branch now contains only the verified patch additions,
+with106tests passing on both installed supported Python versions. Unrelated changes
+and the index remain preserved. The older accepted pilot does not cover those changes.

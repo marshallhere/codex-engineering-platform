@@ -1,0 +1,44 @@
+name: native-uid-experiments
+on:
+  workflow_dispatch:
+  push:
+    branches: [feat/native-uid-containment]
+    paths: ["native/**", "tests/test_uid_*.py", ".github/workflows/native-uid-experiments.yml"]
+permissions:
+  contents: read
+jobs:
+  disposable-probes:
+    if: github.repository == 'marshallhere/codex-engineering-platform'
+    runs-on: macos-14
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Stage fixed reviewed experiments outside worker ownership
+        shell: bash
+        run: |
+          printf '%s\n' '{"experiment":"not_run","production_qualified":false,"error":"staging failed"}' > uid-experiment.json
+          stage=$(sudo /usr/bin/mktemp -d /private/tmp/cep-uid-probes.XXXXXX)
+          echo "CEP_UID_STAGE=$stage" >> "$GITHUB_ENV"
+          sudo /bin/chmod 700 "$stage"
+          sudo /bin/cp native/uid_domain.py native/uid_probe.py "$stage/"
+          sudo /usr/sbin/chown -R root:wheel "$stage"
+          sudo /bin/chmod 600 "$stage/uid_domain.py" "$stage/uid_probe.py"
+      - name: Run fixed synthetic experiments; production stays blocked
+        shell: bash
+        run: |
+          set -o pipefail
+          sudo /usr/bin/env -i PATH=/usr/bin:/bin GITHUB_ACTIONS=true RUNNER_ENVIRONMENT=github-hosted CEP_UID_EXPERIMENT=disposable-v1 /usr/bin/python3 "$CEP_UID_STAGE/uid_probe.py" --qualify | tee uid-experiment.json
+      - name: Retain experiment outcomes even on failure
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: native-uid-experiment
+          path: uid-experiment.json
+          if-no-files-found: error
+      - name: Remove only this run's staged code
+        if: always()
+        shell: bash
+        run: |
+          if [[ "$CEP_UID_STAGE" == /private/tmp/cep-uid-probes.* ]]; then
+            sudo /bin/rm -rf "$CEP_UID_STAGE"
+          fi
