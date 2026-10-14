@@ -252,3 +252,31 @@ promotion, remote integration and rendered UI acceptance. See `docs/LIMITATIONS.
 - Native Go version discovery PASS; Go subprocess/build execution remains blocked.
   Source package includes public evidence JSON; final package/source matching and
   accepted Eventu proof remain pending at this checkpoint.
+### Qualified real-project CLI milestone
+
+- Implementation d53c5c5 passed public Linux/macOS CI run38577104873, including
+  native exact-file binding, hardlink and Node fork-denial regressions.
+- Fresh Eventu pilot ACCEPTED on the corrected runtime: four Codex phases,
+  281.444 charged seconds within900 seconds, all18 externally owned cases PASS,
+  final independent review PASS, immutable snapshot and idempotent acceptance verified.
+- Only src/eventu_tooling/setup.py changed. Unknown/non-string/falsy persisted
+  scopes are rejected before planning/apply, explicit valid recovery is preserved,
+  and minimal older configuration remains compatible. Original34 tests and22-skill
+  integrity checks PASS in a fresh copy of attested files, temporary secret-minimal
+  environment and isolated Git configuration. The initial isolated direct-script
+  command failed sibling imports; corrected bootstrap retained Python isolation.
+  This functional verification is not general fork-capable worker qualification.
+- Original Eventu HEAD/branch and all30 recorded dirty-file hashes unchanged.
+  Private patch and full evidence retained under .local/eventu-vertical-prep/final;
+  no source or private provider bindings were published, applied or merged.
+- Sanitized completion proof: docs/evidence/real-project-cli.json. Runtime frozen
+  bytes match live acceptance. Historical first pilot remains CANCELLED and its
+  evidence is retained rather than substituted for the accepted run.
+- Distribution passed171 packaging checks plus9 installed-module/CLI checks,
+  and236 exact-source comparisons at implementation commit. Final documentation
+  package rebuild/install is pending. Platform157 +prototype57 tests PASS; static
+  findings remain15 reviewed LOW, no material findings. All OpenSpec changes strict
+  PASS, dependency audit clean, publication scan PASS.
+- Scoped real-project tasks checked. General descendant-safe native subprocesses,
+  full framework builds, broader SDK attestation, UI/Storybook, reviewed-memory
+  automation and remote integration still require separate qualification.

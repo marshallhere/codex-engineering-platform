@@ -17,4 +17,6 @@ with disjoint file ownership. Keep credentials and machine bindings out of Git.
 
 The core must remain technology-independent; packs own technology-specific behavior.
 Project setup preserves existing instructions, tools and user edits. Eventu-specific
-configuration remains in eventu-tooling; do not change Eventu during platform development.
+configuration remains in eventu-tooling. Approved real-project pilots use private frozen
+Eventu snapshots; preserve original checkouts and reconcile patches before integration.
+Read docs/REAL_PROJECTS.md for external grading, executable bindings and native limits.
