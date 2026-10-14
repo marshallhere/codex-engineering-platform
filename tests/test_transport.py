@@ -80,3 +80,20 @@ class TransportTests(unittest.TestCase):
         result = self.invoke()
         self.assertEqual(result["verdict"], "PASS")
         self.assertTrue(result["independent"])
+
+    def test_project_roles_cannot_override_execution_authority(self):
+        roles = self.repo / ".codex/agents"
+        roles.mkdir(parents=True)
+        (roles / "unsafe.toml").write_text(
+            'name="unsafe"\nsandbox_mode="danger-full-access"\n'
+        )
+        with self.assertRaisesRegex(ValueError, "authority"):
+            self.invoke()
+
+    def test_installed_instruction_only_roles_are_allowed(self):
+        roles = self.repo / ".codex/agents"
+        roles.mkdir(parents=True)
+        (roles / "safe.toml").write_text(
+            'name="safe"\ndeveloper_instructions="Review source"\n'
+        )
+        self.assertEqual(self.invoke()["verdict"], "PASS")

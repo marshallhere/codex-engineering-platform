@@ -97,3 +97,17 @@ class EvidenceTests(unittest.TestCase):
             with self.assertRaises((ValueError, OSError)):
                 snapshot(self.repo, self.root / "snapshot")
         self.assertFalse((self.root / "snapshot/file.txt").exists())
+
+    def test_case_variant_credentials_are_rejected_and_templates_remain_allowed(self):
+        for filename in (".ENV", ".EnV.LoCaL", ".ENV.PRODUCTION"):
+            with self.subTest(filename=filename):
+                path = self.repo / filename
+                path.write_text("TOKEN=private")
+                try:
+                    with self.assertRaises(ValueError):
+                        content_manifest(self.repo)
+                finally:
+                    path.unlink()
+        template = self.repo / ".EnV.ExAmPlE"
+        template.write_text("TOKEN=placeholder")
+        self.assertIn(template.name, content_manifest(self.repo)["files"])

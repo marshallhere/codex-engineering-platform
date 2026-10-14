@@ -27,6 +27,10 @@ to overwrite control policy, acceptance fixtures or state.
 - **WHEN** an escape probe succeeds or the backend is unsupported
 - **THEN** dependent live execution is blocked with retained evidence
 
+#### Scenario: Administrative aliases and owner instructions
+- **WHEN** a worker writes through case aliases or attempts to change agent instructions
+- **THEN** the broker and native boundary deny the write and frozen instruction evidence detects additions or changes
+
 ### Requirement: CEP-EVIDENCE candidate-bound completion
 Completion SHALL require frozen requirements, all mandatory gates and independent
 review on the same immutable candidate. Changed policy or content invalidates evidence.

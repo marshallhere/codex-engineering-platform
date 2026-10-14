@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import json
 import platform
+import re
 import os
 import signal
 import shutil
@@ -48,6 +49,9 @@ class NativeSandbox:
             ".git",
             ".codex",
             ".cep",
+            ".agents",
+            "AGENTS.md",
+            "AGENTS.override.md",
             "openspec",
             "tests",
             "test",
@@ -90,17 +94,39 @@ class NativeSandbox:
         writes = "(subpath " + json.dumps(str(scratch.resolve())) + ")"
         if writable:
             writes += " (subpath " + json.dumps(str(repo.resolve())) + ")"
-        protected = " ".join(
-            "(subpath " + json.dumps(str(repo.resolve() / p)) + ")"
+
+        # Scope case-insensitive component rules to this repository only. Seatbelt
+        # path spelling must not permit aliases on case-insensitive APFS volumes.
+        def ascii_case(value: str) -> str:
+            return "".join(
+                "[" + c.upper() + c.lower() + "]" if c.isalpha() else re.escape(c)
+                for c in value
+            )
+
+        prefix = ascii_case(str(repo.resolve())) + "/"
+        namespaces = "|".join(
+            ascii_case(p)
             for p in (
                 ".git",
                 ".codex",
                 ".cep",
+                ".agents",
                 "openspec",
                 "tests",
                 "test",
                 "__tests__",
             )
+        )
+        instructions = "|".join(
+            ascii_case(p) for p in ("AGENTS.md", "AGENTS.override.md")
+        )
+        patterns = [
+            prefix + "(.*/)?(" + namespaces + ")(/.*)?$",
+            prefix + "(.*/)?(" + instructions + ")$",
+        ]
+        protected = " ".join(
+            "(regex #" + json.dumps(pattern).replace("\\\\", "\\") + ")"
+            for pattern in patterns
         )
         profile = (
             "(version 1)(deny default)(allow process-exec)(deny process-fork)"

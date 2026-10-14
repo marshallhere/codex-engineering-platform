@@ -239,3 +239,18 @@ class ControllerTests(unittest.TestCase):
         final = self.controller.run(self.job["id"])
         self.assertEqual(final["status"], "BLOCKED")
         self.assertEqual(self.transport.phases, [])
+
+
+class ProtectedInstructionTests(unittest.TestCase):
+    def test_added_and_case_aliased_instructions_are_frozen(self):
+        from cep.controller import protected_manifest
+
+        names = [
+            "AGENTS.md",
+            "nested/aGeNtS.override.MD",
+            ".AgEnTs/skills/example/SKILL.md",
+            ".CoDeX/agents/a.toml",
+            "TeStS/__init__.py",
+        ]
+        entries = {name: {"digest": "example"} for name in names + ["source.py"]}
+        self.assertEqual(set(protected_manifest(entries, [])), set(names))

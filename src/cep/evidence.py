@@ -146,8 +146,9 @@ def content_manifest(repo: Path) -> dict:
             continue
         if not path.is_file():
             raise ValueError("Unsupported candidate path")
-        if relative.name == ".env" or relative.name.startswith(".env."):
-            if relative.suffix not in {".example", ".sample", ".template"}:
+        filename = relative.name.casefold()
+        if filename == ".env" or filename.startswith(".env."):
+            if relative.suffix.casefold() not in {".example", ".sample", ".template"}:
                 raise ValueError("Credential files cannot enter a candidate")
         data, executable = _read_regular(repo, relative)
         entries[name] = {

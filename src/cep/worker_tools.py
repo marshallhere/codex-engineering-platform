@@ -79,7 +79,7 @@ class WorkerTools:
             raise ValueError("nonempty relative POSIX path required")
         path = Path(value)
         if path.is_absolute() or any(
-            part in {"..", ".git", ".codex", ".cep"} for part in path.parts
+            part.casefold() in {"..", ".git", ".codex", ".cep"} for part in path.parts
         ):
             raise ValueError("path is outside authorized implementation files")
         if not path.parts or any(part == "." for part in value.split("/")):
@@ -124,7 +124,7 @@ class WorkerTools:
 
             def visit(fd, prefix=""):
                 for filename in sorted(os.listdir(fd)):
-                    if filename in {".git", ".codex"}:
+                    if filename.casefold() in {".git", ".codex", ".cep"}:
                         continue
                     info = os.stat(filename, dir_fd=fd, follow_symlinks=False)
                     relative = prefix + filename
@@ -173,13 +173,19 @@ class WorkerTools:
             return self.sandbox.run(argv, self.repo, self.scratch, timeout, **options)
         relative = self._relative(arguments["path"])
         writing = name == "cep_apply_file"
+        parts = tuple(part.casefold() for part in relative.parts)
+        filename = relative.name.casefold()
         if writing and (
-            relative.parts[0] == "openspec"
-            or any(part in {"tests", "test", "__tests__"} for part in relative.parts)
-            or relative.name.startswith("test_")
-            or relative.name.endswith(("_test.go", ".test.ts", ".spec.ts", ".test.tsx"))
+            parts[0] == "openspec"
+            or ".agents" in parts
+            or filename in {"agents.md", "agents.override.md"}
+            or any(part in {"tests", "test", "__tests__"} for part in parts)
+            or filename.startswith("test_")
+            or filename.endswith(("_test.go", ".test.ts", ".spec.ts", ".test.tsx"))
         ):
-            raise ValueError("Frozen requirements cannot be edited by workers")
+            raise ValueError(
+                "Frozen requirements and authoritative instructions cannot be edited by workers"
+            )
         if writing and not self.writable:
             raise ValueError("reviewer tools are read-only")
         data = None

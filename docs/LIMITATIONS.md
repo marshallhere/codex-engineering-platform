@@ -45,3 +45,8 @@ bounded evidence, not a guarantee of arbitrary-secret detection.
 Subsequent slices must qualify chat/control MCP exposure, provider adapters,
 integration against actual remote CI, human-reviewed memory promotion, rendered
 design acceptance, and unattended multi-project lifecycle behavior.
+
+Administrative, test and instruction protections compare path names without case
+sensitivity. Native qualification covers case aliases of configuration, repository
+and parent directories on macOS, including paths with spaces. Project agent roles
+accept instruction/model fields only; authority overrides require qualification.

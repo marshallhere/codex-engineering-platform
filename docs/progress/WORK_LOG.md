@@ -167,3 +167,25 @@ promotion, remote integration and rendered UI acceptance. See `docs/LIMITATIONS.
 - Formatter changed runtime bytes after demo 09 started; the frozen-runtime check
   correctly BLOCKED that run. No acceptance claim was made. Demo 10 is the fresh
   final run after formatting; source is frozen and further edits are documentation.
+### Administrative case aliases and instruction authority
+
+- Demo 10 ACCEPTED at 0070a39, five Codex phases, 345.032 charged seconds;
+  immutable snapshot and runtime digest verified. Remote CI 38537198305 PASS.
+- Subsequent disposable macOS probe demonstrated `.CoDeX/config.toml` could alter
+  the broker's protected `.codex` marker. No real configuration was touched.
+  Broker checks now casefold administrative, spec, test and instruction names;
+  credential evidence checks also reject `.ENV` variants.
+- Controller now freezes `.agents`, AGENTS.md and AGENTS.override.md, including
+  additions and case aliases. Transport rejects project agent profiles containing
+  execution-authority keys; instruction-only installed roles remain supported.
+- Native denial rules fold the repository and parent prefix as well as protected
+  names. Actual testing exposed nonmatching JSON-doubled Seatbelt regex escapes;
+  fixed the regex literal encoding before qualification. Eight native tests PASS,
+  including configuration, absolute repository and parent aliases with spaces,
+  new instruction files, unchanged markers and successful ordinary source writes.
+- Independent specialist review PASS for the final closure. Platform suite 133
+  PASS; pinned Ruff PASS; static gate retains 15 reviewed LOW findings, no material
+  findings; strict OpenSpec and zero-vulnerability npm audit PASS.
+- Runtime frozen after formatting. Restricted independent root review, real demo
+  11, exact-source packaging and current-revision CI are still pending. Historical
+  accepted runs do not establish acceptance for these changed runtime bytes.

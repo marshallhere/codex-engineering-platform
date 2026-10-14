@@ -185,3 +185,53 @@ class DemoTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+@unittest.skipUnless(sys.platform == "darwin", "Native macOS boundary")
+class AdministrativeAliasTests(unittest.TestCase):
+    def test_kernel_denies_case_aliases_and_new_instruction_files(self):
+        with tempfile.TemporaryDirectory(prefix="cep alias ") as d:
+            root = Path(d).resolve()
+            repo, scratch = root / "repo", root / "scratch"
+            repo.mkdir()
+            scratch.mkdir()
+            for name in (".codex", ".agents", "nested"):
+                (repo / name).mkdir()
+            marker = repo / ".codex/config.toml"
+            marker.write_text("preserved")
+            sandbox = NativeSandbox()
+            for path in (
+                ".CoDeX/config.toml",
+                str(repo).replace("/repo", "/RePo") + "/.codex/config.toml",
+                str(repo).replace("cep alias", "CeP AlIaS") + "/.codex/config.toml",
+                ".AgEnTs/instructions",
+                "AGENTS.md",
+                "nested/aGeNtS.override.MD",
+            ):
+                result = sandbox.run(
+                    [
+                        sys.executable,
+                        "-c",
+                        "from pathlib import Path; Path("
+                        + repr(path)
+                        + ").write_text('denied')",
+                    ],
+                    repo,
+                    scratch,
+                    10,
+                    writable=True,
+                )
+                self.assertNotEqual(result["exit_code"], 0, path)
+            self.assertEqual(marker.read_text(), "preserved")
+            result = sandbox.run(
+                [
+                    sys.executable,
+                    "-c",
+                    "from pathlib import Path; Path('source.py').write_text('allowed')",
+                ],
+                repo,
+                scratch,
+                10,
+                writable=True,
+            )
+            self.assertEqual(result["exit_code"], 0, result)

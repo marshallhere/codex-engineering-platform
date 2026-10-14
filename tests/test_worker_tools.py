@@ -97,6 +97,59 @@ class WorkerToolsTests(unittest.TestCase):
                     "cep_apply_file", {"path": path, "content": "weakened"}
                 )
 
+    def test_case_variant_administrative_paths_are_rejected_before_access(self):
+        for path in (".CoDeX/config.toml", ".GiT/config", "nested/.CeP/bindings.json"):
+            with self.subTest(path=path):
+                with self.assertRaises(ValueError):
+                    self.broker.call("cep_read_file", {"path": path})
+                with self.assertRaises(ValueError):
+                    self.broker.call(
+                        "cep_apply_file", {"path": path, "content": "changed"}
+                    )
+        for namespace in (".CoDeX", ".GiT", ".CeP"):
+            (self.repo / namespace).mkdir()
+            (self.repo / namespace / "private").write_text("private")
+        self.assertEqual(self.broker.call("cep_list_files", {})["files"], [])
+
+    def test_case_alias_cannot_overwrite_existing_configuration(self):
+        config = self.repo / ".codex/config.toml"
+        config.parent.mkdir()
+        config.write_text("protected config")
+        with self.assertRaises(ValueError):
+            self.broker.call(
+                "cep_apply_file", {"path": ".CoDeX/config.toml", "content": "changed"}
+            )
+        self.assertEqual(config.read_text(), "protected config")
+
+    def test_authoritative_guidance_remains_readable_but_case_variant_writes_denied(
+        self,
+    ):
+        skill = self.repo / ".agents/skills/example/SKILL.md"
+        skill.parent.mkdir(parents=True)
+        skill.write_text("approved guidance")
+        self.assertEqual(
+            self.broker.call(
+                "cep_read_file", {"path": ".agents/skills/example/SKILL.md"}
+            )["content"],
+            "approved guidance",
+        )
+        for path in (
+            ".AgEnTs/skills/example/SKILL.md",
+            "nested/.AGENTS/agent.md",
+            "AGENTS.md",
+            "nested/agents.MD",
+            "deep/AgEnTs.OvErRiDe.Md",
+            "OpEnSpEc/change.md",
+            "TeStS/protected.py",
+            "TEST_security.py",
+            "app.SPEC.TS",
+        ):
+            with self.subTest(path=path), self.assertRaises(ValueError):
+                self.broker.call(
+                    "cep_apply_file", {"path": path, "content": "weakened"}
+                )
+        self.assertEqual(skill.read_text(), "approved guidance")
+
     def test_binary_and_oversized_files_rejected(self):
         (self.repo / "binary").write_bytes(b"\xff\x00")
         with self.assertRaises(ValueError):

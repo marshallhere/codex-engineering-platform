@@ -26,18 +26,32 @@ UI = {"design", "storybook", "browser", "accessibility"}
 
 
 def protected_manifest(entries: dict, roots: list[str]) -> dict:
-    return {
-        name: entry
-        for name, entry in entries.items()
-        if any(
-            part in {"tests", "test", "__tests__", ".codex"}
-            for part in Path(name).parts
-        )
-        or Path(name).name.startswith("test_")
-        or Path(name).name in {"conftest.py", "pytest.ini", "tox.ini"}
-        or Path(name).name.endswith(("_test.go", ".test.ts", ".spec.ts", ".test.tsx"))
-        or any(name == p or name.startswith(p.rstrip("/") + "/") for p in roots)
-    }
+    protected = {}
+    folded_roots = [p.casefold().rstrip("/") for p in roots]
+    for name, entry in entries.items():
+        path = Path(name.casefold())
+        if (
+            any(
+                part in {"tests", "test", "__tests__", ".codex", ".agents"}
+                for part in path.parts
+            )
+            or path.name.startswith("test_")
+            or path.name
+            in {
+                "conftest.py",
+                "pytest.ini",
+                "tox.ini",
+                "agents.md",
+                "agents.override.md",
+            }
+            or path.name.endswith(("_test.go", ".test.ts", ".spec.ts", ".test.tsx"))
+            or any(
+                name.casefold() == p or name.casefold().startswith(p + "/")
+                for p in folded_roots
+            )
+        ):
+            protected[name] = entry
+    return protected
 
 
 def load_policy(path: Path, repo: Path, requirements: list[str]) -> dict:

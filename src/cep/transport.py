@@ -60,6 +60,35 @@ class CodexTransport:
                     "Worker-local runtime configuration requires explicit adapter qualification: "
                     + name
                 )
+        roles = repo / ".codex/agents"
+        if roles.exists():
+            permitted = {
+                "name",
+                "description",
+                "developer_instructions",
+                "model",
+                "model_reasoning_effort",
+                "model_reasoning_summary",
+            }
+            if roles.is_symlink():
+                raise ValueError("Project agent profiles require regular files")
+            for role in roles.iterdir():
+                if (
+                    role.is_symlink()
+                    or not role.is_file()
+                    or role.suffix != ".toml"
+                    or role.stat().st_size > 128_000
+                ):
+                    raise ValueError(
+                        "Project agent profiles require bounded regular TOML files"
+                    )
+                values = tomllib.loads(role.read_text())
+                if set(values) - permitted or any(
+                    not isinstance(v, str) for v in values.values()
+                ):
+                    raise ValueError(
+                        "Project agent profile authority requires explicit adapter qualification"
+                    )
         artifact.mkdir(parents=True, exist_ok=True)
         schema, output = artifact / "schema.json", artifact / "result.json"
         write_json(schema, SCHEMA)
