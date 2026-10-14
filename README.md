@@ -74,6 +74,8 @@ specialist roles and capabilities. Python and Go ship with the plugin; external
 packs need no core edits. Detection does not grant execution permission.
 `cep qualify-toolchains` verifies installed in-process recipes without granting forks.
 Fork-dependent commands, browser, providers and unknown stacks require qualification.
+[Fixed offline build experiments](docs/TOOLCHAIN_EXPERIMENTS.md) test uv/Python,
+Node child processes and Go compilation in disposable CI; they cannot accept jobs.
 
 UI work requires design, Storybook, browser and accessibility gates, component
 reuse and approved design direction. The [design workflows](project/docs/design/README.md)

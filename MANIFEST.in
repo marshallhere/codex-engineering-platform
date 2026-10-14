@@ -1,4 +1,5 @@
 include LICENSE README.md AGENTS.md HANDOFF_FOR_CODEX.md
+include .github/workflows/native-toolchain-experiments.yml
 recursive-include .agents/plugins *.json
 recursive-include packaging *.json *.py
 recursive-include config *.json

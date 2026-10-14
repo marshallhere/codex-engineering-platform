@@ -132,7 +132,7 @@
       "tests/test_uid_domain.py:UIDInventoryTests"
     ],
     "CEP-UID-EVIDENCE": [
-      "disposable CI fixed detached/posix-spawn/concurrent-forks; pending"
+      "disposable CI 38591031224: fixed detached/posix-spawn/concurrent-forks pass with zero survivors"
     ],
     "CEP-UID-NO-PROMOTION": [
       "shipping src/cep unchanged; production_qualified false"
