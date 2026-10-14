@@ -481,3 +481,91 @@ privileged executable exclusion, durable independent watchdog/recovery and UID
 quarantine/reuse, followed by adversarial resource and real framework/UI verification.
 Positive fixed SDK builds do not satisfy these requirements. No fork-enabled CEP job,
 Slice C, host installation, project merge or deployment is claimed complete.
+
+### Next qualification slice: UID quarantine after controller interruption
+
+Branch `feat/native-uid-quarantine` starts at the reviewed native build milestone
+`a5247d1`. Read-only audit found a concrete gap in both privileged experiments: the
+root orchestrator forks a worker before privilege drop and only starts UID cleanup in
+its own `finally` block. SIGKILL between those points releases the flock and can leave
+an unobserved worker; process inventory may therefore let a later invocation choose
+the same numeric UID. The ordinary runtime already has a separate launch barrier and
+watchdog for its single process-group commands, but detached UID fixture descendants
+need a durable domain reservation of their own.
+
+The scoped implementation adds a private persistent UID reservation journal, records
+its entry before every worker fork, skips stale records on allocation, and releases only
+after verified child/cleaner success and two distinct empty inventories. It does not
+claim automatic orphan termination or release stale records. A disposable macOS fault
+injection will kill an orchestrator around its fork/drop boundary and prove a subsequent
+allocation cannot reuse its reserved UID. Shipping runtime behavior remains unchanged.
+
+Implementation checkpoint: durable UID quarantine
+
+The first implementation pass adds `native/uid_journal.py`, root-owned journal
+validation, reservation before both privileged probe paths, stale reservation
+exclusion, and nonce-bound release after child/cleaner receipts and two distinct
+fresh empty inventories. The journal never auto-recovers a stale reservation.
+The controller interruption regression leaves a detached child alive after SIGKILL
+and confirms its UID remains reserved. The native macOS workflow now stages that
+regression with the privileged probe code and runs it under root before the fixed
+UID experiment, retaining both outputs. This protected macOS CI run has not yet
+executed for this branch and remains mandatory before marking the change complete.
+
+Local evidence so far: 229 platform tests and 38 UID-focused tests pass; Ruff 0.13.3
+passes; strict OpenSpec validation passes all five changes; npm audit reports zero
+high-severity vulnerabilities; Bandit reports zero native findings; source/wheel
+build and isolated packaging verification pass all 174 checks; publication scan
+passes with no findings. The separate restricted Codex review returns PASS with no
+blocking findings and confirms the remaining limit: general sandbox/runtime and
+production recovery are still unqualified. No root probe was run locally.
+
+CI iteration note: the first macOS run caught a stale staged-path reference after the
+workflow moved its protected source files into a `native/` subdirectory for the
+isolated test imports. The controller-interruption regression passed its step; the
+fixed probe step failed to open the former root-level path before executing. The
+workflow now points at the staged `native/uid_probe.py`. No test or guard was changed
+to mask the failure; a new macOS run is required to verify the repair.
+A second macOS CI iteration passed the new root-run controller-interruption regression
+and reached the UID probe. The root probe guard rejected the newly nested `native/`
+staging directory because `mkdir` left it at mode 0755; the probe failed closed before
+running any fixture. The workflow now explicitly makes all staged subdirectories 0700.
+This preserves the guard and tightens staging; another disposable macOS run is required.
+The next macOS run passed both the root interruption test and all fixed probes. Review of
+the uploaded artifact showed that `unittest` writes its verbose report to stderr, so the
+step log was retained only in Actions while the tee artifact was empty. The workflow now
+merges stderr into the retained log; a final run will verify the downloadable evidence
+is substantive before recording its digest.
+Coverage refinement: the protected macOS job now also stages `test_uid_journal.py` and
+runs both UID test modules as root. This extends the disposable host evidence to
+malformed/stale journal records and release validation, in addition to the interrupted
+controller test and the real root probe's two fresh inventories. The final run must
+complete before its outputs are recorded as acceptance evidence.
+Independent workflow review noted staging must visibly fail closed if any setup command
+fails. GitHub's Bash shell already injects `-e -o pipefail`, but the step now states
+`set -euo pipefail` explicitly so this security property is clear and remains robust if
+the workflow shell configuration changes. The expanded macOS test run remains pending.
+Expanded root macOS CI run: both UID test modules passed, then the actual fixed UID probe
+observed one inventory error during `posix-spawn`. The process inventory later found no
+survivors, but the release gate correctly retained quarantine and failed closed. The
+report exposed the count but omitted the underlying bounded diagnostic. `run_case`
+results now preserve up to eight existing diagnostics, and the quarantine error includes
+them; this is observability only and does not relax the release gate. A fresh disposable
+macOS run is needed to classify the host error and establish the final result.
+A follow-up test now proves that the retained inventory diagnostic appears in the
+failure and the release routine is never called when inventory error counters are
+nonzero. This confirms the observability change cannot turn a transient scan into a
+successful release.
+The independent review caught a malformed-diagnostic edge case: a non-string item in a
+reported error list could make JSON formatting raise `TypeError`. Reporting now filters
+to bounded strings, and a focused test verifies malformed diagnostics still fail closed
+without releasing the journal record.
+
+Final disposable macOS CI run `38604442175` on source `1c09c2e` passed all 17 staged
+root UID journal/interruption tests and all three fixed UID probes. Each probe case
+recorded cleaner status 0, no inventory errors, zero survivors, and released its
+reservation only after verified empty inventories. The downloaded JSON and verbose test
+log are preserved with SHA-256 digests in `docs/evidence/native-uid-quarantine.json`.
+The run leaves `production_qualified=false`; this does not qualify the general runtime
+sandbox or stale UID recovery. The earlier transient inventory failure remains in the
+GitHub run history and the strict failure behavior remains in place.

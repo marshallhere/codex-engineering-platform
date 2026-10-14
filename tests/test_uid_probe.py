@@ -108,6 +108,23 @@ class UIDProbeGuardTests(TestCase):
 class UIDProbeFinalizationTests(TestCase):
     """Parent-only fault injection: no real fork, signals, UID changes or waits."""
 
+    def test_inventory_error_never_releases_reservation_or_breaks_diagnostics(self):
+        from native.uid_journal import Reservation
+
+        reservation = Reservation(62017, "a" * 32)
+        result = {
+            "error_count": 1,
+            "inventory_errors": 1,
+            "cleaner_status": 0,
+            "survivors": 0,
+            "worker_status": 0,
+            "errors": [object()],
+        }
+        with mock.patch.object(uid_probe.uid_journal, "release") as release:
+            with self.assertRaisesRegex(RuntimeError, "remains quarantined"):
+                uid_probe.release_verified(62017, reservation, result)
+        release.assert_not_called()
+
     def mocks(self, stack, *, worker_diagnostic=b"", inventories=None, wait=None):
         from itertools import chain, count, repeat
 
@@ -243,6 +260,7 @@ class UIDProbeFinalizationTests(TestCase):
             self.assertEqual(result["survivors"], 0)
             self.assertEqual(result["inventory_errors"], 1)
             self.assertEqual(result["error_count"], 1)
+            self.assertIn("inventory:InventoryError:temporary churn", result["errors"])
             self.assertEqual(result["worker_status"], 0)
             killer.assert_not_called()
 

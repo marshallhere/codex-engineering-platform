@@ -2,7 +2,7 @@ name: native-uid-experiments
 on:
   workflow_dispatch:
   push:
-    branches: [feat/native-uid-containment]
+    branches: [feat/native-uid-containment, feat/native-uid-quarantine]
     paths: ["native/**", "tests/test_uid_*.py", ".github/workflows/native-uid-experiments.yml"]
 permissions:
   contents: read
@@ -16,24 +16,36 @@ jobs:
       - name: Stage fixed reviewed experiments outside worker ownership
         shell: bash
         run: |
+          set -euo pipefail
           printf '%s\n' '{"experiment":"not_run","production_qualified":false,"error":"staging failed"}' > uid-experiment.json
           stage=$(sudo /usr/bin/mktemp -d /private/tmp/cep-uid-probes.XXXXXX)
           echo "CEP_UID_STAGE=$stage" >> "$GITHUB_ENV"
           sudo /bin/chmod 700 "$stage"
-          sudo /bin/cp native/uid_domain.py native/uid_probe.py "$stage/"
+          sudo /bin/mkdir -p "$stage/native" "$stage/cep" "$stage/tests"
+          sudo /bin/chmod 700 "$stage/native" "$stage/cep" "$stage/tests"
+          sudo /bin/cp native/uid_domain.py native/uid_probe.py native/uid_journal.py "$stage/native/"
+          sudo /bin/cp src/cep/__init__.py src/cep/lifecycle.py "$stage/cep/"
+          sudo /bin/cp tests/test_uid_journal.py tests/test_uid_quarantine.py "$stage/tests/"
           sudo /usr/sbin/chown -R root:wheel "$stage"
-          sudo /bin/chmod 600 "$stage/uid_domain.py" "$stage/uid_probe.py"
+          sudo /bin/chmod 600 "$stage/native/uid_domain.py" "$stage/native/uid_probe.py" "$stage/native/uid_journal.py" "$stage/cep/__init__.py" "$stage/cep/lifecycle.py" "$stage/tests/test_uid_journal.py" "$stage/tests/test_uid_quarantine.py"
+      - name: Prove controller interruption preserves UID quarantine as root
+        shell: bash
+        run: |
+          set -o pipefail
+          sudo /usr/bin/env -i PATH=/usr/bin:/bin PYTHONPATH="$CEP_UID_STAGE" /usr/bin/python3 -m unittest discover -s "$CEP_UID_STAGE/tests" -p 'test_uid_*.py' -v 2>&1 | tee uid-quarantine.log
       - name: Run fixed synthetic experiments; production stays blocked
         shell: bash
         run: |
           set -o pipefail
-          sudo /usr/bin/env -i PATH=/usr/bin:/bin GITHUB_ACTIONS=true RUNNER_ENVIRONMENT=github-hosted CEP_UID_EXPERIMENT=disposable-v1 /usr/bin/python3 "$CEP_UID_STAGE/uid_probe.py" --qualify | tee uid-experiment.json
+          sudo /usr/bin/env -i PATH=/usr/bin:/bin GITHUB_ACTIONS=true RUNNER_ENVIRONMENT=github-hosted CEP_UID_EXPERIMENT=disposable-v1 /usr/bin/python3 "$CEP_UID_STAGE/native/uid_probe.py" --qualify | tee uid-experiment.json
       - name: Retain experiment outcomes even on failure
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: native-uid-experiment
-          path: uid-experiment.json
+          path: |
+            uid-experiment.json
+            uid-quarantine.log
           if-no-files-found: error
       - name: Remove only this run's staged code
         if: always()

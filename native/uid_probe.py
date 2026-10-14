@@ -20,8 +20,12 @@ import time
 # Import only this protected sibling in the privileged workflow staging directory.
 if __package__:
     from .uid_domain import InventoryError, credential_groups, inventory_uid
+    from . import uid_journal
 else:
     from uid_domain import InventoryError, credential_groups, inventory_uid
+    import uid_journal
+
+JOURNAL_DIRECTORY = Path("/private/var/run/cep-uid-experiments")
 
 
 def prerequisites() -> dict:
@@ -48,6 +52,7 @@ def guard() -> None:
     for path in (
         Path(__file__).resolve(),
         Path(__file__).resolve().with_name("uid_domain.py"),
+        Path(__file__).resolve().with_name("uid_journal.py"),
     ):
         info = path.stat()
         parent = path.parent.stat()
@@ -111,7 +116,7 @@ def drop(uid: int) -> None:
 
 def exclusive_lease() -> int:
     """Serialize all experiments in this disposable host; refuse unsafe aliases."""
-    directory = Path("/private/var/run/cep-uid-experiments")
+    directory = JOURNAL_DIRECTORY
     try:
         directory.mkdir(mode=0o700)
     except FileExistsError:
@@ -151,6 +156,9 @@ def exclusive_lease() -> int:
 
 
 def choose_uid() -> int:
+    # The root journal survives flock release/controller death. Unknown records
+    # fail the entire selection; stale reservations never become implicit reuse.
+    reserved = uid_journal.reserved_uids(JOURNAL_DIRECTORY, expected_owner_uid=0)
     for _ in range(100):
         uid = 62000 + secrets.randbelow(3000)
         try:
@@ -159,9 +167,67 @@ def choose_uid() -> int:
             try:
                 grp.getgrgid(uid)
             except KeyError:
-                if not inventory_uid(uid):
+                if uid not in reserved and not inventory_uid(uid):
                     return uid
     raise RuntimeError("no unused fixture UID")
+
+
+def release_verified(uid, reservation, result):
+    """Release only after the case receipts and two fresh inventories pass."""
+    if (
+        not isinstance(result, dict)
+        or type(result.get("error_count")) is not int
+        or result.get("error_count") != 0
+        or type(result.get("inventory_errors")) is not int
+        or result.get("inventory_errors") != 0
+        or type(result.get("cleaner_status")) is not int
+        or result.get("cleaner_status") != 0
+        or type(result.get("survivors")) is not int
+        or result.get("survivors") != 0
+        or type(result.get("worker_status")) is not int
+        or result.get("worker_status") not in {0, int(signal.SIGKILL)}
+    ):
+        details = {"error_count": None, "inventory_errors": None, "errors": []}
+        if isinstance(result, dict):
+            details["error_count"] = result.get("error_count")
+            details["inventory_errors"] = result.get("inventory_errors")
+            errors = result.get("errors", [])
+            if isinstance(errors, list):
+                details["errors"] = [error for error in errors[:8] if type(error) is str]
+        raise RuntimeError(
+            "UID reservation remains quarantined after ambiguous cleanup: "
+            + json.dumps(details, sort_keys=True)
+        )
+    snapshots = []
+    for _ in range(2):
+        processes = inventory_uid(uid)
+        if processes:
+            raise RuntimeError("UID reservation remains quarantined with live processes")
+        observed = time.time_ns()
+        if snapshots and observed <= snapshots[-1]["observed_at_ns"]:
+            raise RuntimeError("UID inventory snapshots are not ordered")
+        snapshots.append(
+            {
+                "id": os.urandom(16).hex(),
+                "observed_at_ns": observed,
+                "stable": True,
+                "processes": [],
+            }
+        )
+    uid_journal.release(
+        JOURNAL_DIRECTORY,
+        reservation,
+        {
+            "verified_empty": True,
+            "reservation_uid": uid,
+            "reservation_nonce": reservation.nonce,
+            "snapshots": snapshots,
+            "worker_exit_status": result["worker_status"],
+            "expected_worker_status": result["worker_status"],
+            "cleaner_exit_status": result["cleaner_status"],
+        },
+        expected_owner_uid=0,
+    )
 
 
 def fixture(mode: str, ready: int) -> None:
@@ -439,6 +505,7 @@ def run_case(uid: int, mode: str) -> dict:
         "cleaner_status": cleaner_status,
         "error_count": error_count,
         "inventory_errors": inventory_errors,
+        "errors": errors[:8],
         "survivors": 0,
         "elapsed_seconds": round(time.monotonic() - started, 3),
     }
@@ -466,7 +533,14 @@ def main() -> int:
         try:
             report["cases"] = []
             for mode in ("detached", "posix-spawn", "concurrent-forks"):
-                report["cases"].append(run_case(choose_uid(), mode))
+                uid = choose_uid()
+                reservation = uid_journal.reserve(
+                    JOURNAL_DIRECTORY, uid, expected_owner_uid=0
+                )
+                result = run_case(uid, mode)
+                report["cases"].append(result)
+                release_verified(uid, reservation, result)
+                report["cases"][-1]["reservation_released"] = True
         finally:
             os.close(lease_fd)
         report["experiment"] = "passed"

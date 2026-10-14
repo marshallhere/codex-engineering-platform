@@ -67,7 +67,12 @@ def _helpers():
     if __package__:
         return importlib.import_module(".uid_probe", __package__)
     stage = _checked_root(Path(__file__).resolve().parent, 0o700)
-    for name in ("build_probe.py", "uid_probe.py", "uid_domain.py"):
+    for name in (
+        "build_probe.py",
+        "uid_probe.py",
+        "uid_domain.py",
+        "uid_journal.py",
+    ):
         info = (stage / name).lstat()
         if (
             not stat.S_ISREG(info.st_mode)
@@ -736,12 +741,27 @@ def main(argv=None):
             if uid in used:
                 raise RuntimeError("fixture identity must not be reused")
             used.add(uid)
+            reservation = helpers.uid_journal.reserve(
+                helpers.JOURNAL_DIRECTORY, uid, expected_owner_uid=0
+            )
             result = run_build(uid, mode, sdk, work, evidence)
             report["cases"].append(result)
             if not result["passed"]:
                 raise RuntimeError(
                     "fixed build case failed; preserve evidence and quarantine UID"
                 )
+            helpers.release_verified(
+                uid,
+                reservation,
+                {
+                    "worker_status": result["worker_status"],
+                    "cleaner_status": result["cleaner_status"],
+                    "survivors": result["survivors"],
+                    "error_count": result["error_count"],
+                    "inventory_errors": result["error_count"],
+                },
+            )
+            result["reservation_released"] = True
         for declaration in sdk.values():
             if sdk_tree_digest(declaration["root"]) != declaration["tree_sha256"]:
                 raise RuntimeError("SDK identity changed during build")

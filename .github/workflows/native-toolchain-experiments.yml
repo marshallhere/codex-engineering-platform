@@ -2,7 +2,7 @@ name: native-toolchain-experiments
 on:
   workflow_dispatch:
   push:
-    branches: [feat/native-toolchain-build-probes]
+    branches: [feat/native-toolchain-build-probes, feat/native-uid-quarantine]
     paths: ["native/**", "tests/test_uid_*.py", "tests/test_build_probe.py", ".github/workflows/native-toolchain-experiments.yml"]
 permissions:
   contents: read
@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   disposable-builds:
-    if: github.repository == 'marshallhere/codex-engineering-platform' && github.ref == 'refs/heads/feat/native-toolchain-build-probes'
+    if: github.repository == 'marshallhere/codex-engineering-platform' && (github.ref == 'refs/heads/feat/native-toolchain-build-probes' || github.ref == 'refs/heads/feat/native-uid-quarantine')
     runs-on: macos-14
     timeout-minutes: 10
     steps:
@@ -34,14 +34,14 @@ jobs:
           work=$(sudo /usr/bin/mktemp -d /private/tmp/cep-build-work.XXXXXX)
           echo "CEP_BUILD_WORK=$work" >> "$GITHUB_ENV"
           sudo /bin/chmod 700 "$code" "$sdk" "$work"
-          sudo /bin/cp -P native/uid_domain.py native/uid_probe.py native/build_probe.py "$code/"
+          sudo /bin/cp -P native/uid_domain.py native/uid_probe.py native/uid_journal.py native/build_probe.py "$code/"
           sudo /usr/bin/env -i PATH=/usr/bin:/bin /usr/bin/python3 -B -I - "$code" <<'PY'
           import os
           from pathlib import Path
           import stat
           import sys
           root = Path(sys.argv[1])
-          for name in ("uid_domain.py", "uid_probe.py", "build_probe.py"):
+          for name in ("uid_domain.py", "uid_probe.py", "uid_journal.py", "build_probe.py"):
               path = root / name
               descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW)
               try:
@@ -81,7 +81,7 @@ jobs:
                       or directory.resolve() != directory or not stat.S_ISDIR(info.st_mode)
                       or info.st_uid != 0 or stat.S_IMODE(info.st_mode) != 0o700):
                   raise RuntimeError("unsafe experiment staging directory")
-          for name in ("uid_domain.py", "uid_probe.py", "build_probe.py"):
+          for name in ("uid_domain.py", "uid_probe.py", "uid_journal.py", "build_probe.py"):
               info = (code / name).lstat()
               if (not stat.S_ISREG(info.st_mode) or info.st_uid != 0
                       or info.st_nlink != 1 or stat.S_IMODE(info.st_mode) != 0o600):

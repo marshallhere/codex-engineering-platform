@@ -31,8 +31,9 @@ a later case fails. Tests with mocks establish control behavior only; actual CI 
 must establish build compatibility. Reports always include `production_qualified: false`.
 
 No positive receipt qualifies arbitrary candidate code, inherited Seatbelt restrictions,
-watchdog interruption/recovery, resource exhaustion, durable UID quarantine/reuse or
-privileged executable exclusion. Those requirements remain in
+watchdog interruption/recovery, resource exhaustion or privileged executable exclusion.
+The fixed probes do persist and honor reservations within the disposable runner, but do
+not qualify orphan cleanup or production UID recovery. Those requirements remain in
 [native containment](NATIVE_CONTAINMENT.md). No container fallback or runtime fork grant
 is applied. Slice C still requires qualified execution plus real rendered UI evidence.
 

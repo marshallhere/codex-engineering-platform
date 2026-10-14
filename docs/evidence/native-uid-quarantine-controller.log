@@ -1,0 +1,22 @@
+test_directory_mode_and_expected_owner_are_enforced (test_uid_journal.UIDJournalTests) ... ok
+test_existing_malformed_record_always_blocks_reuse (test_uid_journal.UIDJournalTests) ... ok
+test_fifo_record_is_rejected_without_blocking (test_uid_journal.UIDJournalTests) ... ok
+test_invalid_uid_types_and_bounds_are_rejected (test_uid_journal.UIDJournalTests) ... ok
+test_record_permissions_and_link_count_are_checked (test_uid_journal.UIDJournalTests) ... ok
+test_release_is_idempotence_safe_and_nonce_bound (test_uid_journal.UIDJournalTests) ... ok
+test_release_rejects_missing_parse_or_permission_evidence (test_uid_journal.UIDJournalTests) ... ok
+test_release_requires_two_distinct_stable_empty_snapshots (test_uid_journal.UIDJournalTests) ... ok
+test_reservation_is_canonical_and_durable_name_exists (test_uid_journal.UIDJournalTests) ... ok
+test_reserved_uids_enumerates_and_validates_records (test_uid_journal.UIDJournalTests) ... ok
+test_reserved_uids_rejects_malformed_names_records_and_symlinks (test_uid_journal.UIDJournalTests) ... ok
+test_sigkill_worker_status_must_match_expected_status (test_uid_journal.UIDJournalTests) ... ok
+test_symlink_directory_is_rejected (test_uid_journal.UIDJournalTests) ... ok
+test_valid_evidence_releases_matching_record (test_uid_journal.UIDJournalTests) ... ok
+test_allocator_skips_stale_durable_reservations (test_uid_quarantine.UIDQuarantineTests) ... ok
+test_inventory_error_diagnostic_preserves_quarantine (test_uid_quarantine.UIDQuarantineTests) ... ok
+test_orchestrator_death_after_fork_keeps_uid_reserved (test_uid_quarantine.UIDQuarantineTests) ... ok
+
+----------------------------------------------------------------------
+Ran 17 tests in 0.047s
+
+OK

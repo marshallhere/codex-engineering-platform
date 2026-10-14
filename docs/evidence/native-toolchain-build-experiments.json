@@ -158,6 +158,6 @@
     "No inherited Seatbelt filesystem/network enforcement proof",
     "No durable watchdog/reboot/recovery qualification",
     "No resource-exhaustion or set-ID executable qualification",
-    "No durable UID quarantine/reuse qualification"
+    "Fixed probes quarantine unresolved numeric UIDs on the disposable runner; no orphan cleanup or production UID recovery qualification"
   ]
 }
