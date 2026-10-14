@@ -35,7 +35,7 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          sudo /usr/bin/env -i PATH=/usr/bin:/bin GITHUB_ACTIONS=true RUNNER_ENVIRONMENT=github-hosted CEP_UID_EXPERIMENT=disposable-v1 /usr/bin/python3 "$CEP_UID_STAGE/uid_probe.py" --qualify | tee uid-experiment.json
+          sudo /usr/bin/env -i PATH=/usr/bin:/bin GITHUB_ACTIONS=true RUNNER_ENVIRONMENT=github-hosted CEP_UID_EXPERIMENT=disposable-v1 /usr/bin/python3 "$CEP_UID_STAGE/native/uid_probe.py" --qualify | tee uid-experiment.json
       - name: Retain experiment outcomes even on failure
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

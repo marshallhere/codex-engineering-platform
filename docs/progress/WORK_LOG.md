@@ -519,3 +519,10 @@ build and isolated packaging verification pass all 174 checks; publication scan
 passes with no findings. The separate restricted Codex review returns PASS with no
 blocking findings and confirms the remaining limit: general sandbox/runtime and
 production recovery are still unqualified. No root probe was run locally.
+
+CI iteration note: the first macOS run caught a stale staged-path reference after the
+workflow moved its protected source files into a `native/` subdirectory for the
+isolated test imports. The controller-interruption regression passed its step; the
+fixed probe step failed to open the former root-level path before executing. The
+workflow now points at the staged `native/uid_probe.py`. No test or guard was changed
+to mask the failure; a new macOS run is required to verify the repair.
