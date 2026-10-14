@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "review": "docs/SECURITY_REVIEW.md",
+  "findings": [
+    {
+      "file": "cli.py",
+      "test_id": "B404",
+      "severity": "LOW",
+      "count": 1
+    },
+    {
+      "file": "cli.py",
+      "test_id": "B603",
+      "severity": "LOW",
+      "count": 1
+    },
+    {
+      "file": "demo.py",
+      "test_id": "B404",
+      "severity": "LOW",
+      "count": 1
+    },
+    {
+      "file": "demo.py",
+      "test_id": "B603",
+      "severity": "LOW",
+      "count": 1
+    },
+    {
+      "file": "evidence.py",
+      "test_id": "B404",
+      "severity": "LOW",
+      "count": 1
+    },
+    {
+      "file": "evidence.py",
+      "test_id": "B603",
+      "severity": "LOW",
+      "count": 3
+    },
+    {
+      "file": "evidence.py",
+      "test_id": "B607",
+      "severity": "LOW",
+      "count": 1
+    },
+    {
+      "file": "integration.py",
+      "test_id": "B404",
+      "severity": "LOW",
+      "count": 1
+    },
+    {
+      "file": "lifecycle.py",
+      "test_id": "B404",
+      "severity": "LOW",
+      "count": 1
+    },
+    {
+      "file": "lifecycle.py",
+      "test_id": "B603",
+      "severity": "LOW",
+      "count": 1
+    },
+    {
+      "file": "lifecycle.py",
+      "test_id": "B606",
+      "severity": "LOW",
+      "count": 1
+    },
+    {
+      "file": "process.py",
+      "test_id": "B404",
+      "severity": "LOW",
+      "count": 1
+    },
+    {
+      "file": "process.py",
+      "test_id": "B603",
+      "severity": "LOW",
+      "count": 1
+    }
+  ]
+}

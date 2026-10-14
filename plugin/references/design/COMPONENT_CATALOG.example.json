@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "description": "Example only. Create docs/design/component-catalog.json from actual code and Storybook.",
+  "components": [
+    {
+      "name": "Button",
+      "path": "src/components/ui/Button.tsx",
+      "story": "src/components/ui/Button.stories.tsx",
+      "status": "stable",
+      "use_when": "Primary and secondary actions",
+      "variants": [
+        "primary",
+        "secondary",
+        "ghost"
+      ],
+      "reviewed": false
+    }
+  ]
+}

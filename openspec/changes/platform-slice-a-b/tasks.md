@@ -1,0 +1,7 @@
+- [ ] CEP-SETUP: package plugin and implement reversible selective project onboarding
+- [ ] CEP-PACK: load and validate Python/Go/external technology packs
+- [ ] CEP-JOB: durable attempts, leases, explicit budgets and interrupted recovery
+- [ ] CEP-BOUNDARY: native isolation and adversarial probes for all live process paths
+- [ ] CEP-EVIDENCE: immutable candidate and requirement-bound artifacts
+- [ ] CEP-LOOP: offline repair/review tests and optional real Codex acceptance demonstration
+- [ ] Independent review, regression, risk register and publication audit

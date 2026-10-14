@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools==80.9.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "codex-engineering-platform"
+version = "0.1.0a1"
+description = "Project-adaptive Codex workflows with independently verified engineering evidence"
+requires-python = ">=3.11"
+license = "MIT"
+dependencies = []
+
+[project.scripts]
+cep = "cep.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

@@ -1,0 +1,1730 @@
+{
+  "agents": [],
+  "inputs": [
+    {
+      "source": "config-1",
+      "state": "read"
+    },
+    {
+      "source": "config-2",
+      "state": "read"
+    },
+    {
+      "source": "skill-root-1",
+      "state": "read"
+    },
+    {
+      "source": "skill-root-2",
+      "state": "read"
+    },
+    {
+      "source": "skill-root-3",
+      "state": "read"
+    },
+    {
+      "source": "plugin-root-1",
+      "state": "read"
+    }
+  ],
+  "mcps": [
+    {
+      "authentication": "user-connection-required",
+      "default_enabled": false,
+      "disposition": "private-binding",
+      "endpoint": "<private-endpoint>",
+      "env_names": [],
+      "name": "better-auth",
+      "source": "config-2",
+      "state": "configured",
+      "transport": "streamable-http",
+      "verification": "unverified"
+    },
+    {
+      "authentication": "user-connection-required",
+      "default_enabled": false,
+      "disposition": "reference",
+      "env_names": [],
+      "executable": "npx",
+      "name": "chrome-devtools",
+      "source": "config-1",
+      "state": "configured",
+      "transport": "stdio",
+      "verification": "unverified"
+    },
+    {
+      "authentication": "user-connection-required",
+      "default_enabled": false,
+      "disposition": "private-binding",
+      "env_names": [],
+      "executable": "<local-executable>",
+      "name": "chrome-devtools",
+      "source": "config-2",
+      "state": "configured",
+      "transport": "stdio",
+      "verification": "unverified"
+    },
+    {
+      "authentication": "user-connection-required",
+      "default_enabled": false,
+      "disposition": "private-binding",
+      "endpoint": "<private-endpoint>",
+      "env_names": [],
+      "name": "cloudflare-api",
+      "source": "config-1",
+      "state": "configured",
+      "transport": "streamable-http",
+      "verification": "unverified"
+    },
+    {
+      "authentication": "user-connection-required",
+      "default_enabled": false,
+      "disposition": "private-binding",
+      "endpoint": "<private-endpoint>",
+      "env_names": [],
+      "name": "cloudflare-api",
+      "source": "config-2",
+      "state": "configured",
+      "transport": "streamable-http",
+      "verification": "unverified"
+    },
+    {
+      "authentication": "user-connection-required",
+      "default_enabled": false,
+      "disposition": "private-binding",
+      "env_names": [],
+      "executable": "<local-executable>",
+      "name": "computer-use",
+      "source": "config-1",
+      "state": "configured-disabled",
+      "transport": "stdio",
+      "verification": "unverified"
+    },
+    {
+      "authentication": "user-connection-required",
+      "default_enabled": false,
+      "disposition": "reference",
+      "endpoint": "https://mcp.context7.com/mcp",
+      "env_names": [],
+      "name": "context7",
+      "source": "config-2",
+      "state": "configured",
+      "transport": "streamable-http",
+      "verification": "unverified"
+    },
+    {
+      "authentication": "user-connection-required",
+      "default_enabled": false,
+      "disposition": "private-binding",
+      "env_names": [],
+      "executable": "<local-executable>",
+      "name": "database-toolbox",
+      "source": "config-2",
+      "state": "configured",
+      "transport": "stdio",
+      "verification": "unverified"
+    },
+    {
+      "authentication": "user-connection-required",
+      "default_enabled": false,
+      "disposition": "private-binding",
+      "endpoint": "<private-endpoint>",
+      "env_names": [
+        "GITHUB_PAT_TOKEN"
+      ],
+      "name": "github",
+      "source": "config-1",
+      "state": "configured",
+      "transport": "streamable-http",
+      "verification": "unverified"
+    },
+    {
+      "authentication": "user-connection-required",
+      "default_enabled": false,
+      "disposition": "private-binding",
+      "endpoint": "<private-endpoint>",
+      "env_names": [
+        "GITHUB_PAT_TOKEN"
+      ],
+      "name": "github",
+      "source": "config-2",
+      "state": "configured",
+      "transport": "streamable-http",
+      "verification": "unverified"
+    },
+    {
+      "authentication": "user-connection-required",
+      "default_enabled": false,
+      "disposition": "private-binding",
+      "env_names": [
+        "GRAFANA_SERVICE_ACCOUNT_TOKEN",
+        "GRAFANA_SERVICE_ACCOUNT_TOKEN_FILE",
+        "GRAFANA_URL"
+      ],
+      "executable": "<local-executable>",
+      "name": "grafana",
+      "source": "config-2",
+      "state": "configured",
+      "transport": "stdio",
+      "verification": "unverified"
+    },
+    {
+      "authentication": "user-connection-required",
+      "default_enabled": false,
+      "disposition": "reference",
+      "env_names": [],
+      "executable": "npx",
+      "name": "next-devtools",
+      "source": "config-1",
+      "state": "configured",
+      "transport": "stdio",
+      "verification": "unverified"
+    },
+    {
+      "authentication": "user-connection-required",
+      "default_enabled": false,
+      "disposition": "private-binding",
+      "env_names": [],
+      "executable": "<local-executable>",
+      "name": "next-devtools",
+      "source": "config-2",
+      "state": "configured",
+      "transport": "stdio",
+      "verification": "unverified"
+    },
+    {
+      "authentication": "user-connection-required",
+      "default_enabled": false,
+      "disposition": "private-binding",
+      "env_names": [
+        "BROWSER_USE_AVAILABLE_BACKENDS",
+        "BROWSER_USE_CODEX_APP_BUILD_FLAVOR",
+        "BROWSER_USE_CODEX_APP_VERSION",
+        "BROWSER_USE_TINYSKY_ENABLED",
+        "CODEX_CLI_PATH",
+        "CODEX_HOME",
+        "NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER",
+        "NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME",
+        "NODE_REPL_INSTRUCTIONS_USE_CASE_COMPUTER_USE",
+        "NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS",
+        "NODE_REPL_NODE_MODULE_DIRS",
+        "NODE_REPL_NODE_PATH",
+        "NODE_REPL_TRUSTED_CODE_PATHS",
+        "NODE_REPL_TRUSTED_SERVICES",
+        "SKY_CUA_SERVICE_PATH"
+      ],
+      "executable": "<local-executable>",
+      "name": "node_repl",
+      "source": "config-1",
+      "state": "configured",
+      "transport": "stdio",
+      "verification": "unverified"
+    },
+    {
+      "authentication": "user-connection-required",
+      "default_enabled": false,
+      "disposition": "private-binding",
+      "endpoint": "<private-endpoint>",
+      "env_names": [],
+      "name": "resend",
+      "source": "config-1",
+      "state": "configured",
+      "transport": "streamable-http",
+      "verification": "unverified"
+    },
+    {
+      "authentication": "user-connection-required",
+      "default_enabled": false,
+      "disposition": "private-binding",
+      "endpoint": "<private-endpoint>",
+      "env_names": [],
+      "name": "resend",
+      "source": "config-2",
+      "state": "configured",
+      "transport": "streamable-http",
+      "verification": "unverified"
+    },
+    {
+      "authentication": "user-connection-required",
+      "default_enabled": false,
+      "disposition": "private-binding",
+      "endpoint": "<private-endpoint>",
+      "env_names": [],
+      "name": "sentry",
+      "source": "config-2",
+      "state": "configured",
+      "transport": "streamable-http",
+      "verification": "unverified"
+    },
+    {
+      "authentication": "user-connection-required",
+      "default_enabled": false,
+      "disposition": "reference",
+      "endpoint": "https://mcp.stripe.com",
+      "env_names": [],
+      "name": "stripe",
+      "source": "config-1",
+      "state": "configured",
+      "transport": "streamable-http",
+      "verification": "unverified"
+    },
+    {
+      "authentication": "user-connection-required",
+      "default_enabled": false,
+      "disposition": "reference",
+      "endpoint": "https://mcp.stripe.com",
+      "env_names": [],
+      "name": "stripe",
+      "source": "config-2",
+      "state": "configured",
+      "transport": "streamable-http",
+      "verification": "unverified"
+    },
+    {
+      "authentication": "user-connection-required",
+      "default_enabled": false,
+      "disposition": "private-binding",
+      "env_names": [],
+      "executable": "<local-executable>",
+      "name": "terraform",
+      "source": "config-2",
+      "state": "configured",
+      "transport": "stdio",
+      "verification": "unverified"
+    }
+  ],
+  "plugins": [
+    {
+      "default_enabled": false,
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "manifest_sha256": "c208b8b83175f023e82eebe1b90ab15223c6ca73ac80de701d9c1b3d54e04d6a",
+      "name": "app-69272cb413a081919685ec3c88d1744e",
+      "provenance": "installed-manifest",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only",
+      "version": "5.0.0"
+    },
+    {
+      "default_enabled": false,
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "manifest_sha256": "56ee82d96b0ddd9fd75ca5b6dc13e0dffa3a0fe1ae912694f8ad3ddf7252212a",
+      "name": "browser",
+      "provenance": "installed-manifest",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only",
+      "version": "26.1007.30912"
+    },
+    {
+      "default_enabled": false,
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "manifest_sha256": "3ee5af1494fc4f60013e6e0d85d61a2723a256720dfc803a204e3cb293e706db",
+      "name": "chrome",
+      "provenance": "installed-manifest",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only",
+      "version": "26.1007.30912"
+    },
+    {
+      "default_enabled": false,
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "manifest_sha256": "d880077767079b1d1e764937b8de49a94f5f54b79718592d0f3e09576797cb32",
+      "name": "code-review",
+      "provenance": "installed-manifest",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only",
+      "version": "26.1007.30912"
+    },
+    {
+      "default_enabled": false,
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "manifest_sha256": "e7e281000860d50df8ddc0a365dd6a1699b77f86358a8321f0e9cdbb4b7867b9",
+      "name": "codex-app-tools",
+      "provenance": "installed-manifest",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only",
+      "version": "0.1.6"
+    },
+    {
+      "default_enabled": false,
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "manifest_sha256": "1255abce434d55a62cc084d46fe5c362c06c88c10433cedd6f01a3411c933add",
+      "name": "computer-use",
+      "provenance": "installed-manifest",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only",
+      "version": "1.0.1001425"
+    },
+    {
+      "default_enabled": false,
+      "disposition": "reference",
+      "license": {
+        "basis": "declared",
+        "identifier": "MIT",
+        "redistribution": "review-required"
+      },
+      "manifest_sha256": "ce20c84eb4feaed4a9ee3d0679da9617a3a217f352391c6ffc3a0995e55a7358",
+      "name": "documents",
+      "provenance": "installed-manifest",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only",
+      "version": "26.1011.11113"
+    },
+    {
+      "default_enabled": false,
+      "disposition": "reference",
+      "license": {
+        "basis": "declared",
+        "identifier": "MIT",
+        "redistribution": "review-required"
+      },
+      "manifest_sha256": "c7a102ea4c7c06e49976dfc2f150a4fe2ce46b0e66f9b03883dda5d5cc9cb0ad",
+      "name": "github",
+      "provenance": "installed-manifest",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only",
+      "version": "0.1.12-5f7cd798dc99"
+    },
+    {
+      "default_enabled": false,
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "manifest_sha256": "d2cbbd434a5c8123a9e1612663f0598cdd13ba71bfb55e172e8132ed9e5d4474",
+      "name": "openai-templates",
+      "provenance": "installed-manifest",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only",
+      "version": "0.1.1"
+    },
+    {
+      "default_enabled": false,
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "manifest_sha256": "eb0382228e8202a25bfd691e2bfc82e82653f659a38a204ad04a79e89d2b5be6",
+      "name": "pages",
+      "provenance": "installed-manifest",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only",
+      "version": "0.1.23"
+    },
+    {
+      "default_enabled": false,
+      "disposition": "reference",
+      "license": {
+        "basis": "declared",
+        "identifier": "MIT",
+        "redistribution": "review-required"
+      },
+      "manifest_sha256": "ecba316ee3b725cc684bf55fedfa6f224e1e33546f7e096661bf0b71e6573f06",
+      "name": "pdf",
+      "provenance": "installed-manifest",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only",
+      "version": "26.1011.11113"
+    },
+    {
+      "default_enabled": false,
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "manifest_sha256": "5deb3b2f943fff03a928e1faed2b040bad7dabcf71c11f183fc67dcc0793e3c3",
+      "name": "plugin-management",
+      "provenance": "installed-manifest",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only",
+      "version": "0.1.0"
+    },
+    {
+      "default_enabled": false,
+      "disposition": "reference",
+      "license": {
+        "basis": "declared",
+        "identifier": "MIT",
+        "redistribution": "review-required"
+      },
+      "manifest_sha256": "c78fe5ce101bbc55dcfdfa8f9e6f2e82a73c6331b4a5fc511b9630aa1900a9a4",
+      "name": "presentations",
+      "provenance": "installed-manifest",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only",
+      "version": "26.1011.11113"
+    },
+    {
+      "default_enabled": false,
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "manifest_sha256": "2e8c38567d5abeb916488a28062ac7f7b3933e4d50513224f139259cd25900a2",
+      "name": "sites",
+      "provenance": "installed-manifest",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only",
+      "version": "1.0.2-remix-a.1"
+    },
+    {
+      "default_enabled": false,
+      "disposition": "reference",
+      "license": {
+        "basis": "declared",
+        "identifier": "MIT",
+        "redistribution": "review-required"
+      },
+      "manifest_sha256": "ce92929d579db18563045eca482376a164e092c5bb51acc2f014af015a4e32a9",
+      "name": "spreadsheets",
+      "provenance": "installed-manifest",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only",
+      "version": "26.1011.11113"
+    },
+    {
+      "default_enabled": false,
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "manifest_sha256": "243d8f83d202422a7999989988d6ff0c05c3de29f4b222778f326b504fde25dd",
+      "name": "stripe",
+      "provenance": "installed-manifest",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only",
+      "version": "8.0.0"
+    },
+    {
+      "default_enabled": false,
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "manifest_sha256": "534c3f137dea3896c618f7dcca44af2e35e69105407e6d43a8a679af5f6d7f84",
+      "name": "template-creator",
+      "provenance": "installed-manifest",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only",
+      "version": "26.1011.11113"
+    },
+    {
+      "default_enabled": false,
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "manifest_sha256": "cf9b6b38ce8bcd5173dab81bdfe6d243df38ceea2ecb3f4dab8eb02efbb791bb",
+      "name": "unified-computer-use",
+      "provenance": "installed-manifest",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only",
+      "version": "26.1007.30912"
+    },
+    {
+      "default_enabled": false,
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "manifest_sha256": "253debc76a6e9672bf2f69f32b234d9174e54698dfebf33a3f287547c7334c54",
+      "name": "visualize",
+      "provenance": "installed-manifest",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only",
+      "version": "1.0.49"
+    },
+    {
+      "default_enabled": false,
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "manifest_sha256": "c1f27c0864bec7c88e14d3369da870202e98cff4df4ee786747bd22cc93ac29a",
+      "name": "work-pets",
+      "provenance": "installed-manifest",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only",
+      "version": "0.1.6"
+    }
+  ],
+  "policy": {
+    "accounts": "each-user-configures-private-bindings",
+    "activation": "select-per-project",
+    "copy_third_party_caches": false,
+    "publication": "sanitized-metadata-only"
+  },
+  "provider_access": "unverified",
+  "schema_version": 1,
+  "skills": [
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "Presentations",
+      "plugin": "presentations",
+      "plugin_version": "26.1011.11113",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "bb3726eff35cb82241fd2c3b09fcdb18cc3bf3daefddf8df929d2e0bd4d2af2f",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "Spreadsheets",
+      "plugin": "spreadsheets",
+      "plugin_version": "26.1011.11113",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "dd22f4bae5bf3f76457c80eb1f079ba7a47b87db52b144edeb1e5f4585dc8f34",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "agent-browser",
+      "provenance": "local-entrypoint",
+      "sha256": "25aacfdbee524b626418925bd083473151a617f67e4eeacec1cdd6bd1f240f58",
+      "source": "skill-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "artifact-template-analytics-dashboard",
+      "plugin": "openai-templates",
+      "plugin_version": "0.1.1",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "cf5360fd8b197673bb237c52c603c97fa319c875c3dfa2cd8efff52d4422f513",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "artifact-template-business-review",
+      "plugin": "openai-templates",
+      "plugin_version": "0.1.1",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "27721fc1d67d1b41949caa75ac8f94f81952ff124406878af6524047929e60d2",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "artifact-template-design-report",
+      "plugin": "openai-templates",
+      "plugin_version": "0.1.1",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "563722f53854e606f8a9f87e37e72d7ef70a22d46d5836b8e4d6abfb1b79e9e0",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "artifact-template-experiment-analysis",
+      "plugin": "openai-templates",
+      "plugin_version": "0.1.1",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "0b05effc47df0a14f8e0c3e3597e6722224747435546385d38a2cae279bd20b9",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "artifact-template-financial-budget",
+      "plugin": "openai-templates",
+      "plugin_version": "0.1.1",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "c0b6b7a62a15597aaf2b1ec679e21da48f533b756127f0aef957cdfe9f3da738",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "artifact-template-investment-committee-memo",
+      "plugin": "openai-templates",
+      "plugin_version": "0.1.1",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "68abd08cfe5e073e3c446a3f675f44c5bf98f57434dba679e8acd8a763379a8b",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "artifact-template-legal-memorandum",
+      "plugin": "openai-templates",
+      "plugin_version": "0.1.1",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "51fb9d21baf6119c4ccb1903638a6bac0e859210de63460fffa7025d52e997e0",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "artifact-template-market-trends-report",
+      "plugin": "openai-templates",
+      "plugin_version": "0.1.1",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "d58d019b89cb6f292ac3ab991d561489eef477ff53ce05fb024a0c936f5af26a",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "artifact-template-minimal-letterhead",
+      "plugin": "openai-templates",
+      "plugin_version": "0.1.1",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "880ef094d4d0c89a7bde5ce9bbe4086625c186651e9e6efc8ba8bdd7cc77f9d5",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "artifact-template-operating-calendar",
+      "plugin": "openai-templates",
+      "plugin_version": "0.1.1",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "33bb660791a0b9a21628a42c34934932220203b6aabd84e98cb1b45327d0384c",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "artifact-template-operating-review",
+      "plugin": "openai-templates",
+      "plugin_version": "0.1.1",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "6d63c5cd025ffe936e7bab5db3023672bbaec26af55c2bb8b057d38c202c9c32",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "artifact-template-project-kickoff",
+      "plugin": "openai-templates",
+      "plugin_version": "0.1.1",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "aa893ebd89e7c8d1db4261d01cc2b1add35d78d00785871ccaaa5fc8db783ec9",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "artifact-template-project-tracker",
+      "plugin": "openai-templates",
+      "plugin_version": "0.1.1",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "d97d5be20189b7f53dd269b6e1c5f694eaf53e5a72f6559fcb1578911b7cda82",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "artifact-template-sales-pipeline",
+      "plugin": "openai-templates",
+      "plugin_version": "0.1.1",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "15cfeeedf440021f16ed3f3ad8c7c1ef6d48898b9447741e223d2fb41cfc9800",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "artifact-template-simple-dark-mode",
+      "plugin": "openai-templates",
+      "plugin_version": "0.1.1",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "b7c8d0c05f75878b9bc21e56a57c41ec1aa29700aca0a24822be0f9f1bd53207",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "artifact-template-simple-light-mode",
+      "plugin": "openai-templates",
+      "plugin_version": "0.1.1",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "7c68430c6cf57b55b457d4735dbd1a46b889bef135a32222902dd0848b6e1752",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "artifact-template-strategy-memorandum",
+      "plugin": "openai-templates",
+      "plugin_version": "0.1.1",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "51d7882ac94e8e57b323394825728c33925af878806e37277217c2dc12a912e5",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "artifact-template-system-design",
+      "plugin": "openai-templates",
+      "plugin_version": "0.1.1",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "87f7b7ed1b0d8410f5e5971cd7f7db9a4165e2f37069e97e52dbfb469b75a57c",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "artifact-template-team-alignment",
+      "plugin": "openai-templates",
+      "plugin_version": "0.1.1",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "26d7cafdcd1899a937b325c5d02ac57c162d45002153be33a934d35f81eb6110",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "artifact-template-three-statement-forecast",
+      "plugin": "openai-templates",
+      "plugin_version": "0.1.1",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "74f4a5cccec0107b861548b157e04c51d9b58ec13a990c86394b4c529b8ecf41",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "unavailable",
+      "name": "better-auth-best-practices",
+      "provenance": "symlink-not-followed",
+      "sha256": null,
+      "source": "skill-root-3",
+      "state": "present-symlink",
+      "verification": "unverified"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "connect-recommend",
+      "plugin": "stripe",
+      "plugin_version": "8.0.0",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "111c6972f1673080d757d2130b025dd8612d186df09e6a6d085c654b5e133e4e",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "connect-required-verification-information",
+      "plugin": "stripe",
+      "plugin_version": "8.0.0",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "9945d4ad0c46fbe4efba309c6c0c2f626ff2ee43fb03dbc3a6a0d3e6e5933299",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "create-pet",
+      "plugin": "work-pets",
+      "plugin_version": "0.1.6",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "841354fb8116f8fdfd3b643b30828f5180196c594d3fed9b669b948b88892af1",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "documentation-writer",
+      "provenance": "local-entrypoint",
+      "sha256": "7e8244988c9f4eb63bf8c0edf160578544621eb96e5e51e2d848f1401c5de8f1",
+      "source": "skill-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "documents",
+      "plugin": "documents",
+      "plugin_version": "26.1011.11113",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "c9b9ba61ac15f20a600220bc10a380c7753992bbd3c323bfe33fae864adefc21",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "unavailable",
+      "name": "eventu-migration-release",
+      "provenance": "symlink-not-followed",
+      "sha256": null,
+      "source": "skill-root-3",
+      "state": "present-symlink",
+      "verification": "unverified"
+    },
+    {
+      "disposition": "unavailable",
+      "name": "eventu-provider-testing",
+      "provenance": "symlink-not-followed",
+      "sha256": null,
+      "source": "skill-root-3",
+      "state": "present-symlink",
+      "verification": "unverified"
+    },
+    {
+      "disposition": "unavailable",
+      "name": "eventu-readiness-slice",
+      "provenance": "symlink-not-followed",
+      "sha256": null,
+      "source": "skill-root-3",
+      "state": "present-symlink",
+      "verification": "unverified"
+    },
+    {
+      "disposition": "unavailable",
+      "name": "eventu-verification",
+      "provenance": "symlink-not-followed",
+      "sha256": null,
+      "source": "skill-root-3",
+      "state": "present-symlink",
+      "verification": "unverified"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "excel-live-control",
+      "plugin": "spreadsheets",
+      "plugin_version": "26.1011.11113",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "1c27488fa2a59ce2cc8925a12527ee9c7aa40ccf0701f3f2719ab17858586e8b",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "find-skills",
+      "provenance": "local-entrypoint",
+      "sha256": "1e85f6f9686e145aca4a124e3b704b9bbea9aa87e08515c1e352eee70f6e6e7a",
+      "source": "skill-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "license-marker",
+        "identifier": "Apache-2.0",
+        "redistribution": "review-required"
+      },
+      "name": "frontend-design",
+      "provenance": "local-entrypoint",
+      "sha256": "b81e2ff87ed8fa4d6c377ccb127a7254c9e6a77e3ae94f21e6b514f7bb2945a0",
+      "source": "skill-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "unavailable",
+      "name": "gh-fix-ci",
+      "provenance": "symlink-not-followed",
+      "sha256": null,
+      "source": "skill-root-3",
+      "state": "present-symlink",
+      "verification": "unverified"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "grill-me",
+      "provenance": "local-entrypoint",
+      "sha256": "caaf8b8de1684f96e26b28f3c29189db5c89cce4b73e1c93d86164f66ef88637",
+      "source": "skill-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "grilling",
+      "provenance": "local-entrypoint",
+      "sha256": "befdff1e27a1dfe2a294d5871169ac1afe16d983911daa4f32627514a48c1e15",
+      "source": "skill-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "runtime-provided",
+      "license": {
+        "basis": "license-marker",
+        "identifier": "Apache-2.0",
+        "redistribution": "review-required"
+      },
+      "name": "imagegen",
+      "provenance": "local-entrypoint",
+      "sha256": "681ddb4ad6d06a2acc78a3535b583f8d0c1ea800ecda3d56370d3310fd2cd4ba",
+      "source": "skill-root-2",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "maintain-space",
+      "plugin": "pages",
+      "plugin_version": "0.1.23",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "53570e6cb8663d370dce15ed0d67208876c3b13015832c352daa759213e7378e",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "manage-schedules",
+      "plugin": "pages",
+      "plugin_version": "0.1.23",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "e0a464a83f15a6e896c5536cab775f667ebd0dd61eb64fe3c877a41935d64bd9",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "metronome",
+      "plugin": "stripe",
+      "plugin_version": "8.0.0",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "62220ba4b5d261bcce80567fa1c8bf097c97bab427923805db7822b37d514cba",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "next-best-practices",
+      "provenance": "local-entrypoint",
+      "sha256": "c78f952d4e98bf3694856dbf70c03a6037d4e258ff3701f2642bfdf108549a25",
+      "source": "skill-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "nextjs-app-router-patterns",
+      "provenance": "local-entrypoint",
+      "sha256": "6ebf0fb7e6dcebcdb8d20311b3c05d425d96ff0947d902713294e2189ad238d3",
+      "source": "skill-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "runtime-provided",
+      "license": {
+        "basis": "license-marker",
+        "identifier": "Apache-2.0",
+        "redistribution": "review-required"
+      },
+      "name": "openai-docs",
+      "provenance": "local-entrypoint",
+      "sha256": "aa6829e21df2223167c85d2e49b6337a7345c84c1033f1ec10182c7882b36d45",
+      "source": "skill-root-2",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "organize-space",
+      "plugin": "pages",
+      "plugin_version": "0.1.23",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "dfa8bfae86785a98e43b1ca0af67a9c89b90c658eee7fc7ad4ccfe8cc84a267b",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "pdf",
+      "plugin": "pdf",
+      "plugin_version": "26.1011.11113",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "a6e20f4ae66364a06d577dd51e0ce66ee2ef955be129cbe195e0a27f403daaf8",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "pets",
+      "plugin": "work-pets",
+      "plugin_version": "0.1.6",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "1bf5d45fd6a6390aab777229293fb05cef7cf898aac882f8955e40c378e52fcd",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "plugin-management",
+      "plugin": "plugin-management",
+      "plugin_version": "0.1.0",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "653841cc21205269f08b0ce135891e1518dac616a766bcfb0b57d788d3f68b10",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "python-observability",
+      "provenance": "local-entrypoint",
+      "sha256": "0f8d0ca540d2fe671e48d3a963be8ed6840e1f5ae40b084a21f0d22ca9d43d94",
+      "source": "skill-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "python-performance-optimization",
+      "provenance": "local-entrypoint",
+      "sha256": "aa46d4024527d4c4c70547175b88e7013e50021c3ea86290a61f316c97665429",
+      "source": "skill-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "runtime-provided",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "review-agent",
+      "provenance": "local-entrypoint",
+      "sha256": "07079efd0dc76f05fade424e5dfb048dce1de2df7626e1a4f56292a4f3f92228",
+      "source": "skill-root-2",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "unavailable",
+      "name": "security-best-practices",
+      "provenance": "symlink-not-followed",
+      "sha256": null,
+      "source": "skill-root-3",
+      "state": "present-symlink",
+      "verification": "unverified"
+    },
+    {
+      "disposition": "unavailable",
+      "name": "security-threat-model",
+      "provenance": "symlink-not-followed",
+      "sha256": null,
+      "source": "skill-root-3",
+      "state": "present-symlink",
+      "verification": "unverified"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "sites",
+      "plugin": "sites",
+      "plugin_version": "1.0.2-remix-a.1",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "9e9b6665592a539aa07be8d022ca3c8ceeb6ff9589021894d94e2b956f71b0c8",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "runtime-provided",
+      "license": {
+        "basis": "license-marker",
+        "identifier": "Apache-2.0",
+        "redistribution": "review-required"
+      },
+      "name": "skill-creator",
+      "provenance": "local-entrypoint",
+      "sha256": "6656e54755638e8efcf275a472b9672eaa8a9a1b9e59dc210e275b03b59e1e66",
+      "source": "skill-root-2",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "runtime-provided",
+      "license": {
+        "basis": "license-marker",
+        "identifier": "Apache-2.0",
+        "redistribution": "review-required"
+      },
+      "name": "skill-installer",
+      "provenance": "local-entrypoint",
+      "sha256": "d68b77e5bbb34dedab89d134da52855f140fc4b4299b80104f534e3b9e98f8ee",
+      "source": "skill-root-2",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "stripe-apps",
+      "plugin": "stripe",
+      "plugin_version": "8.0.0",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "6dbd7f389884ba7c27df46a0d9620e05b402a5114008c60bca50e241a5ebb4a2",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "stripe-best-practices",
+      "plugin": "stripe",
+      "plugin_version": "8.0.0",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "55c73cae0acb93e77df4e6d4027a4955620c6f41a2f2434352af33be648fa49b",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "stripe-best-practices",
+      "provenance": "local-entrypoint",
+      "sha256": "4125ea77921fd50c8612e36285172662f810c23fd6d23de79ddc64b17a5351aa",
+      "source": "skill-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "stripe-directory",
+      "plugin": "stripe",
+      "plugin_version": "8.0.0",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "0805bce6792026e5963dc58f2844d6f18b626053b806c9bdf2220206c41206a6",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "stripe-docs",
+      "plugin": "stripe",
+      "plugin_version": "8.0.0",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "af38e784edcdb2f1b273825705c749c1fb3a2614a25875d0705abde02eaa603f",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "stripe-integration",
+      "provenance": "local-entrypoint",
+      "sha256": "7364add264977e288c335a9eeba0046d01655766c25d73454ffb1e5de7972e9a",
+      "source": "skill-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "stripe-pay",
+      "plugin": "stripe",
+      "plugin_version": "8.0.0",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "2a085814fdb5f8a47805a67b17cc2aa807d30ea823dd034fdb9acd55914b3d3c",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "stripe-projects",
+      "plugin": "stripe",
+      "plugin_version": "8.0.0",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "117493ae055248ff1ffc62bfb1b7ad597d54837d3cccac503b205f0191f28e0a",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "unavailable",
+      "name": "supabase-postgres-best-practices",
+      "provenance": "symlink-not-followed",
+      "sha256": null,
+      "source": "skill-root-3",
+      "state": "present-symlink",
+      "verification": "unverified"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "template-creator",
+      "plugin": "template-creator",
+      "plugin_version": "26.1011.11113",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "f1d14fd2847a2e879611a8b8f872f5dc4676a0607958d015274d2dc61e812deb",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "unavailable",
+      "name": "terraform-style-guide",
+      "provenance": "symlink-not-followed",
+      "sha256": null,
+      "source": "skill-root-3",
+      "state": "present-symlink",
+      "verification": "unverified"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "update-pet",
+      "plugin": "work-pets",
+      "plugin_version": "0.1.6",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "c63c98d67b6ad781a72a8f9837ba1fb5e2d2a8054a2562e4025890a97d8a0e67",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "upgrade-stripe",
+      "plugin": "stripe",
+      "plugin_version": "8.0.0",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "0e87767443c3e08d1e16e953fb7c5ba4b8461e3303c4f0dd40a65bbd6333f047",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "vercel-composition-patterns",
+      "provenance": "local-entrypoint",
+      "sha256": "e38e0eaa609316b10423a9a138ed95e35099accd3f735585295c8a8f165c28a3",
+      "source": "skill-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "vercel-react-best-practices",
+      "provenance": "local-entrypoint",
+      "sha256": "d7b0ec66ea66a17e882f824081ef1d79d5a7c4b0a0304046fde7345482b8cc06",
+      "source": "skill-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "visualize",
+      "plugin": "visualize",
+      "plugin_version": "1.0.49",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "37a648f231b3716956e5b534bff1eef36195b5f7261ccd78e913a9ad5c961f0f",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    },
+    {
+      "disposition": "unavailable",
+      "name": "web-design-guidelines",
+      "provenance": "symlink-not-followed",
+      "sha256": null,
+      "source": "skill-root-3",
+      "state": "present-symlink",
+      "verification": "unverified"
+    },
+    {
+      "disposition": "reference",
+      "license": {
+        "basis": "not-established",
+        "identifier": "unknown",
+        "redistribution": "not-authorized"
+      },
+      "name": "write-page",
+      "plugin": "pages",
+      "plugin_version": "0.1.23",
+      "provenance": "installed-plugin-entrypoint",
+      "sha256": "7a997ccee8cc3214cb1e9af4a5569bddb74499796aff808e94561109e148a658",
+      "source": "plugin-root-1",
+      "state": "installed",
+      "verification": "metadata-only"
+    }
+  ],
+  "verification": "metadata-only",
+  "warnings": []
+}

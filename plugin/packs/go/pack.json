@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "id": "go",
+  "version": "1.0.0",
+  "description": "Minimal go verification recipe; project commands require qualification before use.",
+  "detect": {
+    "any_files": [
+      "go.mod"
+    ]
+  },
+  "toolchains": [
+    {
+      "name": "go",
+      "version_command": [
+        "go",
+        "version"
+      ],
+      "version_constraint": "project go.mod"
+    }
+  ],
+  "commands": [
+    {
+      "id": "unit-tests",
+      "action": "test",
+      "argv": [
+        "go",
+        "test",
+        "./..."
+      ],
+      "cwd": ".",
+      "timeout_seconds": 300,
+      "required": true
+    }
+  ],
+  "roles": [
+    "go_engineer",
+    "test_runner"
+  ],
+  "required_capabilities": [
+    "filesystem.project-read",
+    "filesystem.project-write",
+    "process.sandboxed"
+  ]
+}

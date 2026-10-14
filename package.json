@@ -1,0 +1,17 @@
+{
+  "name": "codex-engineering-platform",
+  "version": "0.1.0-alpha.1",
+  "description": "Pinned development tools for the Codex Engineering Platform",
+  "scripts": {
+    "spec:validate": "OPENSPEC_TELEMETRY=0 openspec validate platform-slice-a-b --strict --no-interactive",
+    "audit": "npm audit --audit-level=high"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "type": "commonjs",
+  "devDependencies": {
+    "@fission-ai/openspec": "0.17.2"
+  },
+  "private": true
+}

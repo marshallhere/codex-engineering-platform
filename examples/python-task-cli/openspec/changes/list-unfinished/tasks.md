@@ -1,0 +1,3 @@
+- [ ] DEMO-LIST: list unfinished tasks in input order
+- [ ] DEMO-INPUT: reject missing, malformed and invalid inventories
+- [ ] DEMO-BOUNDARY: reject paths and symlinks outside the chosen root

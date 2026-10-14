@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "id": "python",
+  "version": "1.0.0",
+  "description": "Minimal python verification recipe; project commands require qualification before use.",
+  "detect": {
+    "any_files": [
+      "pyproject.toml",
+      "requirements.txt",
+      "setup.py"
+    ]
+  },
+  "toolchains": [
+    {
+      "name": "python3",
+      "version_command": [
+        "python3",
+        "--version"
+      ],
+      "version_constraint": ">=3.11"
+    }
+  ],
+  "commands": [
+    {
+      "id": "unit-tests",
+      "action": "test",
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": ".",
+      "timeout_seconds": 300,
+      "required": true
+    }
+  ],
+  "roles": [
+    "python_engineer",
+    "test_runner"
+  ],
+  "required_capabilities": [
+    "filesystem.project-read",
+    "filesystem.project-write",
+    "process.sandboxed"
+  ]
+}

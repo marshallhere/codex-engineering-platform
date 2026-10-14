@@ -1,0 +1,87 @@
+include LICENSE README.md AGENTS.md HANDOFF_FOR_CODEX.md
+recursive-include .agents/plugins *.json
+recursive-include packaging *.json *.py
+recursive-include config *.json
+recursive-include scripts *.py
+recursive-include packs *.md
+recursive-include docs *.md
+recursive-include openspec *.md
+recursive-include tests *.py
+global-exclude __pycache__ *.py[cod] .DS_Store
+
+# Explicit asset list; tests verify agreement with packaging/assets.json.
+prune plugin
+prune examples
+include plugin/.codex-plugin/plugin.json
+include plugin/LICENSE
+include plugin/assets/agents/accessibility_specialist.toml
+include plugin/assets/agents/architecture_reviewer.toml
+include plugin/assets/agents/browser_qa.toml
+include plugin/assets/agents/code_reviewer.toml
+include plugin/assets/agents/component_librarian.toml
+include plugin/assets/agents/contract_reviewer.toml
+include plugin/assets/agents/database_engineer.toml
+include plugin/assets/agents/design_language_guardian.toml
+include plugin/assets/agents/design_system_architect.toml
+include plugin/assets/agents/design_system_maintainer.toml
+include plugin/assets/agents/devops_engineer.toml
+include plugin/assets/agents/docs_researcher.toml
+include plugin/assets/agents/documentation_engineer.toml
+include plugin/assets/agents/evaluation_engineer.toml
+include plugin/assets/agents/fastapi_engineer.toml
+include plugin/assets/agents/go_engineer.toml
+include plugin/assets/agents/learning_curator.toml
+include plugin/assets/agents/migration_reviewer.toml
+include plugin/assets/agents/nextjs_engineer.toml
+include plugin/assets/agents/performance_engineer.toml
+include plugin/assets/agents/python_engineer.toml
+include plugin/assets/agents/security_reviewer.toml
+include plugin/assets/agents/spring_engineer.toml
+include plugin/assets/agents/test_designer.toml
+include plugin/assets/agents/test_runner.toml
+include plugin/assets/agents/threat_modeler.toml
+include plugin/assets/agents/ux_interaction_designer.toml
+include plugin/assets/agents/visual_qa_reviewer.toml
+include plugin/assets/engineering-platform.schema.json
+include plugin/assets/engineering-platform.toml
+include plugin/packs/go/pack.json
+include plugin/packs/python/pack.json
+include plugin/packs/schema.v1.json
+include plugin/plugin.json
+include plugin/references/COMPATIBILITY.md
+include plugin/references/design/COMPONENT_CATALOG.example.json
+include plugin/references/design/FOUNDATIONS.example.md
+include plugin/references/design/README.md
+include plugin/references/design/STORYBOOK_INTEGRATION.md
+include plugin/references/design/TOOLING.md
+include plugin/references/design/UI_SPEC_TEMPLATE.md
+include plugin/references/design/visual.spec.example.ts
+include plugin/skills/audit-existing-design/SKILL.md
+include plugin/skills/autonomous-feature/SKILL.md
+include plugin/skills/browser-qa/SKILL.md
+include plugin/skills/component-first-ui/SKILL.md
+include plugin/skills/design/SKILL.md
+include plugin/skills/establish-design-language/SKILL.md
+include plugin/skills/evaluate-agent-changes/SKILL.md
+include plugin/skills/evolve-design-system/SKILL.md
+include plugin/skills/fix-bug/SKILL.md
+include plugin/skills/job-control/SKILL.md
+include plugin/skills/learn/SKILL.md
+include plugin/skills/learn-from-feedback/SKILL.md
+include plugin/skills/pre-release-evidence/SKILL.md
+include plugin/skills/preflight/SKILL.md
+include plugin/skills/review-branch/SKILL.md
+include plugin/skills/setup/SKILL.md
+include plugin/skills/ship-feature/SKILL.md
+include plugin/skills/storybook-component-workflow/SKILL.md
+include plugin/skills/threat-model-feature/SKILL.md
+include plugin/skills/verify-migration/SKILL.md
+include plugin/skills/visual-quality-loop/SKILL.md
+include plugin/skills/write-adr/SKILL.md
+include examples/go-pack/go.mod
+include examples/go-pack/slug.go
+include examples/go-pack/slug_test.go
+include examples/python-task-cli/openspec/changes/list-unfinished/proposal.md
+include examples/python-task-cli/openspec/changes/list-unfinished/specs/task-cli/spec.md
+include examples/python-task-cli/openspec/changes/list-unfinished/tasks.md
+include examples/python-task-cli/task_cli.py

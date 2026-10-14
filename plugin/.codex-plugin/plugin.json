@@ -1,0 +1,14 @@
+{
+  "name": "codex-engineering-platform",
+  "version": "0.1.0-alpha.1",
+  "description": "Spec-driven Codex engineering workflows",
+  "author": {
+    "name": "marshallhere"
+  },
+  "skills": "./skills/",
+  "extensions": {
+    "com.openai": {
+      "onboardingSkill": "./skills/setup/SKILL.md"
+    }
+  }
+}

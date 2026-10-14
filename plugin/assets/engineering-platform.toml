@@ -1,0 +1,13 @@
+# Project-local CEP integration. Discovery does not authorize execution.
+schema_version = 1
+name = __PROJECT_NAME_JSON__
+repositories = __REPOSITORIES_JSON__
+# Review detected packs, then select IDs, e.g. ["python"].
+packs = []
+# Optional relative paths to versioned project-owned pack catalogs.
+pack_paths = []
+roles = ["code_reviewer", "test_designer", "documentation_engineer", "learning_curator"]
+
+[autonomy]
+auto_merge = false
+# Job active-time budgets and provider grants belong to approved run policy.

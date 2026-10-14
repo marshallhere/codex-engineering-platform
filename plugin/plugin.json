@@ -1,0 +1,20 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "codex-engineering-platform",
+  "version": "0.1.0-alpha.1",
+  "description": "Spec-driven Codex engineering workflows with project onboarding, independently verified jobs, design reuse and reviewed learning.",
+  "author": {
+    "name": "marshallhere"
+  },
+  "license": "MIT",
+  "extensions": {
+    "com.openai": {
+      "onboardingSkill": "./skills/setup/SKILL.md",
+      "interface": {
+        "displayName": "Codex Engineering Platform",
+        "shortDescription": "Project-adaptive engineering with verified evidence",
+        "category": "Developer Tools"
+      }
+    }
+  }
+}
