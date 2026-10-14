@@ -18,6 +18,7 @@ PROC_PIDTBSDINFO = 3
 BSD_INFO_BYTES = 136
 PID_BYTES = 4
 MAX_PIDS = 65_536
+MAX_GROUPS = 128
 
 
 class InventoryError(RuntimeError):
@@ -185,12 +186,7 @@ def _pid_list(library, uid, max_pids):
         ctypes.set_errno(0)
         returned = library.proc_listpids(PROC_UID_ONLY, uid, buffer, capacity)
         error = ctypes.get_errno()
-        if (
-            error
-            or returned < 0
-            or returned > capacity
-            or returned % PID_BYTES
-        ):
+        if error or returned < 0 or returned > capacity or returned % PID_BYTES:
             raise InventoryError(
                 f"PID enumeration failed (errno={error}, bytes={returned})"
             )
@@ -254,3 +250,73 @@ def inventory_uid(
     raise InventoryError(
         "UID membership did not stabilize within bounded passes: " + str(last)
     ) from last
+
+
+def decode_group_buffer(
+    raw: bytes, returned_groups: int, capacity_groups: int
+) -> list[int]:
+    """Validate a complete POSIX gid_t array, retaining GID 0 as authority."""
+    if (
+        not isinstance(raw, bytes)
+        or type(returned_groups) is not int
+        or type(capacity_groups) is not int
+        or not 1 <= capacity_groups <= MAX_GROUPS
+        or not 0 <= returned_groups <= capacity_groups
+        or len(raw) != capacity_groups * 4
+    ):
+        raise InventoryError("invalid or incomplete POSIX group buffer")
+    groups = [item[0] for item in struct.iter_unpack("=I", raw[: returned_groups * 4])]
+    if 0xFFFFFFFF in groups or len(groups) != len(set(groups)):
+        raise InventoryError("group inventory contains a sentinel or duplicate GID")
+    return groups
+
+
+def _groups_library():
+    if platform.system() != "Darwin":
+        raise InventoryError("POSIX credential group experiment supports macOS only")
+    if ctypes.sizeof(ctypes.c_int) != 4 or ctypes.sizeof(ctypes.c_uint32) != 4:
+        raise InventoryError("unsupported POSIX group ABI")
+    try:
+        library = ctypes.CDLL("/usr/lib/libSystem.B.dylib", use_errno=True)
+        # Python's DARWIN_EXTSN variant can consult getpwuid and fail for a
+        # deliberately accountless UID. The standard symbol reads kernel groups.
+        function = library.getgroups
+        function.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_uint32)]
+        function.restype = ctypes.c_int
+        return library
+    except (OSError, AttributeError) as error:
+        raise InventoryError("standard libSystem getgroups is unavailable") from error
+
+
+def credential_groups() -> list[int]:
+    """Read current kernel group credentials without account lookup or mutation.
+
+    This observation does not prove privilege dropping, and any count churn,
+    syscall error, unsupported ABI or excessive membership fails closed.
+    """
+    library = _groups_library()
+    ctypes.set_errno(0)
+    count = library.getgroups(0, None)
+    error = ctypes.get_errno()
+    if error or not 0 <= count <= MAX_GROUPS:
+        raise InventoryError(
+            f"POSIX group sizing failed (errno={error}, count={count})"
+        )
+    capacity = max(1, count)
+    buffer = (ctypes.c_uint32 * capacity)()
+    ctypes.set_errno(0)
+    returned = library.getgroups(capacity, buffer)
+    error = ctypes.get_errno()
+    if error or returned != count:
+        raise InventoryError(
+            f"POSIX group membership changed or read failed (errno={error}, count={returned})"
+        )
+    groups = decode_group_buffer(bytes(buffer), returned, capacity)
+    ctypes.set_errno(0)
+    verified = library.getgroups(0, None)
+    error = ctypes.get_errno()
+    if error or verified != count:
+        raise InventoryError(
+            f"POSIX group count did not stabilize (errno={error}, count={verified})"
+        )
+    return groups

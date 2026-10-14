@@ -49,7 +49,8 @@ class UIDProbeGuardTests(TestCase):
         uid = 62001
         for groups, allowed in (
             ([uid], True),
-            ([], True),
+            ([], False),
+            ([uid, uid], False),
             ([uid, 0], False),
             ([20], False),
         ):
@@ -72,7 +73,9 @@ class UIDProbeGuardTests(TestCase):
                     mock.patch.object(uid_probe.os, "getegid", return_value=uid)
                 )
                 stack.enter_context(
-                    mock.patch.object(uid_probe.os, "getgroups", return_value=groups)
+                    mock.patch.object(
+                        uid_probe, "credential_groups", return_value=groups
+                    )
                 )
                 stack.enter_context(mock.patch.object(uid_probe.os, "setgroups"))
                 stack.enter_context(

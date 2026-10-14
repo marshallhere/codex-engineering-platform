@@ -376,3 +376,19 @@ finalobservedUIDmembershipempty. No descendantsafetyclaim. Added operation-speci
 errorlabels around unchanged rlimits/group/UIDsetup and unexpected restoration errors;
 no deniedoperation is ignored and all numeric limits/identitychecks remain unchanged.
 18 targetedtests/Banditzero PASS. Need rerun to identify exact macOS syscallprerequisite.
+
+Fourth CI run38587469091 still reported unlabelled OSErrorEINVAL after all wrappedsetup
+operations. Apple Libc/sys/getgroups.c primary source confirms Darwinextensioncalls
+getpwuid(getuid) andreturnsEINVAL for unregisteredUID. SystemPython3.9 binds that
+extension; actualkernelcredentials must instead use libSystemPOSIXgetgroups symbol.
+Read-only currentMac rawsymbolprobe:15groups,primaryEGIDpresent; no mutations. Added
+bounded nativegroupquery under specialistownership, preserving foreigngroup/rootrestore
+checks. UIDallocation now additionally rejects existingDirectoryServicesGIDs. No user
+accountcreation workaround or skippedgroupverification. ActualUIDCI rerun required.
+
+Kernelcredential revision: exact libSystemPOSIXgetgroups, bounded128groups/ABI/count/error
+checks, preservesGID0 ratherthanfilteringauthority. Droprequires exactly[fixtureGID];
+empty/duplicate/foreign groups rejected. DSUID/GIDabsencebothchecked. Full178platform
+PASS;21targeted PASS includingactualcurrentMacgroupinspection; nativeBandit0findings/
+errors; Ruff/OpenSpecPASS. Restrictedreview-native-uid-kernel-groups PASS with all
+reviewedfilehashesunchanged. No src/cep changes. ActualanonymousUIDCI rerun next.

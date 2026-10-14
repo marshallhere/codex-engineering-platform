@@ -16,6 +16,8 @@ from native.uid_domain import (
     _library,
     _pid_list,
     _process,
+    credential_groups,
+    decode_group_buffer,
     decode_bsd_info,
     decode_pid_buffer,
     inventory_uid,
@@ -157,3 +159,66 @@ class UIDInventoryTests(unittest.TestCase):
         with self.assertRaises(KeyError):
             pwd.getpwuid(unused)
         self.assertEqual(inventory_uid(unused), [])
+
+    def test_group_parser_retains_root_authority_and_rejects_invalid_capacity(self):
+        raw = struct.pack("=III", 0, 20, 501)
+        self.assertEqual(decode_group_buffer(raw, 3, 3), [0, 20, 501])
+        self.assertEqual(decode_group_buffer(raw, 0, 3), [])
+        for content, returned, capacity in (
+            (raw, 4, 3),
+            (raw, -1, 3),
+            (raw, 3, 129),
+            (raw[:-1], 3, 3),
+            (raw, True, 3),
+            (struct.pack("=II", 20, 20), 2, 2),
+            (struct.pack("=I", 0xFFFFFFFF), 1, 1),
+        ):
+            with self.assertRaises(InventoryError):
+                decode_group_buffer(content, returned, capacity)
+
+    def test_group_syscall_errors_excessive_and_unstable_counts_fail_closed(self):
+        class FakeLibrary:
+            def __init__(self, replies):
+                self.replies = iter(replies)
+
+            def getgroups(self, capacity, buffer):
+                result, error = next(self.replies)
+                ctypes.set_errno(error)
+                if buffer is not None:
+                    for index in range(min(capacity, max(0, result))):
+                        buffer[index] = 20 + index
+                return result
+
+        for replies in (
+            [(-1, errno.EINVAL)],
+            [(129, 0)],
+            [(1, 0), (-1, errno.EPERM)],
+            [(1, 0), (0, 0)],
+            [(1, 0), (1, 0), (2, 0)],
+            [(0, 0), (0, 0), (-1, errno.EINVAL)],
+        ):
+            with (
+                self.subTest(replies=replies),
+                patch(
+                    "native.uid_domain._groups_library",
+                    return_value=FakeLibrary(replies),
+                ),
+            ):
+                with self.assertRaises(InventoryError):
+                    credential_groups()
+        with patch(
+            "native.uid_domain._groups_library",
+            return_value=FakeLibrary([(1, 0), (1, 0), (1, 0)]),
+        ):
+            self.assertEqual(credential_groups(), [20])
+        with patch("native.uid_domain.platform.system", return_value="Linux"):
+            with self.assertRaises(InventoryError):
+                credential_groups()
+
+    @unittest.skipUnless(
+        platform.system() == "Darwin", "read-only kernel POSIX group credentials"
+    )
+    def test_actual_current_effective_gid_is_in_kernel_group_inventory(self):
+        groups = credential_groups()
+        self.assertIn(os.getegid(), groups)
+        self.assertTrue(all(type(group) is int for group in groups))

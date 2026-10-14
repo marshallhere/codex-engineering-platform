@@ -27,3 +27,9 @@ Darwin returns the effective primary GID in `getgroups()`. Privilege-drop verifi
 allows only the fixture GID and rejects every foreign group, checks real/effective
 UID/GID, and verifies that restoring either UID or GID to root fails. This follows
 Apple’s [credential implementation](https://raw.githubusercontent.com/apple-oss-distributions/xnu/main/bsd/kern/kern_prot.c).
+
+The system Python can bind Darwin's account-directory `getgroups` extension, which
+fails for anonymous numeric UIDs. Actual credential verification uses the bounded
+POSIX `getgroups` symbol from libSystem. Apple's
+[extension implementation](https://raw.githubusercontent.com/apple-oss-distributions/Libc/main/sys/getgroups.c)
+shows why account lookup is unsuitable. UID allocation also rejects existing GIDs.
