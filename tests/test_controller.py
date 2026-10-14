@@ -7,7 +7,7 @@ import sys
 import tempfile
 import unittest
 
-from cep.controller import Controller
+from cep.controller import Controller, load_policy
 from cep.evidence import content_manifest, write_json, snapshot
 from cep.process import clean_env, run_process
 
@@ -140,6 +140,15 @@ class ControllerTests(unittest.TestCase):
         final = self.controller.run(self.job["id"])
         self.assertEqual(final["status"], "BLOCKED")
         self.assertEqual(self.transport.phases, [])
+
+    def test_protected_adapter_policy_requires_valid_argv_before_submission(self):
+        for args in (None, [], "python -c unsafe", [42]):
+            with self.subTest(argv=args):
+                self.policy["checks"][0]["adapter"] = "protected-python-demo"
+                self.policy["checks"][0]["argv"] = args
+                self.policy_path.write_text(json.dumps(self.policy))
+                with self.assertRaisesRegex(ValueError, "Gate requires argv"):
+                    load_policy(self.policy_path, self.repo, ["DEMO-ANSWER"])
 
     def test_changed_spec_blocks(self):
         tree = self.controller._tree(self.job["id"])

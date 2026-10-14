@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import json
 import fcntl
-import sys
 import time
 from pathlib import Path
 
@@ -64,8 +63,6 @@ def load_policy(path: Path, repo: Path, requirements: list[str]) -> dict:
         ids.add(check["id"])
         kinds.add(check.get("kind"))
         args = check.get("argv")
-        if check.get("adapter") == "protected-python-demo":
-            args = [str(Path(sys.executable).resolve())]
         if (
             not isinstance(args, list)
             or not args

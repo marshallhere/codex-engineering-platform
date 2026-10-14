@@ -2,6 +2,7 @@ import tempfile
 from pathlib import Path
 import unittest
 import sys
+import subprocess
 
 from cep.demo import bootstrap_demo, run_demo_gate
 from cep.sandbox import NativeSandbox
@@ -86,6 +87,35 @@ class DemoTests(unittest.TestCase):
             self.assertEqual(result["stdout"].strip(), "unchanged")
             self.assertIn("PermissionError", result["stderr"])
             self.assertEqual(original.read_text(), "unchanged")
+
+    @unittest.skipUnless(sys.platform == "darwin", "macOS native process isolation")
+    def test_worker_cannot_signal_an_external_process(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d).resolve()
+            repo, scratch = root / "repo", root / "scratch"
+            repo.mkdir()
+            scratch.mkdir()
+            target = subprocess.Popen(
+                [sys.executable, "-I", "-c", "import time; time.sleep(20)"]
+            )
+            try:
+                result = NativeSandbox().run(
+                    [
+                        sys.executable,
+                        "-I",
+                        "-c",
+                        f"import os,signal; os.kill({target.pid},signal.SIGTERM)",
+                    ],
+                    repo,
+                    scratch,
+                    5,
+                )
+                self.assertIn("PermissionError", result["stderr"])
+                self.assertIsNone(target.poll())
+            finally:
+                if target.poll() is None:
+                    target.terminate()
+                target.wait(timeout=5)
 
 
 if __name__ == "__main__":

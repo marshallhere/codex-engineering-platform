@@ -135,3 +135,20 @@ promotion, remote integration and rendered UI acceptance. See `docs/LIMITATIONS.
 - One grader review returned a descriptive phase instead of exact `review` and was
   rejected by strict transport validation. Correctly structured review retry and
   live demo 07 are running against the new frozen runtime.
+
+### Final policy validation checkpoint
+
+- Restricted grader review retry PASS with exact phase and unchanged runtime.
+- Remote run 38533403268 PASS for Linux contracts and macOS native boundary at
+  fd2b4a4. Final grader package passed all 171 checks and matched release sources.
+- Demo 07 ACCEPTED after seven phases and 532.057 charged seconds, including the
+  protected 600-depth JSON check and read-only grader input isolation.
+- Preflight previously substituted a made-up argv for protected adapters and could
+  accept malformed operator argv then fail during gate preparation. Removed that
+  substitution; every gate now validates real command fields before job creation.
+  Regression covers null, empty, string and non-string element cases. Restricted
+  policy-change review PASS, unchanged source digest.
+- Native disposable process-signal probe PASS: child signal denied and protected
+  process survived; cleanup targeted only its own fixture process. Added regression.
+- Final local suite now 120 tests; raw result retained in platform-tests-final.log.
+  Demo 08 and final CI/build are running against frozen runtime after this last fix.

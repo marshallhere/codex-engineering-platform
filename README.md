@@ -17,6 +17,7 @@ Requires Python 3.11+. Live workers require macOS, installed Codex (verified wit
 ```sh
 python3.14 -m venv .venv
 .venv/bin/python -m pip install .
+source .venv/bin/activate
 codex plugin marketplace add .
 codex plugin add codex-engineering-platform@codex-engineering-platform
 .venv/bin/cep inspect /path/to/project
