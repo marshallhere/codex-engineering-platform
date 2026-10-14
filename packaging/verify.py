@@ -95,6 +95,8 @@ def main() -> int:
                 "config/capabilities.json",
                 "packaging/assets.json",
                 "tests/test_packaging.py",
+                "tests/test_sdk_archives.py",
+                ".github/workflows/native-toolchain-experiments.yml",
             ):
                 record("sdist-support:" + filename, top + "/" + filename in names)
         with tempfile.TemporaryDirectory(prefix="cep-packaging-") as temporary:
@@ -198,6 +200,22 @@ def main() -> int:
             with tarfile.open(sdist) as archive:
                 archive.extractall(source, filter="data")
             unpacked = source / top
+            command(
+                "sdist-sdk-archive-tests",
+                [
+                    python,
+                    "-m",
+                    "unittest",
+                    "discover",
+                    "-s",
+                    "tests",
+                    "-p",
+                    "test_sdk_archives.py",
+                    "-v",
+                ],
+                unpacked,
+                extra_env={"PYTHONPATH": str(unpacked / "src")},
+            )
             command(
                 "sdist-publication-tests",
                 [

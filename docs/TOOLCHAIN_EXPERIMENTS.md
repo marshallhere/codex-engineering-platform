@@ -35,3 +35,19 @@ watchdog interruption/recovery, resource exhaustion, durable UID quarantine/reus
 privileged executable exclusion. Those requirements remain in
 [native containment](NATIVE_CONTAINMENT.md). No container fallback or runtime fork grant
 is applied. Slice C still requires qualified execution plus real rendered UI evidence.
+
+
+## Verified fixed-recipe result
+
+[Disposable ARM64 run 38596959945](https://github.com/marshallhere/codex-engineering-platform/actions/runs/38596959945)
+passed all three builds on source `a9ef861d18289e0bf1e87f592b9f09be50c7f224`.
+Each worker and cleaner exited 0, with zero survivors, diagnostics or inventory errors;
+staging cleanup also passed. The [public evidence summary](evidence/native-toolchain-build-experiments.json)
+records source/file hashes, archive/SDK identities, outputs and verified artifact hashes.
+
+Thirteen probe controls and 21 portable synthetic archive controls retain the reviewed
+failure behavior. The latter run the workflow's exact extractor AST without privileged
+staging or downloads, and scale the byte cap only in three tiny test fixtures.
+Source distributions retain that workflow and run these controls outside the checkout.
+This result establishes these fixed recipes on the observed ARM64 runner. General
+execution and x86_64 build compatibility remain unqualified.

@@ -1,0 +1,163 @@
+{
+  "schema_version": 1,
+  "scope": "fixed offline disposable macOS ARM64 SDK recipes; no shipping backend qualification",
+  "production_qualified": false,
+  "source": "a9ef861d18289e0bf1e87f592b9f09be50c7f224",
+  "files": {
+    "native/build_probe.py": "2fc03eb5c433a65e3699f8a0ef1f3dbd895c8bb15385416c38ef7f71f48506e1",
+    "tests/test_build_probe.py": "51c74bf6808a98591540d7d89fefb311d89f7739ec2ee3f1bfd6f92b5237d0e0",
+    ".github/workflows/native-toolchain-experiments.yml": "3c37806497826b892ede100b80c13dbb3c0e9dec06fe84e5ed543f956030b32f"
+  },
+  "restricted_review": {
+    "verdict": "PASS",
+    "unchanged": true
+  },
+  "ci": {
+    "run": 38596959945,
+    "url": "https://github.com/marshallhere/codex-engineering-platform/actions/runs/38596959945",
+    "status": "passed",
+    "report_sha256": "b725b4560d2101ff9d5550d657ae0273035d4c5d1cdb9dd434f7f4ab68e23d5a",
+    "cleanup": {
+      "ok": true,
+      "errors": [],
+      "production_qualified": false
+    }
+  },
+  "sdks": {
+    "go": {
+      "version": "1.27.2",
+      "tree_sha256": "04249263cd141c39f8acf49b485eee403544c279b8b0d9b49618ea848aae6560",
+      "executable": "bin/go"
+    },
+    "node": {
+      "version": "24.11.1",
+      "tree_sha256": "63f8da6da04221c20999560e2c7c5527e0dcfc425c51c92fc3c4bf48b2b49cd1",
+      "executable": "bin/node"
+    },
+    "python": {
+      "version": "3.13.9",
+      "tree_sha256": "1a71d6362195372db349632b25fe837866a592cf8851cc43b2e74d0945244139",
+      "executable": "bin/python3.13"
+    },
+    "uv": {
+      "version": "0.9.9",
+      "tree_sha256": "888170a70a1aeed77c1373e415cc8cc0128b0186da59d5451597286daad395d3",
+      "executable": "uv"
+    }
+  },
+  "archives": {
+    "uv": {
+      "version": "0.9.9",
+      "url": "https://github.com/astral-sh/uv/releases/download/0.9.9/uv-aarch64-apple-darwin.tar.gz",
+      "sha256": "737e1c2c4f97577aa7764141846e27de915eebb3b2a0f467451089a64824d2f7"
+    },
+    "python": {
+      "version": "3.13.9",
+      "url": "https://github.com/astral-sh/python-build-standalone/releases/download/20251014/cpython-3.13.9%2B20251014-aarch64-apple-darwin-install_only_stripped.tar.gz",
+      "sha256": "52721745b0fa3196e4d0381fa5c06dda1d54343b90d49d90c3bba52d1171bd98"
+    },
+    "node": {
+      "version": "24.11.1",
+      "url": "https://nodejs.org/dist/v24.11.1/node-v24.11.1-darwin-arm64.tar.gz",
+      "sha256": "b05aa3a66efe680023f930bd5af3fdbbd542794da5644ca2ad711d68cbd4dc35"
+    },
+    "go": {
+      "version": "1.27.2",
+      "url": "https://go.dev/dl/go1.27.2.darwin-arm64.tar.gz",
+      "sha256": "76812b213b1b2302c978d28fa52fa92d541704b9e7d9d5db8002c50e4018c4c5"
+    }
+  },
+  "cases": [
+    {
+      "case": "python",
+      "passed": true,
+      "worker_status": 0,
+      "cleaner_status": 0,
+      "survivors": 0,
+      "error_count": 0,
+      "diagnostics": [],
+      "timed_out": false,
+      "output_exceeded": false,
+      "artifacts": {
+        "answer.pyc": {
+          "bytes": 209,
+          "sha256": "b5902dc3a0a3ba9f7e15079bbc2ec10c9efce57c189829b0ffbc2c88a03e0892"
+        },
+        "artifact.json": {
+          "bytes": 37,
+          "sha256": "daeec1f014b511483809aa8298cd84804222d4971fd7a66197cad0a4a417b60e"
+        }
+      },
+      "commands": 3,
+      "outputs": [
+        "uv 0.9.9 (4fac4cb7e 2025-11-12)\n",
+        "Python 3.13.9\n",
+        "{\"answer\": 42, \"toolchain\": \"python\"}\n"
+      ]
+    },
+    {
+      "case": "node",
+      "passed": true,
+      "worker_status": 0,
+      "cleaner_status": 0,
+      "survivors": 0,
+      "error_count": 0,
+      "diagnostics": [],
+      "timed_out": false,
+      "output_exceeded": false,
+      "artifacts": {
+        "artifact.json": {
+          "bytes": 33,
+          "sha256": "96140f160d7b5247ff76d7bccddeef6d9c1420f7a1c9d7572605cddf67c41573"
+        }
+      },
+      "commands": 2,
+      "outputs": [
+        "v24.11.1\n",
+        "{\"toolchain\":\"node\",\"answer\":42}\n"
+      ]
+    },
+    {
+      "case": "go",
+      "passed": true,
+      "worker_status": 0,
+      "cleaner_status": 0,
+      "survivors": 0,
+      "error_count": 0,
+      "diagnostics": [],
+      "timed_out": false,
+      "output_exceeded": false,
+      "artifacts": {
+        "fixture-go": {
+          "bytes": 3784642,
+          "sha256": "4f56751c4169fc80fd3dad6d485a4b6dddd5b50a6a570e34f8094cccbb9a95af"
+        }
+      },
+      "commands": 3,
+      "outputs": [
+        "go version go1.27.2 darwin/arm64\n",
+        "",
+        "{\"answer\":42,\"toolchain\":\"go\"}\n"
+      ]
+    }
+  ],
+  "negative_controls": {
+    "archive": {
+      "passed": 21,
+      "total": 21,
+      "scope": "exact embedded extractor AST, synthetic archives, mocked download/attestation; scaled test cap"
+    },
+    "pipe_eof": "ordinary-UID regression passes; restoring premature exit fails"
+  },
+  "standard_ci": {
+    "push": 38596959599,
+    "status": "passed"
+  },
+  "limitations": [
+    "No arbitrary candidate execution",
+    "No inherited Seatbelt filesystem/network enforcement proof",
+    "No durable watchdog/reboot/recovery qualification",
+    "No resource-exhaustion or set-ID executable qualification",
+    "No durable UID quarantine/reuse qualification"
+  ]
+}

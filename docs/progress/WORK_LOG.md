@@ -437,3 +437,31 @@ review; the two actual subprocess regressions were inspected and passed separate
 under the ordinary developer UID. Full local regression now passes 192 platform tests.
 All four embedded workflow Python blocks parse for system Python 3.9. Actual build
 compatibility remains unclaimed until disposable CI receipts are inspected.
+
+
+### Actual fixed-build receipts
+
+Source `a9ef861d18289e0bf1e87f592b9f09be50c7f224` was published on the feature branch
+and draft stacked PR #3. Disposable ARM64 CI `38596959945` and standard contracts/native
+boundary CI `38596959599` pass. Inspected downloaded raw reports: all Python/uv, Node
+and Go recipes pass; worker/cleaner statuses, survivors and error counts are all 0;
+there are no diagnostics, timeouts or output overflows. Root-only staging cleanup passes.
+Verified each retained artifact's byte count and SHA256 against the raw receipt.
+Public evidence binds the source, reviewed files, archive/SDK identities and results.
+No local SDK/root execution or runtime fork grant occurred.
+
+The old premature-capture exit was restored only in an in-memory ordinary-UID negative
+control: the delayed-descendant regression fails as expected (1 failure, 0 errors).
+The repaired 13 probe controls pass. Twenty-one portable archive tests now pass on
+Python 3.13/3.14 and parse on 3.11. The source distribution must include their exact
+workflow input; added its explicit manifest entry and an outside-checkout archive-test
+gate. Packaging and final portable CI verification are pending on this follow-up.
+
+
+Follow-up restricted root reviews of the portable archive tests/public evidence and
+packaging diff pass with their reviewed hashes unchanged. Final local gates: 213
+platform tests + 57 original tests pass, Ruff passes, all four strict OpenSpec changes
+pass, npm audit is clean, and publication scans of history/index/worktree pass.
+Distribution verification now passes 174 checks, including all 21 archive controls
+from the extracted sdist outside this checkout. Portable Ubuntu CI remains pending;
+OpenSpec final review/check task remains open until that exact revision passes.
