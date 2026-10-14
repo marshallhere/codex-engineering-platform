@@ -90,6 +90,7 @@ python3.14 scripts/check_publication.py .
 ```
 
 Read [decisions](docs/DECISIONS.md), [portable setup](docs/LOCAL_SETUP.md),
-[progress](docs/progress/WORK_LOG.md) and [limitations](docs/LIMITATIONS.md).
+[progress](docs/progress/WORK_LOG.md), [native qualification](docs/NATIVE_CONTAINMENT.md)
+and [limitations](docs/LIMITATIONS.md).
 Credentials, proprietary skills, provider identities and machine bindings stay
 private. The repository records sanitized capability metadata and provenance.

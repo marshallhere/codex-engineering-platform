@@ -1,4 +1,5 @@
 """Fixed disposable UID experiments; never an installable CEP backend."""
+
 from __future__ import annotations
 
 import argparse
@@ -9,6 +10,7 @@ from pathlib import Path
 import pwd
 import resource
 import secrets
+import select
 import signal
 import stat
 import sys
@@ -34,14 +36,28 @@ def prerequisites() -> dict:
 
 def guard() -> None:
     checks = prerequisites()
-    if checks["platform"] != "darwin" or not checks["root"] or not checks["disposable_ci"]:
-        raise RuntimeError("qualification requires explicit disposable GitHub-hosted macOS CI")
-    for path in (Path(__file__).resolve(), Path(__file__).resolve().with_name("uid_domain.py")):
+    if (
+        checks["platform"] != "darwin"
+        or not checks["root"]
+        or not checks["disposable_ci"]
+    ):
+        raise RuntimeError(
+            "qualification requires explicit disposable GitHub-hosted macOS CI"
+        )
+    for path in (
+        Path(__file__).resolve(),
+        Path(__file__).resolve().with_name("uid_domain.py"),
+    ):
         info = path.stat()
         parent = path.parent.stat()
-        if (not stat.S_ISREG(info.st_mode) or info.st_uid != 0
-                or info.st_mode & 0o022 or info.st_nlink != 1
-                or parent.st_uid != 0 or stat.S_IMODE(parent.st_mode) != 0o700):
+        if (
+            not stat.S_ISREG(info.st_mode)
+            or info.st_uid != 0
+            or info.st_mode & 0o022
+            or info.st_nlink != 1
+            or parent.st_uid != 0
+            or stat.S_IMODE(parent.st_mode) != 0o700
+        ):
             raise RuntimeError("experiment code requires private root-owned staging")
 
 
@@ -54,9 +70,21 @@ def drop(uid: int) -> None:
     os.setgroups([])
     os.setgid(uid)
     os.setuid(uid)
-    if os.getuid() != uid or os.geteuid() != uid or os.getgroups():
-        raise RuntimeError("incomplete privilege drop")
-    for restore in (os.setuid, os.seteuid):
+    # Darwin includes the effective GID in getgroups(); reject every foreign
+    # group rather than incorrectly requiring an impossible empty primary list.
+    if (
+        os.getuid() != uid
+        or os.geteuid() != uid
+        or os.getgid() != uid
+        or os.getegid() != uid
+        or any(group != uid for group in os.getgroups())
+    ):
+        raise RuntimeError(
+            f"incomplete privilege drop: uid={os.getuid()} "
+            f"euid={os.geteuid()} gid={os.getgid()} "
+            f"egid={os.getegid()} groups={os.getgroups()}"
+        )
+    for restore in (os.setuid, os.seteuid, os.setgid, os.setegid):
         try:
             restore(0)
         except PermissionError:
@@ -72,16 +100,29 @@ def exclusive_lease() -> int:
     except FileExistsError:
         pass
     info = directory.lstat()
-    if not stat.S_ISDIR(info.st_mode) or info.st_uid != 0 or stat.S_IMODE(info.st_mode) != 0o700:
+    if (
+        not stat.S_ISDIR(info.st_mode)
+        or info.st_uid != 0
+        or stat.S_IMODE(info.st_mode) != 0o700
+    ):
         raise RuntimeError("unsafe disposable lease directory")
     directory_fd = os.open(directory, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
     try:
-        fd = os.open("exclusive.lock", os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW,
-                     0o600, dir_fd=directory_fd)
+        fd = os.open(
+            "exclusive.lock",
+            os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW,
+            0o600,
+            dir_fd=directory_fd,
+        )
     finally:
         os.close(directory_fd)
     info = os.fstat(fd)
-    if not stat.S_ISREG(info.st_mode) or info.st_uid != 0 or info.st_nlink != 1 or info.st_mode & 0o077:
+    if (
+        not stat.S_ISREG(info.st_mode)
+        or info.st_uid != 0
+        or info.st_nlink != 1
+        or info.st_mode & 0o077
+    ):
         os.close(fd)
         raise RuntimeError("unsafe disposable lease file")
     try:
@@ -175,62 +216,207 @@ def cleanup_child(uid: int) -> None:
 
 
 def run_case(uid: int, mode: str) -> dict:
-    read_fd, write_fd = os.pipe()
-    worker = os.fork()
+    owned = set()
+
+    def pipe():
+        pair = os.pipe()
+        owned.update(pair)
+        return pair
+
+    def close(fd):
+        if fd in owned:
+            owned.remove(fd)
+            os.close(fd)
+
+    try:
+        read_fd, write_fd = pipe()
+        worker_error_read, worker_error_write = pipe()
+        worker = os.fork()
+    except BaseException:
+        for descriptor in tuple(owned):
+            close(descriptor)
+        raise
     if worker == 0:
         try:
             os.close(read_fd)
+            os.close(worker_error_read)
             drop(uid)
             fixture(mode, write_fd)
-        except BaseException:
+        except BaseException as exc:
+            try:
+                os.write(
+                    worker_error_write,
+                    (type(exc).__name__ + ":" + str(exc)).encode()[:1024],
+                )
+            except OSError:
+                pass
             os._exit(3)
-    os.close(write_fd)
-    os.set_blocking(read_fd, False)
+    close(write_fd)
+    close(worker_error_write)
     started = time.monotonic()
     ready = False
-    cleaner = None
+    discovered = None
+    worker_error = ""
+    cleaner_error = ""
+    worker_status = None
+    cleaner_status = None
     worker_reaped = False
+    cleaner = None
+    survivors = None
+    error_read = None
+    errors = []
+    error_count = 0
+    inventory_errors = 0
+    failed = False
+
+    def diagnostic(where, exc, *, fatal=True):
+        nonlocal error_count, failed
+        error_count += 1
+        failed = failed or fatal
+        if len(errors) < 8:
+            errors.append(where + ":" + type(exc).__name__ + ":" + str(exc))
+
     try:
+        os.set_blocking(worker_error_read, False)
+        os.set_blocking(read_fd, False)
         while time.monotonic() - started < 3:
             try:
-                if os.read(read_fd, 1) == b"R":
+                message = os.read(read_fd, 1024)
+                if message == b"R":
                     ready = True
+                    break
+                if not message:
+                    worker_error = "worker exited before readiness"
                     break
             except BlockingIOError:
                 pass
             time.sleep(0.01)
         if not ready:
-            raise RuntimeError("fixture failed before readiness")
+            raise RuntimeError(f"fixture failed before readiness: {worker_error}")
         discovered = len(inventory_uid(uid))
         minimum = 9 if mode == "concurrent-forks" else 2 if mode == "posix-spawn" else 1
         if discovered < minimum:
             raise RuntimeError("live fixture descendants missing from UID inventory")
+    except BaseException as exc:
+        diagnostic("fixture", exc)
     finally:
-        os.close(read_fd)
-        cleaner = os.fork()
-        if cleaner == 0:
-            try:
-                cleanup_child(uid)
-            except BaseException:
-                os._exit(3)
+        try:
+            close(read_fd)
+        except OSError as exc:
+            diagnostic("ready-close", exc)
+        try:
+            error_read, error_write = pipe()
+            cleaner = os.fork()
+            if cleaner == 0:
+                os.close(error_read)
+                os.close(worker_error_read)
+                try:
+                    cleanup_child(uid)
+                except BaseException as exc:
+                    try:
+                        os.write(
+                            error_write,
+                            (type(exc).__name__ + ":" + str(exc)).encode()[:1024],
+                        )
+                    except OSError:
+                        pass
+                    os._exit(3)
+            close(error_write)
+            os.set_blocking(error_read, False)
+        except BaseException as exc:
+            diagnostic("cleanup-launch", exc)
+        # Only the dropped cleanup child signals peers. The root parent just
+        # reaps its direct children and observes membership within this deadline.
         deadline = time.monotonic() + 8
-        cleaner_status = None
-        while time.monotonic() < deadline:
-            if not worker_reaped:
-                result, _ = os.waitpid(worker, os.WNOHANG)
-                worker_reaped = result == worker
-            if cleaner_status is None:
-                result, status = os.waitpid(cleaner, os.WNOHANG)
-                if result == cleaner:
-                    cleaner_status = status
-            if cleaner_status is not None and worker_reaped and not inventory_uid(uid):
-                break
-            time.sleep(0.02)
-        survivors = inventory_uid(uid)
-        if cleaner_status != 0 or not worker_reaped or survivors:
-            raise RuntimeError("UID cleanup failed; domain quarantined, no reuse permitted")
-    return {"case": mode, "ready": ready, "discovered": discovered,
-            "survivors": 0, "elapsed_seconds": round(time.monotonic() - started, 3)}
+        try:
+            while time.monotonic() < deadline:
+                if not worker_reaped:
+                    try:
+                        result, status = os.waitpid(worker, os.WNOHANG)
+                        if result == worker:
+                            worker_reaped, worker_status = True, status
+                    except OSError as exc:
+                        diagnostic("worker-wait", exc)
+                if cleaner is not None and cleaner_status is None:
+                    try:
+                        result, status = os.waitpid(cleaner, os.WNOHANG)
+                        if result == cleaner:
+                            cleaner_status = status
+                    except OSError as exc:
+                        diagnostic("cleaner-wait", exc)
+                try:
+                    survivors = inventory_uid(uid)
+                except InventoryError as exc:
+                    survivors = None
+                    inventory_errors += 1
+                    diagnostic("inventory", exc, fatal=False)
+                if cleaner_status is not None and worker_reaped and survivors == []:
+                    break
+                time.sleep(0.02)
+        except BaseException as exc:
+            survivors = None
+            diagnostic("cleanup-observation", exc)
+        finally:
+            # Unknown membership never bypasses diagnostic collection or closes.
+            try:
+                readable, _, _ = select.select([worker_error_read], [], [], 0)
+                text = (
+                    os.read(worker_error_read, 1024).decode("utf-8", "replace")
+                    if readable
+                    else "worker diagnostic pipe remains open"
+                )
+                if text:
+                    worker_error = text
+            except BlockingIOError:
+                pass
+            except (OSError, ValueError) as exc:
+                diagnostic("worker-diagnostic", exc)
+            if error_read is not None:
+                try:
+                    readable, _, _ = select.select([error_read], [], [], 0)
+                    cleaner_error = (
+                        os.read(error_read, 1024).decode("utf-8", "replace")
+                        if readable
+                        else "cleanup diagnostic pipe remains open"
+                    )
+                except BlockingIOError:
+                    cleaner_error = "cleanup still running"
+                except (OSError, ValueError) as exc:
+                    diagnostic("cleaner-diagnostic", exc)
+            for descriptor in tuple(owned):
+                try:
+                    close(descriptor)
+                except OSError as exc:
+                    diagnostic("descriptor-close", exc)
+    expected_worker_status = 0 if mode == "detached" else int(signal.SIGKILL)
+    if (
+        failed
+        or not ready
+        or worker_error
+        or cleaner_error
+        or cleaner_status != 0
+        or not worker_reaped
+        or survivors != []
+        or worker_status != expected_worker_status
+    ):
+        raise RuntimeError(
+            "UID cleanup failed; domain quarantined, no reuse permitted; "
+            f"case={mode} worker_status={worker_status} worker_error={worker_error!r} "
+            f"cleaner_status={cleaner_status} cleaner_error={cleaner_error!r} "
+            f"survivors={'unknown' if survivors is None else len(survivors)} "
+            f"error_count={error_count} inventory_errors={inventory_errors} errors={errors!r}"
+        )
+    return {
+        "case": mode,
+        "ready": ready,
+        "discovered": discovered,
+        "worker_status": worker_status,
+        "cleaner_status": cleaner_status,
+        "error_count": error_count,
+        "inventory_errors": inventory_errors,
+        "survivors": 0,
+        "elapsed_seconds": round(time.monotonic() - started, 3),
+    }
 
 
 def main() -> int:
@@ -240,7 +426,9 @@ def main() -> int:
     args = parser.parse_args()
     report = prerequisites()
     if args.inspect and not args.qualify:
-        report["qualification"] = "blocked: experimental privileged probes not activated"
+        report["qualification"] = (
+            "blocked: experimental privileged probes not activated"
+        )
         print(json.dumps(report, sort_keys=True))
         return 0
     if not args.qualify or args.inspect:
@@ -251,8 +439,10 @@ def main() -> int:
         # unused UID; failed domains are never selected again in this process.
         lease_fd = exclusive_lease()
         try:
-            report["cases"] = [run_case(choose_uid(), mode)
-                               for mode in ("detached", "posix-spawn", "concurrent-forks")]
+            report["cases"] = [
+                run_case(choose_uid(), mode)
+                for mode in ("detached", "posix-spawn", "concurrent-forks")
+            ]
         finally:
             os.close(lease_fd)
         report["experiment"] = "passed"

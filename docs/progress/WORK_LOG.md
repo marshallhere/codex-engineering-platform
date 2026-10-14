@@ -331,3 +331,41 @@ artifact before staging. Directory permissions remain0700; no control was weaken
 Standard CI run `38584211963` passed contracts/native-boundary at14d23c5. PR#2 is draft
 and stacked on#1; no merge/deployment. Final-revision local170 tests/171 packagingchecks
 passed. Native static findings/errors0. Disposable descendant execution still pending.
+
+Second disposable run `38584608922` reached fixed UID execution and failed closed:
+`UID cleanup failed; domain quarantined, no reuse permitted`. Failed JSON artifact
+was successfully retained/downloaded. No acceptance or UID reuse claim. The report
+lacked a precise child-failure reason; added bounded dedicated error pipes, explicit
+worker/cleaner exit statuses and survivor count. Success additionally requires expected
+worker exit status (detached parent0; other fixturesSIGKILL), so unexpected fixture
+errors cannot look successful. Privilege/group checks remain unchanged. Diagnostic
+revision is under restricted independent review before rerunning the experiment.
+
+Diagnostic independent review rejected the first revision: worker errors shared the
+readiness pipe, so post-readiness failures could lose details. Fixed separate bounded
+worker diagnostic pipe retained through cleanup; cleaner pipe remains separate.
+Also verified Apple kern_prot.c primary source: Darwin getgroups returns effectiveGID
+as first group. Empty-list-only verification was incorrect after setgid. Replaced it
+with exact UID/GID checks, reject every foreign group, and verify all four root UID/GID
+restoration calls fail. New regression tests allow only own primary group or emptylist
+and reject root/foreign groups without changing any real credentials. Existing test
+assertions preserved. Added mocked regression initially exposed an exhausted mock
+iterator in diagnostic formatting; corrected the mock to repeat fixtureidentity.
+
+Second restricted diagnostic/drop review FAIL, retained unchanged-hash evidence:
+nonempty detached-worker diagnostics could be ignored despite expected direct-parent
+status, and final inventory failure could bypass diagnostic-reader closure/reaping.
+No passing final-review claim for this revision. Delegated bounded repair of exactly
+uid_probe.py/test_uid_probe.py to the process specialist: reject any worker diagnostic,
+continue bounded cleanup/reaping despite inventory exceptions, always collect/close
+readers, retain unknown membership as failure. New regression reproducers required.
+No native backend activation, local privileged installation, merge or deployment.
+
+Final restricted repair review `review-native-uid-repair-final/summary.json`: PASS,
+reviewed code hashes unchanged,18 targeted tests plus7 supplemental mocked probes.
+Full175 platform tests PASS; original14+43 PASS. Native Bandit0findings/errors; Ruff
+and strict3OpenSpec changes PASS. Repair explicitly blocks all worker/cleaner diagnostic
+messages and unknown final membership while completing bounded diagnostic/FD finalization.
+Current source remains experimentally scoped; repaired actual CI execution next.
+Added native qualification matrix and independent CI zero-finding Bandit gate. No
+shipping runtime bytes or fork policy changed. Rejected reviews/failing CI retained.

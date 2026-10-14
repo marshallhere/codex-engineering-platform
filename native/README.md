@@ -22,3 +22,8 @@ Even passing probes leave durable root-owned leases/watchdogs, launch revocation
 fork/exec races, UID quarantine/reuse, inherited Seatbelt restrictions, set-ID
 executable exclusion, resource exhaustion and actual uv/Node/Go builds unqualified.
 No privileged installation on a developer machine is authorized by these probes.
+
+Darwin returns the effective primary GID in `getgroups()`. Privilege-drop verification
+allows only the fixture GID and rejects every foreign group, checks real/effective
+UID/GID, and verifies that restoring either UID or GID to root fails. This follows
+Apple’s [credential implementation](https://raw.githubusercontent.com/apple-oss-distributions/xnu/main/bsd/kern/kern_prot.c).
