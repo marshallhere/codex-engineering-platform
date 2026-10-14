@@ -402,3 +402,11 @@ prereapreviewPASS,sourcehashunchanged. Added genuine zombie-observer regression;
 PASS. Negativecontrolremovingthefive-linefixfromprivatecopy yields1errorbeforefix; kept
 failurelog. Firstnegativecontrolcommand usedwrongcwd anddidnotexecute; correctedrunis
 recordedseparately. Fullfinaltests/Bandit runningbeforeactualCIrerun.
+
+Sixth CI38589828765 at0b0b05d completed detachedfixture, then blockedposix_spawn:
+fixture mistakenly used /usr/bin/sleep; macOS binary is /bin/sleep. Verified local
+rootowned755file and corrected fixedpath, without changing checks or authority.
+Main report now appendspercase incrementally so a laterfailure preserves earlier
+passingcase evidence; listcomprehension previouslydiscarded partialresults. Final
+local179tests PASS,22targeted PASS; prereapdistribution171packagingchecks PASS.
+No native backend activation; actualCI rerun stillrequired.

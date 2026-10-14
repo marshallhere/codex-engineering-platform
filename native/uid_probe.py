@@ -185,7 +185,7 @@ def fixture(mode: str, ready: int) -> None:
         time.sleep(30)
         os._exit(0)
     if mode == "posix-spawn":
-        os.posix_spawn("/usr/bin/sleep", ["/usr/bin/sleep", "30"], {})
+        os.posix_spawn("/bin/sleep", ["/bin/sleep", "30"], {})
         os.write(ready, b"R")
         os.close(ready)
         time.sleep(30)
@@ -464,10 +464,9 @@ def main() -> int:
         # unused UID; failed domains are never selected again in this process.
         lease_fd = exclusive_lease()
         try:
-            report["cases"] = [
-                run_case(choose_uid(), mode)
-                for mode in ("detached", "posix-spawn", "concurrent-forks")
-            ]
+            report["cases"] = []
+            for mode in ("detached", "posix-spawn", "concurrent-forks"):
+                report["cases"].append(run_case(choose_uid(), mode))
         finally:
             os.close(lease_fd)
         report["experiment"] = "passed"
