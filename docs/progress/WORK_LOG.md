@@ -90,3 +90,26 @@ promotion, remote integration and rendered UI acceptance. See `docs/LIMITATIONS.
   plugin remains available. Only CEP's new setting changed; private backup retained.
 - Latest full publication scan PASS over 237 Git objects and 237 tracked files;
   `git diff --check` also passed. Remote CI/publication remain pending.
+
+### Public repository and remote verification
+
+- Created public MIT repository `marshallhere/codex-engineering-platform` and
+  published feature branch `feat/slice-a-b`, commit fd06c24. Default branch currently
+  remains the feature branch; no integration or deployment was performed.
+- Remote run 38531450062: macOS native qualification/watchdog job PASS. Linux
+  contracts passed regression, original suites, Ruff, OpenSpec, dependency audit,
+  reviewed security gate and build; installed-wheel check 158 (`doctor`) FAIL.
+- Independent diagnosis reproduced metadata-only doctor unnecessarily requiring
+  macOS/Codex. Deferred sandbox construction to `--qualify`; two regression tests
+  retain live fail-closed behavior. Packaging diagnostics now identify failed check
+  without echoing private stderr. No checks skipped or weakened.
+- Latest local platform suite: 117 PASS. Original 57 remain PASS. Final static
+  security findings unchanged at 15 reviewed LOW. Remote rerun pending.
+- Live demo 05 ACCEPTED: job 9d069548-8789-4c0f-98a7-61ec03b16533,
+  321.610 charged active seconds, five phases (implementation twice after failed
+  protected checks, independent review, polish, final independent review).
+  It binds pre-diagnostics-fix runtime; complete local artifacts are retained.
+- Demo 06 is running on the updated frozen runtime. Focused restricted CLI review
+  and final rebuild/rerun are pending; do not substitute demo 05 for current bytes.
+- Read-only actual Eventu inspection PASS, executed no project commands, found
+  `eventu-tooling` ownership and preserved it. Result stays private under `.local`.

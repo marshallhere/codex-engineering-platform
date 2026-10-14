@@ -44,14 +44,17 @@ def main() -> int:
             raise ValueError("Packaging verification failed: " + name)
 
     def command(name, argv, cwd, *, extra_env=None):
-        result = subprocess.run(
-            [str(part) for part in argv],
-            cwd=cwd,
-            env={**env, **(extra_env or {})},
-            capture_output=True,
-            text=True,
-            timeout=120,
-        )
+        try:
+            result = subprocess.run(
+                [str(part) for part in argv],
+                cwd=cwd,
+                env={**env, **(extra_env or {})},
+                capture_output=True,
+                text=True,
+                timeout=120,
+            )
+        except (OSError, subprocess.SubprocessError) as exc:
+            record(name, False, failure_kind=type(exc).__name__)
         (evidence / (name + ".stdout.log")).write_text(result.stdout)
         (evidence / (name + ".stderr.log")).write_text(result.stderr)
         record(name, result.returncode == 0, returncode=result.returncode)
@@ -238,6 +241,14 @@ def main() -> int:
             {
                 "status": report["status"],
                 "checks": len(report["checks"]),
+                "failed_check": next(
+                    (
+                        item["name"]
+                        for item in report["checks"]
+                        if not item["passed"]
+                    ),
+                    None if report["status"] == "passed" else "verification-exception",
+                ),
                 "evidence": str(evidence),
             }
         )

@@ -120,9 +120,8 @@ def main(argv=None) -> int:
             )
             code = 2 if result.get("conflicts") else 0
         elif command == "doctor":
-            sandbox = NativeSandbox()
             result = (
-                sandbox.qualify()
+                NativeSandbox().qualify()
                 if args.qualify
                 else {
                     "version": __version__,
