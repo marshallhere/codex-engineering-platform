@@ -1,0 +1,109 @@
+{
+  "active_time_budget_seconds": 900,
+  "affected_paths": [
+    "src/eventu_tooling/setup.py"
+  ],
+  "candidate_digest": "443462ad733c4fce1c66649eb51b7d03e443dd9a72fa1596d1f04f5ed9e555d9",
+  "charged_active_seconds": 281.444,
+  "ci": "https://github.com/marshallhere/codex-engineering-platform/actions/runs/38577104873",
+  "codex_phases": [
+    {
+      "phase": "implement",
+      "status": "PASSED",
+      "verdict": "PASS"
+    },
+    {
+      "phase": "review",
+      "status": "PASSED",
+      "verdict": "PASS"
+    },
+    {
+      "phase": "polish",
+      "status": "PASSED",
+      "verdict": "PASS"
+    },
+    {
+      "phase": "review",
+      "status": "PASSED",
+      "verdict": "PASS"
+    }
+  ],
+  "contract_digest": "39adf72c96d8ccc1348ca30182eae4c5516c15fe08d732e56f29a45c270cefe2",
+  "deployment_authorized": false,
+  "dirty_source_files_preserved": 30,
+  "execution_mode": "live",
+  "frozen_eventu_skills_verified": 22,
+  "frozen_eventu_unit_tests_passed": 34,
+  "gates": [
+    {
+      "case_ids": [
+        "reject-unknown"
+      ],
+      "id": "spec",
+      "passed": true
+    },
+    {
+      "case_ids": [
+        "reject-empty",
+        "reject-whitespace",
+        "reject-null",
+        "reject-true",
+        "reject-false",
+        "reject-number",
+        "reject-list",
+        "reject-object",
+        "valid-saved-offline",
+        "missing-key-default",
+        "explicit-recovery",
+        "minimal-config-development",
+        "minimal-config-offline"
+      ],
+      "id": "tests",
+      "passed": true
+    },
+    {
+      "case_ids": [
+        "invalid-apply-preserves-tree"
+      ],
+      "id": "security",
+      "passed": true
+    },
+    {
+      "case_ids": [
+        "missing-state-default",
+        "valid-isolated-offline-apply",
+        "compile-implementation"
+      ],
+      "id": "quality",
+      "passed": true
+    }
+  ],
+  "implementation_commit": "d53c5c540a37015dc26fa568c9ec5cbe77d70489",
+  "independent_review_passed": true,
+  "integration_performed": false,
+  "job_id": "2a09bf43-c015-4150-bdd2-a97548f78170",
+  "limitations": [
+    "General fork-dependent toolchains remain blocked",
+    "Original dirty Eventu revision is not qualified by this source snapshot",
+    "Full SDK/dependency attestation remains pending"
+  ],
+  "milestone": "Qualified in-process tools and isolated real-project CLI vertical",
+  "origin_commit": "5ef7d53fa3febfa5cf69f9d11066fce18d5b0685",
+  "original_checkout_preserved": true,
+  "original_working_changes_included": false,
+  "pack_digest": "dc99256eb65ff9e041552ff5622a4d1ec79cf8ac04a3c7dd0e0268b388403e2c",
+  "platform_tests_passed": 157,
+  "policy_digest": "fc67f69a338ff0ffba0e4d387504aa3f2fc190555355fe892050cb546c377f62",
+  "prototype_tests_passed": 57,
+  "raw_artifacts": "Private ignored local artifacts; source and provider bindings excluded from public repository",
+  "requirements": [
+    "EVT-SCOPE",
+    "EVT-PRESERVE",
+    "EVT-RECOVER"
+  ],
+  "runtime_digest": "2cfce889659243abd20d989e5a3da446f4fdcd6c432713a6565c2d8738d36423",
+  "schema_version": 1,
+  "snapshot_verified": true,
+  "spec_digest": "8d9523e6cbc5ec07880351eb40fd4810bd95aa7a3cf17025e61be4b196adab77",
+  "status": "accepted"
+}

@@ -212,3 +212,71 @@ promotion, remote integration and rendered UI acceptance. See `docs/LIMITATIONS.
   and actual remote integration remain pending as recorded in docs/LIMITATIONS.md.
   Fork-dependent build tools are blocked by the current qualified native boundary;
   broader execution must gain new denial evidence before use. Eventu remains unchanged.
+### Real-project qualification phase started
+
+- User authorized toolchain qualification and one isolated Eventu vertical.
+  Work branch feat/native-toolchains-eventu starts at verified 619816c.
+- Independent native lifecycle research rejects unrestricted fork grants: process
+  groups do not contain setsid/double-fork descendants, and installed Darwin SDK
+  and Apple XNU mark kqueue NOTE_TRACK unsupported. No boundary was weakened.
+- Native Python/Node in-process probes and uv version discovery PASS. Exact-file
+  binary bindings are frozen by hash; native Node cannot read adjacent protected
+  files or spawn a child. A sacrificial outside executable cannot be hardlinked
+  into writable project storage; its bytes and nlink remain unchanged.
+- Added protected technology-neutral JSON CLI grading. Independent review found
+  pre-grading output redaction could conceal token-shaped leaks. Trusted grading
+  now sees raw bounded output first; persisted/broker outputs remain sanitized.
+  Truncation and missing execution-limit flags fail cases. Regression retains
+  both a synthetic leak and its sanitized failed evidence.
+- Eventu current checkout has existing dirty work and a non-develop branch. It is
+  preserved; the isolated private candidate archives exact origin 5ef7d53 and adds
+  only scoped OpenSpec before worker execution. Its baseline 34 tests and 22-skill
+  bundle checks PASS, distinct from current dirty-source checks. Ten protected
+  invalid-scope cases fail as intended; five valid/default/recovery controls pass.
+  A protected compile case brings final policy to 16 cases across all gate kinds.
+- Private pack and policy remain outside the worker. No MCP/account bindings or
+  private Eventu source were copied into the public platform repository. A stale
+  Sentry paragraph in Eventu README remains an unrelated documented inconsistency;
+  this slice performs no provider or scope-activation actions in the real workspace.
+### Strict grading review closure
+
+- Restricted root review found missing truncation metadata defaulted to false.
+  Required explicit boolean timed_out, output_exceeded and output_truncated flags;
+  added missing/invalid-flag regressions. Review retry PASS with unchanged runtime.
+- First pilot was cancelled during final review before runtime correction; its
+  artifacts remain private and are not completion evidence. Fresh pilot uses the
+  corrected frozen runtime and original failing source snapshot.
+- Current platform suite 157 PASS; original prototype57 PASS. Pinned Ruff PASS,
+  static gate retains15 reviewed LOW findings, no HIGH/MEDIUM or scanner errors;
+  strict validation now covers all OpenSpec changes, dependency audit remains clean.
+- Native Go version discovery PASS; Go subprocess/build execution remains blocked.
+  Source package includes public evidence JSON; final package/source matching and
+  accepted Eventu proof remain pending at this checkpoint.
+### Qualified real-project CLI milestone
+
+- Implementation d53c5c5 passed public Linux/macOS CI run38577104873, including
+  native exact-file binding, hardlink and Node fork-denial regressions.
+- Fresh Eventu pilot ACCEPTED on the corrected runtime: four Codex phases,
+  281.444 charged seconds within900 seconds, all18 externally owned cases PASS,
+  final independent review PASS, immutable snapshot and idempotent acceptance verified.
+- Only src/eventu_tooling/setup.py changed. Unknown/non-string/falsy persisted
+  scopes are rejected before planning/apply, explicit valid recovery is preserved,
+  and minimal older configuration remains compatible. Original34 tests and22-skill
+  integrity checks PASS in a fresh copy of attested files, temporary secret-minimal
+  environment and isolated Git configuration. The initial isolated direct-script
+  command failed sibling imports; corrected bootstrap retained Python isolation.
+  This functional verification is not general fork-capable worker qualification.
+- Original Eventu HEAD/branch and all30 recorded dirty-file hashes unchanged.
+  Private patch and full evidence retained under .local/eventu-vertical-prep/final;
+  no source or private provider bindings were published, applied or merged.
+- Sanitized completion proof: docs/evidence/real-project-cli.json. Runtime frozen
+  bytes match live acceptance. Historical first pilot remains CANCELLED and its
+  evidence is retained rather than substituted for the accepted run.
+- Distribution passed171 packaging checks plus9 installed-module/CLI checks,
+  and236 exact-source comparisons at implementation commit. Final documentation
+  package rebuild/install is pending. Platform157 +prototype57 tests PASS; static
+  findings remain15 reviewed LOW, no material findings. All OpenSpec changes strict
+  PASS, dependency audit clean, publication scan PASS.
+- Scoped real-project tasks checked. General descendant-safe native subprocesses,
+  full framework builds, broader SDK attestation, UI/Storybook, reviewed-memory
+  automation and remote integration still require separate qualification.

@@ -1,0 +1,5 @@
+- [x] CEP-TOOLS: qualify installed in-process tools and freeze exact executable identities
+- [x] CEP-JSON: evaluate externally owned declarative cases with protected fixtures and raw security checks
+- [x] CEP-PACK-BIND: bind external technology packs to job evidence without scheduler technology branches
+- [x] CEP-EVENTU: retain a private isolated real Eventu implementation/review/repair proof
+- [x] Independent review, regression, packaging, publication checks and documentation

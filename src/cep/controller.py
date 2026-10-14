@@ -20,6 +20,9 @@ from .sandbox import NativeSandbox
 from .specs import load_change
 from .state import Store
 from .transport import CodexTransport, configured_model
+from .toolchains import validate_bindings
+from .packs import load_pack
+from .blackbox import parse_declaration
 
 MANDATORY = {"spec", "tests", "security", "quality"}
 UI = {"design", "storybook", "browser", "accessibility"}
@@ -58,9 +61,27 @@ def load_policy(path: Path, repo: Path, requirements: list[str]) -> dict:
     path = path.resolve(strict=True)
     if path.is_relative_to(repo.resolve()):
         raise ValueError("Acceptance policy must be outside worker repository")
-    policy = json.loads(path.read_text())
+    policy = parse_declaration(path.read_text())
     if policy.get("schema_version") != 1:
         raise ValueError("Unsupported policy schema")
+    validate_bindings(policy.get("tool_bindings", []), repo)
+    if manifest := policy.get("pack_manifest"):
+        if (
+            not isinstance(manifest, str)
+            or not Path(manifest).is_absolute()
+            or Path(manifest).resolve().is_relative_to(repo.resolve())
+        ):
+            raise ValueError(
+                "Selected pack must be an operator-owned external manifest"
+            )
+        load_pack(Path(manifest))
+    context = policy.get("worker_context", "")
+    if (
+        not isinstance(context, str)
+        or "\0" in context
+        or len(context.encode()) > 32_000
+    ):
+        raise ValueError("Operator worker context must be bounded text")
     checks = policy.get("checks")
     if not isinstance(checks, list) or not checks:
         raise ValueError("Real acceptance commands are required")
@@ -88,6 +109,17 @@ def load_policy(path: Path, repo: Path, requirements: list[str]) -> dict:
         mapped = check.get("requirements", [])
         if not isinstance(mapped, list) or any(r not in requirements for r in mapped):
             raise ValueError("Gate requirement mapping is invalid")
+        if check.get("adapter") == "protected-json-cli":
+            from .blackbox import validate_cases
+
+            validate_cases(check.get("cases"), requirements)
+            if any(
+                c["kind"] != check["kind"] or set(c["requirements"]) - set(mapped)
+                for c in check["cases"]
+            ):
+                raise ValueError("Black-box case kind/requirements must match its gate")
+            if set(mapped) - {r for c in check["cases"] for r in c["requirements"]}:
+                raise ValueError("Gate maps requirements without black-box cases")
         coverage.update(mapped)
         timeout = check.get("timeout_seconds", 120)
         if type(timeout) is not int or not 1 <= timeout <= 3600:
@@ -159,6 +191,9 @@ class Controller:
             "protected_files": protected_files,
             "protected_roots": protected,
         }
+        if manifest := policy.get("pack_manifest"):
+            pack = load_pack(Path(manifest))
+            contract.update(pack_id=pack["id"], pack_digest=digest_json(pack))
         job = self.store.create_job(contract, budget_seconds)
         try:
             tree = worktree(
@@ -179,11 +214,17 @@ class Controller:
 
     def _validate(self, job: dict, tree: Path):
         contract = job["contract"]
+        validate_bindings(contract["policy"].get("tool_bindings", []), tree)
         if contract.get("runtime_digest") != runtime_digest():
             raise ValueError(
                 "Runtime changed or unversioned contract; create a new qualified job"
             )
-        policy = json.loads(Path(contract["policy_path"]).read_text())
+        policy = parse_declaration(Path(contract["policy_path"]).read_text())
+        if manifest := policy.get("pack_manifest"):
+            if digest_json(load_pack(Path(manifest))) != contract.get("pack_digest"):
+                raise ValueError(
+                    "Selected technology pack changed; requalification required"
+                )
         if digest_json(policy) != contract["policy_digest"]:
             raise ValueError("Policy changed; create a new reviewed contract")
         if load_change(tree, contract["spec"])["digest"] != contract["spec_digest"]:
@@ -259,6 +300,52 @@ class Controller:
                         "stderr": "",
                         "gate": gate,
                     }
+                elif check.get("adapter") == "protected-json-cli":
+                    from .blackbox import run_cases
+
+                    def execute_case(argv, fixture, execution_scratch):
+                        current = self.store.get_job(job["id"])
+                        if current["status"] == "CANCELLED":
+                            raise ValueError("Operator cancellation")
+                        left = min(
+                            current["remaining_seconds"],
+                            reservation["max_seconds"]
+                            - (time.monotonic() - gate_started),
+                        )
+                        if left <= 0:
+                            raise ValueError(
+                                "Budget exhausted before black-box dispatch"
+                            )
+                        tools = validate_bindings(
+                            job["contract"]["policy"].get("tool_bindings", []),
+                            Path(candidate["path"]),
+                        )
+                        return self.sandbox.run(
+                            argv,
+                            Path(candidate["path"]),
+                            execution_scratch,
+                            min(30, left),
+                            readable=(fixture, *tools),
+                            registry=artifact / "registrations",
+                            raw_output=True,
+                            output_limit=200_000,
+                        )
+
+                    gate = run_cases(
+                        Path(candidate["path"]),
+                        check["cases"],
+                        executor=execute_case,
+                        scratch_root=scratch,
+                    )
+                    result = {
+                        "argv": ["protected-json-cli", check["kind"]],
+                        "exit_code": 0 if gate["passed"] else 1,
+                        "timed_out": False,
+                        "elapsed_seconds": time.monotonic() - gate_started,
+                        "stdout": json.dumps(gate),
+                        "stderr": "",
+                        "gate": gate,
+                    }
                 else:
                     result = self.sandbox.run(
                         args,
@@ -320,13 +407,17 @@ class Controller:
         try:
             self.sandbox = self.sandbox or NativeSandbox()
             if isinstance(self.sandbox, NativeSandbox) and any(
-                check.get("adapter") != "protected-python-demo"
+                check.get("adapter")
+                not in {"protected-python-demo", "protected-json-cli"}
                 for check in job["contract"]["policy"]["checks"]
             ):
                 raise ValueError(
                     "Live acceptance requires a qualified protected grading adapter; arbitrary candidate-run test commands are unqualified"
                 )
-            if isinstance(self.sandbox, NativeSandbox):
+            if isinstance(self.sandbox, NativeSandbox) and any(
+                check.get("adapter") == "protected-python-demo"
+                for check in job["contract"]["policy"]["checks"]
+            ):
                 from .demo import fixture_path
 
                 expected = load_change(fixture_path(), "list-unfinished")
@@ -355,7 +446,9 @@ class Controller:
                 )
                 return self.store.get_job(job_id)
             self.transport = self.transport or CodexTransport(
-                self.sandbox, model=job["contract"].get("model")
+                self.sandbox,
+                model=job["contract"].get("model"),
+                tool_bindings=job["contract"]["policy"].get("tool_bindings", []),
             )
             phase, previous, stagnant, last = "implement", {}, 0, None
             polish_done = False
@@ -372,7 +465,9 @@ class Controller:
                 try:
                     prompt = (
                         f"OpenSpec change {job['contract']['spec']}. Phase {phase}. "
-                        "Follow its requirements; modify implementation only, not OpenSpec, policy, tests or runtime configuration. "
+                        + job["contract"]["policy"].get("worker_context", "")
+                        + " "
+                        + "Follow its requirements; modify implementation only, not OpenSpec, policy, tests or runtime configuration. "
                         "No production or external-service access. Use routine implementation judgment. "
                         "Return FAIL with findings for consequential choices needing user input. "
                         "For review independently inspect requirements, security, correctness and missing tests; do not edit files. "
@@ -431,7 +526,10 @@ class Controller:
                                 != review_candidate["digest"]
                             ):
                                 raise ValueError("Worker changed after final gates")
-                            is_live = isinstance(self.transport, CodexTransport)
+                            is_live = (
+                                type(self.transport) is CodexTransport
+                                and type(self.sandbox) is NativeSandbox
+                            )
                             proof = {
                                 "mandatory_checks_passed": all(
                                     c["passed"] for c in previous["checks"]

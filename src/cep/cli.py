@@ -82,6 +82,8 @@ def main(argv=None) -> int:
     p = sub.add_parser("doctor")
     p.add_argument("--qualify", action="store_true")
     p.add_argument("--report", type=Path)
+    p = sub.add_parser("qualify-toolchains")
+    p.add_argument("--report", type=Path)
     p = sub.add_parser("run")
     p.add_argument("--repo", type=Path)
     p.add_argument("--spec")
@@ -132,6 +134,13 @@ def main(argv=None) -> int:
             )
             if args.qualify and not result["passed"]:
                 code = 2
+            if args.report:
+                write_json(args.report, result)
+        elif command == "qualify-toolchains":
+            from .toolchains import qualify_toolchains
+
+            result = qualify_toolchains()
+            code = 0 if result["passed"] else 2
             if args.report:
                 write_json(args.report, result)
         elif command == "demo":
