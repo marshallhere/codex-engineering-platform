@@ -152,3 +152,18 @@ promotion, remote integration and rendered UI acceptance. See `docs/LIMITATIONS.
   process survived; cleanup targeted only its own fixture process. Added regression.
 - Final local suite now 120 tests; raw result retained in platform-tests-final.log.
   Demo 08 and final CI/build are running against frozen runtime after this last fix.
+
+### Output-limit closure
+
+- Remote run 38534822579 PASS for all jobs at 5c11194. Demo 08 ACCEPTED after five
+  phases and 375.401 charged seconds; its candidate and immutable snapshot verified.
+- Final review of bounded-output handling found an exit/kill race: output overflow
+  can coexist with exit code zero. Transport now rejects that flag even with a
+  valid PASS response. Demo grading records failed timeout/output-limit evidence
+  while retaining every semantic case, so a nominally correct JSON response cannot
+  mask the resource failure. Three transport and two grading regressions added.
+- Independent restricted output-limit review PASS with unchanged source digest.
+- Platform suite now 125 PASS; original 57 PASS. Ruff and reviewed static gate PASS.
+- Formatter changed runtime bytes after demo 09 started; the frozen-runtime check
+  correctly BLOCKED that run. No acceptance claim was made. Demo 10 is the fresh
+  final run after formatting; source is frozen and further edits are documentation.

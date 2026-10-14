@@ -139,7 +139,17 @@ def run_demo_gate(
                     "--file",
                     file,
                 ]
-                return executor(args) if executor else run_process(args, repo, 10)
+                result = executor(args) if executor else run_process(args, repo, 10)
+                if result.get("timed_out") or result.get("output_exceeded"):
+                    record(
+                        f"execution-limit-{len(checks)}",
+                        "DEMO-INPUT" if kind == "tests" else "DEMO-BOUNDARY",
+                        False,
+                        "Execution timed out"
+                        if result.get("timed_out")
+                        else "Execution output limit exceeded",
+                    )
+                return result
 
             def reject(name, requirement, file="tasks.json"):
                 before = {

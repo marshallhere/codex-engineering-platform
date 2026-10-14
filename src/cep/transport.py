@@ -163,7 +163,12 @@ class CodexTransport:
         finally:
             cleanup_registry(artifact / "registrations")
         write_json(artifact / "process.json", result)
-        if result["exit_code"] != 0 or result["timed_out"] or not output.is_file():
+        if (
+            result["exit_code"] != 0
+            or result["timed_out"]
+            or result.get("output_exceeded")
+            or not output.is_file()
+        ):
             raise RuntimeError("Codex session failed; inspect attempt process.json")
         value = json.loads(output.read_text())
         if set(value) != {

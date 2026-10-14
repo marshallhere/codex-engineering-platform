@@ -1,4 +1,5 @@
 import tempfile
+import json
 from pathlib import Path
 import unittest
 import sys
@@ -6,6 +7,7 @@ import subprocess
 
 from cep.demo import bootstrap_demo, run_demo_gate
 from cep.sandbox import NativeSandbox
+from cep.process import run_process
 
 
 GOOD = """import argparse,json,sys
@@ -59,6 +61,69 @@ class DemoTests(unittest.TestCase):
             for kind in ("spec", "tests", "security", "quality"):
                 with self.subTest(kind=kind):
                     self.assertTrue(run_demo_gate(repo, kind)["passed"])
+
+    def test_valid_semantic_outcomes_cannot_override_execution_limits(self):
+        with tempfile.TemporaryDirectory() as d:
+            repo = bootstrap_demo(Path(d) / "project")
+            (repo / "task_cli.py").write_text(GOOD)
+            for flag in ("timed_out", "output_exceeded"):
+                for kind in ("tests", "security"):
+                    with self.subTest(flag=flag, kind=kind):
+                        baseline = run_demo_gate(repo, kind)
+
+                        def flagged(args):
+                            # Execute all existing semantic cases unchanged,
+                            # then emulate a controller-reported execution failure.
+                            result = run_process(args, repo, 10)
+                            result[flag] = True
+                            return result
+
+                        result = run_demo_gate(repo, kind, executor=flagged)
+                        self.assertFalse(result["passed"])
+                        semantic = [
+                            check
+                            for check in result["checks"]
+                            if not check["id"].startswith("execution-limit-")
+                        ]
+                        self.assertEqual(semantic, baseline["checks"])
+                        failures = [
+                            check
+                            for check in result["checks"]
+                            if check["id"].startswith("execution-limit-")
+                        ]
+                        self.assertTrue(failures)
+                        self.assertTrue(all(not check["passed"] for check in failures))
+
+    def test_complete_zero_exit_json_with_output_excess_is_failed_evidence(self):
+        with tempfile.TemporaryDirectory() as d:
+            repo = bootstrap_demo(Path(d) / "project")
+            calls = 0
+
+            def flagged_complete(args):
+                nonlocal calls
+                calls += 1
+                return {
+                    "exit_code": 0,
+                    "timed_out": False,
+                    "output_exceeded": True,
+                    "stdout": json.dumps(
+                        {"tasks": [{"id": "two", "title": "unfinished", "done": False}]}
+                    ),
+                    "stderr": "",
+                    "elapsed_seconds": 0.001,
+                }
+
+            result = run_demo_gate(repo, "tests", executor=flagged_complete)
+            self.assertFalse(result["passed"])
+            failures = [
+                check
+                for check in result["checks"]
+                if check["id"].startswith("execution-limit-")
+            ]
+            self.assertEqual(len(failures), calls)
+            self.assertTrue(
+                all("output limit" in check["detail"] for check in failures)
+            )
 
     @unittest.skipUnless(
         __import__("sys").platform == "darwin", "macOS native qualification"
