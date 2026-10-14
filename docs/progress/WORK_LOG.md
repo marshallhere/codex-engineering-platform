@@ -113,3 +113,25 @@ promotion, remote integration and rendered UI acceptance. See `docs/LIMITATIONS.
   and final rebuild/rerun are pending; do not substitute demo 05 for current bytes.
 - Read-only actual Eventu inspection PASS, executed no project commands, found
   `eventu-tooling` ownership and preserved it. Result stays private under `.local`.
+
+### Grader hardening and passing CI
+
+- Remote run 38532140003 PASS for both Linux contracts and macOS native boundary
+  at commit 0ffa5d0. Installed wheel and complete history publication checks passed.
+- Restricted metadata-doctor review PASS; qualification still fails closed.
+- Installed verified wheel in the platform-local venv. Metadata doctor reports
+  unqualified until actual preflight; the prior installed native preflight PASS.
+- Background proof PASS: controller survived launcher exit in its own process
+  group, started a job, then exited on cancellation with terminal CANCELLED state.
+  Evidence `.local/background-proof/summary.json`; only disposable resources used.
+- Demo 06 ACCEPTED after seven phases and 413.558 charged seconds. Its reviewer
+  found uncaught recursive serialization for valid 600-depth JSON extra fields,
+  and the worker repaired it. Added this case to the protected grader rather than
+  relying on review alone. Reference test fixture now encodes iteratively.
+- Grader child scratch is now separate from read-only input fixtures. Explicit
+  attempt registry keeps cancellation cleanup aligned. A native regression verifies
+  inputs can be read but writing them is denied and their bytes remain unchanged.
+- Latest local suite: 118 PASS; Ruff PASS; static findings remain reviewed LOW only.
+- One grader review returned a descriptive phase instead of exact `review` and was
+  rejected by strict transport validation. Correctly structured review retry and
+  live demo 07 are running against the new frozen runtime.

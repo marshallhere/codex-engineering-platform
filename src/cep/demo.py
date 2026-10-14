@@ -196,6 +196,24 @@ def run_demo_gate(
                     result["exit_code"] == 0
                     and output == json.loads(numeric, parse_float=Decimal),
                 )
+                deep = (
+                    '{"tasks":[{"id":"deep","title":"nested","done":false,"value":'
+                    + "[" * 600
+                    + "0"
+                    + "]" * 600
+                    + "}]}"
+                )
+                path.write_text(deep)
+                result = call()
+                try:
+                    output = json.loads(result["stdout"])
+                except (ValueError, RecursionError):
+                    output = None
+                record(
+                    "preserve-deep-json-value",
+                    "DEMO-LIST",
+                    result["exit_code"] == 0 and output == json.loads(deep),
+                )
                 for name, data in (
                     ("all-done", {"tasks": [inventory["tasks"][0]]}),
                     ("empty", {"tasks": []}),

@@ -210,8 +210,10 @@ class Controller:
 
                     start = time.monotonic()
                     bounded = min(remaining, check.get("timeout_seconds", 120))
+                    dispatch_count = 0
 
                     def execute(argv):
+                        nonlocal dispatch_count
                         current_job = self.store.get_job(job["id"])
                         if current_job["status"] == "CANCELLED":
                             raise ValueError("Operator cancellation")
@@ -219,8 +221,16 @@ class Controller:
                         left = min(left, current_job["remaining_seconds"])
                         if left <= 0:
                             raise ValueError("Budget exhausted before grader dispatch")
+                        execution_scratch = scratch / ("run-" + str(dispatch_count))
+                        dispatch_count += 1
+                        execution_scratch.mkdir()
                         return self.sandbox.run(
-                            argv, Path(candidate["path"]), scratch, min(10, left)
+                            argv,
+                            Path(candidate["path"]),
+                            execution_scratch,
+                            min(10, left),
+                            readable=(scratch,),
+                            registry=artifact / "registrations",
                         )
 
                     gate = run_demo_gate(

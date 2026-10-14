@@ -1,6 +1,7 @@
 import tempfile
 from pathlib import Path
 import unittest
+import sys
 
 from cep.demo import bootstrap_demo, run_demo_gate
 from cep.sandbox import NativeSandbox
@@ -9,11 +10,22 @@ from cep.sandbox import NativeSandbox
 GOOD = """import argparse,json,sys
 from decimal import Decimal
 from pathlib import Path
-def encode(v):
- if isinstance(v,Decimal): return str(v)
- if isinstance(v,list): return '['+','.join(encode(x) for x in v)+']'
- if isinstance(v,dict): return '{'+','.join(json.dumps(k)+':'+encode(x) for k,x in v.items())+'}'
- return json.dumps(v,allow_nan=False)
+def encode(value):
+ stack=[('value',value)];output=[]
+ while stack:
+  kind,v=stack.pop()
+  if kind=='text': output.append(v)
+  elif isinstance(v,Decimal): output.append(str(v))
+  elif isinstance(v,(list,dict)):
+   tokens=[('text','[' if isinstance(v,list) else '{')]
+   pairs=list(enumerate(v)) if isinstance(v,list) else list(v.items())
+   for i,(k,item) in enumerate(pairs):
+    if i: tokens.append(('text',','))
+    if isinstance(v,dict): tokens.append(('text',json.dumps(k)+':'))
+    tokens.append(('value',item))
+   tokens.append(('text',']' if isinstance(v,list) else '}'));stack.extend(reversed(tokens))
+  else: output.append(json.dumps(v,allow_nan=False))
+ return ''.join(output)
 def bad_constant(v): raise ValueError('invalid JSON')
 p=argparse.ArgumentParser();p.add_argument('--root',required=True);p.add_argument('--file',required=True);a=p.parse_args()
 try:
@@ -52,6 +64,28 @@ class DemoTests(unittest.TestCase):
     )
     def test_native_restrictions_and_fork_denial(self):
         self.assertTrue(NativeSandbox().qualify()["passed"])
+
+    @unittest.skipUnless(sys.platform == "darwin", "macOS native fixture isolation")
+    def test_grader_inputs_are_readable_but_not_writable(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d).resolve()
+            repo = bootstrap_demo(root / "project")
+            fixtures, scratch = root / "fixtures", root / "worker"
+            fixtures.mkdir()
+            scratch.mkdir()
+            original = fixtures / "input.json"
+            original.write_text("unchanged")
+            code = f"from pathlib import Path; p=Path({str(original)!r}); print(p.read_text()); p.write_text('changed')"
+            result = NativeSandbox().run(
+                [sys.executable, "-I", "-c", code],
+                repo,
+                scratch,
+                5,
+                readable=(fixtures,),
+            )
+            self.assertEqual(result["stdout"].strip(), "unchanged")
+            self.assertIn("PermissionError", result["stderr"])
+            self.assertEqual(original.read_text(), "unchanged")
 
 
 if __name__ == "__main__":
