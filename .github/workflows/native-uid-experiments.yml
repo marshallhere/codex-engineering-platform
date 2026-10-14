@@ -16,6 +16,7 @@ jobs:
       - name: Stage fixed reviewed experiments outside worker ownership
         shell: bash
         run: |
+          set -euo pipefail
           printf '%s\n' '{"experiment":"not_run","production_qualified":false,"error":"staging failed"}' > uid-experiment.json
           stage=$(sudo /usr/bin/mktemp -d /private/tmp/cep-uid-probes.XXXXXX)
           echo "CEP_UID_STAGE=$stage" >> "$GITHUB_ENV"
@@ -24,14 +25,14 @@ jobs:
           sudo /bin/chmod 700 "$stage/native" "$stage/cep" "$stage/tests"
           sudo /bin/cp native/uid_domain.py native/uid_probe.py native/uid_journal.py "$stage/native/"
           sudo /bin/cp src/cep/__init__.py src/cep/lifecycle.py "$stage/cep/"
-          sudo /bin/cp tests/test_uid_quarantine.py "$stage/tests/"
+          sudo /bin/cp tests/test_uid_journal.py tests/test_uid_quarantine.py "$stage/tests/"
           sudo /usr/sbin/chown -R root:wheel "$stage"
-          sudo /bin/chmod 600 "$stage/native/uid_domain.py" "$stage/native/uid_probe.py" "$stage/native/uid_journal.py" "$stage/cep/__init__.py" "$stage/cep/lifecycle.py" "$stage/tests/test_uid_quarantine.py"
+          sudo /bin/chmod 600 "$stage/native/uid_domain.py" "$stage/native/uid_probe.py" "$stage/native/uid_journal.py" "$stage/cep/__init__.py" "$stage/cep/lifecycle.py" "$stage/tests/test_uid_journal.py" "$stage/tests/test_uid_quarantine.py"
       - name: Prove controller interruption preserves UID quarantine as root
         shell: bash
         run: |
           set -o pipefail
-          sudo /usr/bin/env -i PATH=/usr/bin:/bin PYTHONPATH="$CEP_UID_STAGE" /usr/bin/python3 -m unittest discover -s "$CEP_UID_STAGE/tests" -p test_uid_quarantine.py -v 2>&1 | tee uid-quarantine.log
+          sudo /usr/bin/env -i PATH=/usr/bin:/bin PYTHONPATH="$CEP_UID_STAGE" /usr/bin/python3 -m unittest discover -s "$CEP_UID_STAGE/tests" -p 'test_uid_*.py' -v 2>&1 | tee uid-quarantine.log
       - name: Run fixed synthetic experiments; production stays blocked
         shell: bash
         run: |

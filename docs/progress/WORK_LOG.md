@@ -536,3 +536,12 @@ the uploaded artifact showed that `unittest` writes its verbose report to stderr
 step log was retained only in Actions while the tee artifact was empty. The workflow now
 merges stderr into the retained log; a final run will verify the downloadable evidence
 is substantive before recording its digest.
+Coverage refinement: the protected macOS job now also stages `test_uid_journal.py` and
+runs both UID test modules as root. This extends the disposable host evidence to
+malformed/stale journal records and release validation, in addition to the interrupted
+controller test and the real root probe's two fresh inventories. The final run must
+complete before its outputs are recorded as acceptance evidence.
+Independent workflow review noted staging must visibly fail closed if any setup command
+fails. GitHub's Bash shell already injects `-e -o pipefail`, but the step now states
+`set -euo pipefail` explicitly so this security property is clear and remains robust if
+the workflow shell configuration changes. The expanded macOS test run remains pending.
