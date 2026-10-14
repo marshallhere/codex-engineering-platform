@@ -1,0 +1,126 @@
+{
+  "candidate_digest": "172ddde42018f5256e33568667ca8547e5c10fa1074d177c4636953a5bf8ba40",
+  "charged_active_seconds": 369.726,
+  "ci": {
+    "implementation_run": "https://github.com/marshallhere/codex-engineering-platform/actions/runs/38543600374",
+    "status": "passed"
+  },
+  "codex_phases": [
+    {
+      "phase": "implement",
+      "status": "PASSED",
+      "verdict": "PASS"
+    },
+    {
+      "phase": "implement",
+      "status": "PASSED",
+      "verdict": "PASS"
+    },
+    {
+      "phase": "implement",
+      "status": "PASSED",
+      "verdict": "PASS"
+    },
+    {
+      "phase": "review",
+      "status": "PASSED",
+      "verdict": "PASS"
+    },
+    {
+      "phase": "polish",
+      "status": "PASSED",
+      "verdict": "PASS"
+    },
+    {
+      "phase": "review",
+      "status": "PASSED",
+      "verdict": "PASS"
+    }
+  ],
+  "contract_digest": "b386e85499316901fb3983264bd6377a1b3abb0d05b04afa988dd749bb31009e",
+  "dependency_audit": "zero reported vulnerabilities",
+  "deployment_authorized": false,
+  "execution_mode": "live",
+  "gates": [
+    {
+      "case_count": 1,
+      "case_ids": [
+        "stable-requirements"
+      ],
+      "id": "spec",
+      "passed": true
+    },
+    {
+      "case_count": 11,
+      "case_ids": [
+        "unfinished-in-order",
+        "preserve-large-json-number",
+        "preserve-deep-json-value",
+        "all-done",
+        "empty",
+        "malformed",
+        "bad-done",
+        "missing-tasks",
+        "bad-id",
+        "non-json-constant",
+        "missing-file"
+      ],
+      "id": "tests",
+      "passed": true
+    },
+    {
+      "case_count": 3,
+      "case_ids": [
+        "traversal",
+        "absolute-path",
+        "symlink-escape"
+      ],
+      "id": "security",
+      "passed": true
+    },
+    {
+      "case_count": 2,
+      "case_ids": [
+        "python-compile",
+        "no-dynamic-input-execution"
+      ],
+      "id": "quality",
+      "passed": true
+    }
+  ],
+  "implementation_commit": "cd3f88f9671879610c528109a0803949ddeb9c6f",
+  "independent_review_passed": true,
+  "job_id": "3d0a4345-a8c8-4ab6-b66e-5903ed3a1ef0",
+  "job_merge_performed": false,
+  "milestone": "Slice A and qualified Python Slice B vertical",
+  "packaging_checks": {
+    "passed": 171
+  },
+  "platform_tests": {
+    "passed": 133
+  },
+  "policy_digest": "02e064da0c7933b1be90ccc1a02ced16b999d1f918d1470da78497d873d77086",
+  "prototype_tests": {
+    "passed": 57
+  },
+  "raw_artifacts": "Private local .local/ evidence; excluded from public repository",
+  "remaining_capabilities": "docs/LIMITATIONS.md",
+  "requirements": [
+    "DEMO-LIST",
+    "DEMO-INPUT",
+    "DEMO-BOUNDARY"
+  ],
+  "restricted_runtime_review": {
+    "unchanged": true,
+    "verdict": "PASS"
+  },
+  "runtime_digest": "29a98df7374b61da5a7f28e08006a4434a5f9c272798294d82308e988a5bcaca",
+  "schema_version": 1,
+  "spec_digest": "32eeaaac403e119ee2977a71630215a6ad39811eec92b010936251cc71d6e0d0",
+  "static_security": {
+    "high": 0,
+    "medium": 0,
+    "reviewed_low": 15
+  },
+  "status": "accepted"
+}

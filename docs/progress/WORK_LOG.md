@@ -189,3 +189,26 @@ promotion, remote integration and rendered UI acceptance. See `docs/LIMITATIONS.
 - Runtime frozen after formatting. Restricted independent root review, real demo
   11, exact-source packaging and current-revision CI are still pending. Historical
   accepted runs do not establish acceptance for these changed runtime bytes.
+### Slice A / smallest qualified Slice B milestone
+
+- Current implementation commit cd3f88f passed remote Linux contracts and macOS
+  native-boundary CI: https://github.com/marshallhere/codex-engineering-platform/actions/runs/38543600374.
+- Restricted independent root review PASS with unchanged runtime digest. Its
+  fixture-creation/SQLite tests were unavailable within read-only restrictions;
+  those restrictions were retained. The full local and CI suites passed separately.
+- Demo 11 ACCEPTED, job 3d0a4345-a8c8-4ab6-b66e-5903ed3a1ef0, six actual Codex
+  phases: three implementations following failing gates, review, polish, final
+  review. Active-time charge 369.726 seconds within the explicit 900-second budget.
+- All four final protected gates passed (17 cases). Immutable candidate verified,
+  frozen runtime digest equals current bytes, and idempotent controller rerun
+  retained ACCEPTED. Sanitized public proof: docs/evidence/slice-a-b.json; complete
+  raw artifacts remain ignored under .local/live-demo-11 and review directories.
+- Exact-source distributables passed 171 packaging checks and all 112 runtime,
+  asset and check-file comparisons. Platform 133 tests + original 57 tests PASS;
+  OpenSpec, dependency audit, lint, static security and publication checks PASS.
+- Checked only the scoped A/B OpenSpec tasks. Full-platform acceptance is still
+  incomplete: live UI/Storybook/visual/accessibility adapters, independently graded
+  additional stacks, reviewed-memory promotion/retrieval/evals, chat-control MCP
+  and actual remote integration remain pending as recorded in docs/LIMITATIONS.md.
+  Fork-dependent build tools are blocked by the current qualified native boundary;
+  broader execution must gain new denial evidence before use. Eventu remains unchanged.
