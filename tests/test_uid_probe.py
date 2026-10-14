@@ -245,3 +245,34 @@ class UIDProbeFinalizationTests(TestCase):
             self.assertEqual(result["error_count"], 1)
             self.assertEqual(result["worker_status"], 0)
             killer.assert_not_called()
+
+    def test_detached_fixture_discovery_requires_its_exited_parent_to_be_reaped(self):
+        from contextlib import ExitStack
+
+        reaped = False
+        scans = 0
+
+        def wait(pid, flags):
+            nonlocal reaped
+            if pid == 111:
+                reaped = True
+            return pid, 0
+
+        def inventory(uid):
+            nonlocal scans
+            if not reaped:
+                raise uid_probe.InventoryError(
+                    "unreaped direct parent lacks birth metadata"
+                )
+            scans += 1
+            return [object()] if scans == 1 else []
+
+        with ExitStack() as stack:
+            self.mocks(stack, wait=wait)
+            stack.enter_context(
+                mock.patch.object(uid_probe, "inventory_uid", side_effect=inventory)
+            )
+            result = uid_probe.run_case(62001, "detached")
+            self.assertEqual(result["discovered"], 1)
+            self.assertEqual(result["worker_status"], 0)
+            self.assertEqual(result["survivors"], 0)

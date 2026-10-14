@@ -9,19 +9,19 @@
   },
   "files": {
     "native/uid_domain.py": "919c1440b8b0aa25e6ac70c30c3b4a5ce1609d0a2aa1a5a474455cf2fa9fd706",
-    "native/uid_probe.py": "1257764c72ce2f5cb613a15034ebb0748b6c46c3a4020116e4f05109c060d328",
-    "tests/test_uid_probe.py": "66099e3bf107c25bcd001cfca5714508e3c5d10049509de6cc42a9a6a7c529a6",
+    "native/uid_probe.py": "8dd166fdca14214d0eca64b63b69ee6f902b70ed46cf9b3b3af8315030ba978b",
+    "tests/test_uid_probe.py": "02ddb1e7aed4ad9116e94977c2beac7348465a7f1006fcc679f301ca2eb7bbfe",
     "tests/test_uid_domain.py": "ea96509746d5e221a36a217dd0fd1a5b1272393f94c4085770a8fae9eb576e19",
     ".github/workflows/native-uid-experiments.yml": "6782d83a20641df572bfe8d95e5f6dc5d07ca96d445ab8efe63ff19e100b14ac",
     ".github/workflows/verify.yml": "6327c43d485dadf3a3b270371dda814df0b6925382363c993ad6562d0a3076a0"
   },
   "local_tests": {
-    "platform": 178,
+    "platform": 179,
     "prototype": 57,
-    "experimental_subset": 21
+    "experimental_subset": 22
   },
   "current_user_inventory": "blocked by unreadable zombie birth metadata; never assumed empty",
-  "privileged_ci": "kernel credential revision pending",
+  "privileged_ci": "pre-discovery direct-parent reap revision pending",
   "eventu_integration": "private reconciled patch; original unchanged; branch-policy decision pending",
   "workflow_fix_review": {
     "verdict": "PASS",
@@ -53,6 +53,11 @@
       "run": 38587469091,
       "result": "anonymous-UID account-directory getgroups EINVAL; kernel query implemented next",
       "source": "a8476e4be3085125175e9e7dbba9d009d86901b8"
+    },
+    {
+      "run": 38588737261,
+      "result": "credential drop/cleanup succeeded, initial inventory blocked by held direct-parent zombie; final membership empty",
+      "source": "2781867df784e21aa4862469710af532eb4dd9cf"
     }
   ],
   "repair_review": {
@@ -86,5 +91,11 @@
     "CEP-UID-NO-PROMOTION": [
       "shipping src/cep unchanged; production_qualified false"
     ]
+  },
+  "prereap_review": {
+    "verdict": "PASS",
+    "restricted": true,
+    "unchanged": true,
+    "scope": "five-line direct-child reaping fix"
   }
 }

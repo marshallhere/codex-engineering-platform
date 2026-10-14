@@ -313,6 +313,11 @@ def run_case(uid: int, mode: str) -> dict:
             time.sleep(0.01)
         if not ready:
             raise RuntimeError(f"fixture failed before readiness: {worker_error}")
+        # A detached fixture deliberately exits its direct parent. Reap our own
+        # exited child before inventory; zombies cannot supply BSD birth metadata.
+        result, status = os.waitpid(worker, os.WNOHANG)
+        if result == worker:
+            worker_reaped, worker_status = True, status
         discovered = len(inventory_uid(uid))
         minimum = 9 if mode == "concurrent-forks" else 2 if mode == "posix-spawn" else 1
         if discovered < minimum:

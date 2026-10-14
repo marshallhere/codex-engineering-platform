@@ -392,3 +392,13 @@ empty/duplicate/foreign groups rejected. DSUID/GIDabsencebothchecked. Full178pla
 PASS;21targeted PASS includingactualcurrentMacgroupinspection; nativeBandit0findings/
 errors; Ruff/OpenSpecPASS. Restrictedreview-native-uid-kernel-groups PASS with all
 reviewedfilehashesunchanged. No src/cep changes. ActualanonymousUIDCI rerun next.
+
+Fifth CI38588737261 at2781867 proves privilege drop and UIDcleanup operations succeeded
+for the detached fixture (bothstatuses0,no diagnosticmessages,finalmembers0), but initial
+inventoryfailed because its deliberatelyexited directparent wasnotyetreaped bysupervisor.
+Do notcount as passingcase. Added nonblocking waitpid ofour directchild before initial
+inventory; preservesrealexitstatus anddoesnotsignal orfilterunknownmetadata. Restricted
+prereapreviewPASS,sourcehashunchanged. Added genuine zombie-observer regression;22tests
+PASS. Negativecontrolremovingthefive-linefixfromprivatecopy yields1errorbeforefix; kept
+failurelog. Firstnegativecontrolcommand usedwrongcwd anddidnotexecute; correctedrunis
+recordedseparately. Fullfinaltests/Bandit runningbeforeactualCIrerun.
