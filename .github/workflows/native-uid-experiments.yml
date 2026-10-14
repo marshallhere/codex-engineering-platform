@@ -16,12 +16,13 @@ jobs:
       - name: Stage fixed reviewed experiments outside worker ownership
         shell: bash
         run: |
+          printf '%s\n' '{"experiment":"not_run","production_qualified":false,"error":"staging failed"}' > uid-experiment.json
           stage=$(sudo /usr/bin/mktemp -d /private/tmp/cep-uid-probes.XXXXXX)
+          echo "CEP_UID_STAGE=$stage" >> "$GITHUB_ENV"
           sudo /bin/chmod 700 "$stage"
           sudo /bin/cp native/uid_domain.py native/uid_probe.py "$stage/"
           sudo /usr/sbin/chown -R root:wheel "$stage"
-          sudo /bin/chmod 600 "$stage"/*.py
-          echo "CEP_UID_STAGE=$stage" >> "$GITHUB_ENV"
+          sudo /bin/chmod 600 "$stage/uid_domain.py" "$stage/uid_probe.py"
       - name: Run fixed synthetic experiments; production stays blocked
         shell: bash
         run: |

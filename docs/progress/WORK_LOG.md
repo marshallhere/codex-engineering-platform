@@ -322,3 +322,12 @@ mode/owner/link checks. Final native Bandit:0 findings/errors. Full local suite1
 (157 shipping tests +13 experimental); original14+43 PASS; packaging171 checks PASS
 on the intermediate source. Final-revision tests/artifact verification are rerunning
 before the disposable CI experiment. No privileged probe ran on this Mac.
+
+First disposable CI run `38584212113` failed during staging before fixture execution:
+ordinary-shell glob expansion cannot traverse the root-only0700 staging directory.
+Failure log retained privately as native-uid-ci-01-failed.log. Fixed explicit filenames,
+registered staging for cleanup immediately after creation, and seeded a failed/not-run
+artifact before staging. Directory permissions remain0700; no control was weakened.
+Standard CI run `38584211963` passed contracts/native-boundary at14d23c5. PR#2 is draft
+and stacked on#1; no merge/deployment. Final-revision local170 tests/171 packagingchecks
+passed. Native static findings/errors0. Disposable descendant execution still pending.
