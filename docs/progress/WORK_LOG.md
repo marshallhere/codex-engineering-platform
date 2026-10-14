@@ -280,3 +280,45 @@ promotion, remote integration and rendered UI acceptance. See `docs/LIMITATIONS.
 - Scoped real-project tasks checked. General descendant-safe native subprocesses,
   full framework builds, broader SDK attestation, UI/Storybook, reviewed-memory
   automation and remote integration still require separate qualification.
+
+## 2026-10-14 — native UID experiment implementation started
+
+Branch `feat/native-uid-containment` starts from published `5f2d44e`. The shipping
+runtime and no-fork profile remain unchanged. Added OpenSpec `native-uid-experiments`,
+read-only checked libproc inventory, fixed bounded detached/concurrent-fork fixtures,
+irreversible per-fixture UID/group drop, low-privilege cleanup and root-owned exclusive
+CI lease. Experimental code stays outside `src/cep`; developer-host qualification
+refuses before any privileged action. No host helper/account/permission installation.
+
+Executed local guard tests: 4 PASS. `uid_probe.py --inspect` reports nonroot,
+non-disposable and production qualification false. Local `--qualify` correctly exits1
+with explicit disposable-CI prerequisite. Ruff PASS, all3 strict OpenSpec changes PASS,
+npm audit0 vulnerabilities. Complete regression and restricted review running.
+
+A real current-user libproc sweep encountered existing zombie processes whose BSD
+birth metadata cannot be read. Inventory fails closed; this is retained as a native
+qualification limitation rather than treated as empty membership. Actual own-process
+ABI and genuinely unused-UID scans will be verified separately. Snapshot membership
+cannot prove an atomic fork barrier.
+
+Eventu reconciliation remains private: newer dirty-source snapshot preserved;
+106 tests PASS on Python3.13/3.14,22 skills PASS,18 added regression methods. Independent
+review prompted malformed scope-declaration rejection (present-null/string/wrong
+containers/invalid members), and negative controls reproduced the defect. Existing
+assertions unchanged. Original254 files/modes,branch,HEAD,status preserved. Integration
+still awaits resolution of actual feature branch versus AGENTS `develop` policy; no
+original patch application or branch switch. Updated private patch SHA256
+`33a970faabcd053ef268f0e793c0283fa60dab5770fc7a345a3e2692205eb769`.
+
+Independent restricted Codex review `review-native-uid-final/summary.json`: PASS,
+13 targeted tests, reviewed hashes unchanged. Earlier attempt returned a wrong phase
+label and was rejected by the transport; another review overlapped specialist test
+edits and its unchanged check failed. Neither was used as final review evidence.
+Final review ran after all specialist edits. Concurrent fixture readiness now requires
+8 actual forked children and inventory9 processes; a fixed posix_spawn case was added.
+Static scan initially reported a medium insecure-temp-path finding for the exclusive
+lease. Moved the lease beneath root-owned `/private/var/run`, retaining no-follow,
+mode/owner/link checks. Final native Bandit:0 findings/errors. Full local suite170 PASS
+(157 shipping tests +13 experimental); original14+43 PASS; packaging171 checks PASS
+on the intermediate source. Final-revision tests/artifact verification are rerunning
+before the disposable CI experiment. No privileged probe ran on this Mac.

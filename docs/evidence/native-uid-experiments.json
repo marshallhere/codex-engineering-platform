@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "scope": "experimental fixed disposable UID fixtures; not installed runtime",
+  "production_qualified": false,
+  "review": {
+    "verdict": "PASS",
+    "restricted": true,
+    "unchanged": true
+  },
+  "files": {
+    "native/uid_domain.py": "0e342aa4a0b80db655c264f29c4338051d39276586d3d2c6a7d2878086963a92",
+    "native/uid_probe.py": "b1316aa938be495a5888f846108566253cbd1ec22555456ddddc222c2d25b95a",
+    "tests/test_uid_probe.py": "9cdba481208517c872e6360a5a4e19d5ed036e1910b7fb4918e6d53151f2512b",
+    "tests/test_uid_domain.py": "a47ccbdd651610437ada9ba5364b74fa5c9079c3929580f08bbdfafe269133ba",
+    ".github/workflows/native-uid-experiments.yml": "bdccd0a54016f78c986f7f06e4ab6f694b0719f6161dedc04a123af5fb7d7664"
+  },
+  "local_tests": {
+    "platform": 170,
+    "prototype": 57,
+    "experimental_subset": 13
+  },
+  "current_user_inventory": "blocked by unreadable zombie birth metadata; never assumed empty",
+  "privileged_ci": "pending",
+  "eventu_integration": "private reconciled patch; original unchanged; branch-policy decision pending"
+}
